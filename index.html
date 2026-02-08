@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Run & Gun</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="game-wrapper">
+    <canvas id="gameCanvas" width="960" height="540"></canvas>
+    <div class="hud">
+      <span>Score: <strong id="score">0</strong></span>
+      <span>Lives: <strong id="lives">3</strong></span>
+      <span>Gold: <strong id="gold">0</strong></span>
+      <span>Level: <strong id="level">1</strong></span>
+    </div>
+    <div class="store-panel" id="storePanel">
+      <div class="store-title">WEAPONS SHOP</div>
+      <div class="store-guns" id="storeGuns"></div>
+      <button class="store-continue" id="storeContinue">Continue to Next Level</button>
+    </div>
+    <div class="controls-hint">
+      <p>← → Move &nbsp;|&nbsp; ↑ Jump &nbsp;|&nbsp; S Crouch &nbsp;|&nbsp; Z or Space Shoot</p>
+    </div>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
