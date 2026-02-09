@@ -36,7 +36,8 @@ const player = {
   gun: 'pistol',
   ownedGuns: ['pistol'],
   crouching: false,
-  gold: 0
+  gold: 0,
+  hasArmor: false
 };
 
 // Bullets, enemies, platforms, pickups, boss projectiles
@@ -103,17 +104,20 @@ const LEVEL_THEMES = {
 
 // Game state
 let score = 0;
-let lives = 3;
+let hp = 100;
+const MAX_HP = 100;
+const DEFAULT_DAMAGE = 20;
 let currentLevel = 1;
 let gameRunning = true;
 let victory = false;
 let storeOpen = false;
 
-// Store gun prices
+// Store items
 const STORE_GUNS = [
-  { id: 'machinegun', name: 'Machine Gun', price: 150 },
-  { id: 'spreadgun', name: 'Spread Gun', price: 300 },
-  { id: 'plasmagun', name: 'Plasma Gun', price: 500 }
+  { id: 'machinegun', name: 'Machine Gun', price: 150, type: 'gun' },
+  { id: 'spreadgun', name: 'Spread Gun', price: 300, type: 'gun' },
+  { id: 'plasmagun', name: 'Plasma Gun', price: 500, type: 'gun' },
+  { id: 'armor', name: 'Armor Suit', price: 250, type: 'armor' }
 ];
 
 function collides(a, b) {
@@ -121,8 +125,13 @@ function collides(a, b) {
          a.y < b.y + b.height && a.y + a.height > b.y;
 }
 
+function getDamageTaken() {
+  return player.hasArmor ? Math.floor(DEFAULT_DAMAGE / 2) : DEFAULT_DAMAGE;
+}
+
 function loadLevel(levelNum) {
   currentLevel = levelNum;
+  hp = MAX_HP;
   storeOpen = false;
   platforms.length = 0;
   enemies.length = 0;
@@ -379,7 +388,7 @@ function updatePlayer() {
     player.y = 432;
     player.vy = 0;
     if (player.invincible <= 0) {
-      lives--;
+      hp -= getDamageTaken();
       player.invincible = 120;
     }
   }
@@ -592,14 +601,14 @@ function checkEnemyCollision() {
   if (player.invincible > 0) return;
   for (const e of enemies) {
     if (e.health > 0 && collides(player, e)) {
-      lives--;
+      hp -= getDamageTaken();
       player.invincible = 120;
       player.vx = -player.facing * 8;
       player.vy = -6;
       break;
     }
   }
-  if (lives <= 0) gameRunning = false;
+  if (hp <= 0) gameRunning = false;
 }
 
 function updateBossProjectiles() {
@@ -609,11 +618,11 @@ function updateBossProjectiles() {
     if (p.x < cameraX - 50 || p.x > cameraX + canvas.width + 50) return false;
     if (collides(p, player)) {
       if (player.invincible <= 0) {
-        lives--;
+        hp -= getDamageTaken();
         player.invincible = 120;
         player.vx = -player.facing * 8;
         player.vy = -6;
-        if (lives <= 0) gameRunning = false;
+        if (hp <= 0) gameRunning = false;
       }
       return false;
     }
@@ -1489,7 +1498,7 @@ function drawEnemies() {
 
 function drawHUD() {
   document.getElementById('score').textContent = score;
-  document.getElementById('lives').textContent = lives;
+  document.getElementById('hp').textContent = hp;
   document.getElementById('gold').textContent = player.gold;
   document.getElementById('level').textContent = currentLevel;
 }
@@ -1500,14 +1509,18 @@ function renderStore() {
   STORE_GUNS.forEach(g => {
     const div = document.createElement('div');
     div.className = 'store-gun';
-    const owned = player.ownedGuns.includes(g.id);
-    const equipped = player.gun === g.id;
+    const isArmor = g.type === 'armor';
+    const owned = isArmor ? player.hasArmor : player.ownedGuns.includes(g.id);
+    const equipped = !isArmor && player.gun === g.id;
+    const action = isArmor ? (owned ? 'owned' : 'buy') : (owned ? 'equip' : 'buy');
+    const btnText = isArmor ? (owned ? 'Owned' : 'Buy') : (equipped ? 'Equipped' : owned ? 'Equip' : 'Buy');
+    const statusText = isArmor ? (owned ? '(reduces damage by half)' : '') : (equipped ? '(equipped)' : owned ? '(owned)' : '');
     div.innerHTML = `
-      <span class="store-gun-name">${g.name} ${equipped ? '(equipped)' : owned ? '(owned)' : ''}</span>
+      <span class="store-gun-name">${g.name} ${statusText}</span>
       <span>
         <span class="store-gun-price">${owned ? '' : g.price + ' gold'}</span>
-        <button class="store-gun-btn" data-gun="${g.id}" data-price="${g.price}" data-action="${owned ? 'equip' : 'buy'}" ${!owned && player.gold < g.price ? 'disabled' : ''}>
-          ${equipped ? 'Equipped' : owned ? 'Equip' : 'Buy'}
+        <button class="store-gun-btn" data-gun="${g.id}" data-price="${g.price}" data-action="${action}" data-type="${g.type || 'gun'}" ${!owned && player.gold < g.price ? 'disabled' : ''}>
+          ${btnText}
         </button>
       </span>
     `;
@@ -1518,16 +1531,24 @@ function renderStore() {
       const gun = btn.dataset.gun;
       const price = parseInt(btn.dataset.price);
       const action = btn.dataset.action;
-      if (action === 'buy' && player.gold >= price) {
+      const itemType = btn.dataset.type;
+      if (itemType === 'armor' && action === 'buy' && player.gold >= price) {
         player.gold -= price;
-        if (!player.ownedGuns.includes(gun)) player.ownedGuns.push(gun);
-        player.gun = gun;
+        player.hasArmor = true;
         renderStore();
         drawHUD();
-      } else if (action === 'equip') {
-        player.gun = gun;
-        renderStore();
-        drawHUD();
+      } else if (itemType === 'gun') {
+        if (action === 'buy' && player.gold >= price) {
+          player.gold -= price;
+          if (!player.ownedGuns.includes(gun)) player.ownedGuns.push(gun);
+          player.gun = gun;
+          renderStore();
+          drawHUD();
+        } else if (action === 'equip') {
+          player.gun = gun;
+          renderStore();
+          drawHUD();
+        }
       }
     };
   });
