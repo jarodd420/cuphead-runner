@@ -41,13 +41,14 @@ const player = {
   aimAngle: 0  // radians, 0 = right, updated from mouse
 };
 
-// Bullets, enemies, platforms, pickups, boss projectiles
+// Bullets, enemies, platforms, pickups, boss projectiles, hazards
 let bullets = [];
 let enemies = [];
 let platforms = [];
 let pickups = [];
 let bossProjectiles = [];
 let deathEffects = [];
+let hazards = [];
 let walkerSpawnTimer = 0;
 const WALKER_SPAWN_INTERVAL = 120;
 
@@ -100,6 +101,30 @@ const LEVEL_THEMES = {
     platformPattern: 'lava',
     accent: '#ff4422',
     decor: 'ember'
+  },
+  5: { // Frozen peak - ice, snow, blizzard
+    skyGrad: ['#1a2a3a', '#3a5a7a', '#0d1825'],
+    farHills: '#2a3a4a',
+    midHills: '#4a6a8a',
+    nearHills: '#6a8aaa',
+    platformFill: '#5a7080',
+    platformStroke: '#8ab0c0',
+    platformInner: '#7a9aac',
+    platformPattern: 'ice',
+    accent: '#a0d8f0',
+    decor: 'snow'
+  },
+  6: { // Clockwork tower - brass, gears, steam
+    skyGrad: ['#1a1510', '#2a2520', '#0d0a08'],
+    farHills: '#3a3020',
+    midHills: '#5a4a35',
+    nearHills: '#7a6a45',
+    platformFill: '#4a3a28',
+    platformStroke: '#8b6914',
+    platformInner: '#6a5a40',
+    platformPattern: 'gear',
+    accent: '#c9a227',
+    decor: 'steam'
   }
 };
 
@@ -224,6 +249,7 @@ function loadLevel(levelNum) {
   bullets.length = 0;
   bossProjectiles.length = 0;
   deathEffects.length = 0;
+  hazards.length = 0;
   walkerSpawnTimer = 0;
 
   const groundY = 480;
@@ -276,6 +302,9 @@ function loadLevel(levelNum) {
         pickups.push({ x: p.x + p.width / 2 - 10, y: p.y - 70, width: 20, height: 20, type: 'star', value: 100 });
       }
     });
+    for (let i = 0; i < 8; i++) {
+      hazards.push({ x: 600 + i * 420, y: groundY - 15, width: 90, height: 60, type: 'sand' });
+    }
   } else if (levelNum === 2) {
     // Level 2 - Jungle (harder, gun pickup)
     for (let i = 0; i < 28; i++) {
@@ -313,6 +342,11 @@ function loadLevel(levelNum) {
       if (i % 4 === 0 && i > 2) pickups.push({ x: p.x + 20, y: p.y - 95, width: 22, height: 22, type: 'gold', value: 15 });
       if (i % 5 === 2 && i > 3) pickups.push({ x: p.x + 10, y: p.y - 75, width: 20, height: 20, type: 'star', value: 150 });
     });
+    for (let i = 0; i < 12; i++) {
+      const vx = 400 + i * 280;
+      const vineH = 85 + Math.random() * 55;
+      hazards.push({ x: vx, y: groundY - vineH, width: 12, height: vineH, type: 'vine' });
+    }
   } else if (levelNum === 3) {
     // Level 3 - Cave (spread gun for multi-part boss)
     for (let i = 0; i < 32; i++) {
@@ -351,6 +385,9 @@ function loadLevel(levelNum) {
       if (i % 4 === 2 && i > 2) pickups.push({ x: p.x + 10, y: p.y - 105, width: 22, height: 22, type: 'gold', value: 20 });
       if (i % 5 === 1 && i > 4) pickups.push({ x: p.x + 15, y: p.y - 80, width: 20, height: 20, type: 'star', value: 200 });
     });
+    for (let i = 0; i < 15; i++) {
+      hazards.push({ x: 350 + i * 240, y: -30, width: 24, height: 40, type: 'stalactite', vy: 0, startY: -30 });
+    }
   } else if (levelNum === 4) {
     // Level 4 - Volcano (rocket launcher for high-HP boss)
     for (let i = 0; i < 35; i++) {
@@ -390,6 +427,110 @@ function loadLevel(levelNum) {
       if (i % 4 === 1 && i > 3) pickups.push({ x: p.x + 25, y: p.y - 110, width: 22, height: 22, type: 'gold', value: 25 });
       if (i % 4 === 3 && i > 5) pickups.push({ x: p.x + 18, y: p.y - 85, width: 20, height: 20, type: 'star', value: 250 });
     });
+    for (let i = 0; i < 10; i++) {
+      const lw = 70 + Math.random() * 55;
+      const lh = 40 + Math.random() * 30;
+      hazards.push({
+        x: 480 + i * 340 + (Math.random() - 0.5) * 80,
+        y: groundY + 5,
+        width: lw,
+        height: lh,
+        type: 'lava',
+        timer: Math.floor(Math.random() * 180),
+        eruptOffset: Math.floor(Math.random() * 40)
+      });
+    }
+  } else if (levelNum === 5) {
+    // Level 5 - Frozen peak (harder: more enemies, ice boss)
+    for (let i = 0; i < 38; i++) {
+      const x = 220 + i * 105 + Math.random() * 40;
+      const y = 310 + Math.sin(i * 0.75) * 95;
+      platforms.push({ x, y, width: 58 + Math.random() * 58, height: 14 });
+    }
+    enemies.push(
+      { x: 600, y: playerGroundY - 4, width: 44, height: 52, health: 35, maxHealth: 35, vx: -3.2, type: 'walker' },
+      { x: 1100, y: playerGroundY - 4, width: 44, height: 52, health: 35, maxHealth: 35, vx: -3.2, type: 'walker' },
+      { x: 1500, y: playerGroundY - 4, width: 44, height: 52, health: 35, maxHealth: 35, vx: -3.2, type: 'walker' },
+      { x: 2000, y: playerGroundY - 4, width: 44, height: 52, health: 35, maxHealth: 35, vx: -3.2, type: 'walker' },
+      { x: 2400, y: playerGroundY - 4, width: 44, height: 52, health: 35, maxHealth: 35, vx: -3.2, type: 'walker' },
+      { x: 2900, y: playerGroundY - 4, width: 44, height: 52, health: 35, maxHealth: 35, vx: -3.2, type: 'walker' },
+      { x: 3300, y: playerGroundY - 4, width: 44, height: 52, health: 35, maxHealth: 35, vx: -3.2, type: 'walker' },
+      { x: BOSS_X, y: 300, width: 110, height: 110, health: 130, maxHealth: 130, type: 'boss', bossType: 5, vy: 0, vx: -1.5, shootCooldown: 0 }
+    );
+    platforms.forEach((p, i) => {
+      if (i >= 2 && i % 3 === 0 && i < 32) {
+        enemies.push({
+          x: p.x + p.width / 2 - 20,
+          y: p.y - 42,
+          width: 40,
+          height: 42,
+          health: 3,
+          vx: 0,
+          type: 'thrower',
+          platformY: p.y,
+          shootCooldown: 40 + i * 7,
+          projectileType: i % 2 === 0 ? 'knife' : 'axe'
+        });
+      }
+    });
+    platforms.slice(1).forEach((p, i) => {
+      if (i % 2 === 0) pickups.push({ x: p.x + p.width / 2 - 11, y: p.y - 68, width: 22, height: 22, type: 'gold', value: 14 });
+      if (i % 3 === 1 && i > 4) pickups.push({ x: p.x + 12, y: p.y - 100, width: 22, height: 22, type: 'gold', value: 28 });
+      if (i % 4 === 2 && i > 6) pickups.push({ x: p.x + 20, y: p.y - 88, width: 20, height: 20, type: 'star', value: 300 });
+    });
+    for (let i = 0; i < 14; i++) {
+      hazards.push({ x: 300 + i * 265, y: groundY + 18, width: 22, height: 42, type: 'ice_spike', timer: 0 });
+    }
+  } else if (levelNum === 6) {
+    // Level 6 - Clockwork tower (hardest: many enemies, gear boss)
+    for (let i = 0; i < 42; i++) {
+      const x = 200 + i * 98 + Math.random() * 38;
+      const y = 300 + Math.sin(i * 0.8) * 100;
+      platforms.push({ x, y, width: 55 + Math.random() * 55, height: 14 });
+    }
+    enemies.push(
+      { x: 550, y: playerGroundY - 4, width: 44, height: 52, health: 40, maxHealth: 40, vx: -3.4, type: 'walker' },
+      { x: 1000, y: playerGroundY - 4, width: 44, height: 52, health: 40, maxHealth: 40, vx: -3.4, type: 'walker' },
+      { x: 1450, y: playerGroundY - 4, width: 44, height: 52, health: 40, maxHealth: 40, vx: -3.4, type: 'walker' },
+      { x: 1900, y: playerGroundY - 4, width: 44, height: 52, health: 40, maxHealth: 40, vx: -3.4, type: 'walker' },
+      { x: 2300, y: playerGroundY - 4, width: 44, height: 52, health: 40, maxHealth: 40, vx: -3.4, type: 'walker' },
+      { x: 2750, y: playerGroundY - 4, width: 44, height: 52, health: 40, maxHealth: 40, vx: -3.4, type: 'walker' },
+      { x: 3150, y: playerGroundY - 4, width: 44, height: 52, health: 40, maxHealth: 40, vx: -3.4, type: 'walker' },
+      { x: 3550, y: playerGroundY - 4, width: 44, height: 52, health: 40, maxHealth: 40, vx: -3.4, type: 'walker' },
+      { x: BOSS_X, y: 280, width: 120, height: 120, health: 160, maxHealth: 160, type: 'boss', bossType: 6, vy: 0, shootCooldown: 0, phase: 0 }
+    );
+    platforms.forEach((p, i) => {
+      if (i >= 1 && i % 3 !== 1 && i < 36) {
+        enemies.push({
+          x: p.x + p.width / 2 - 20,
+          y: p.y - 42,
+          width: 40,
+          height: 42,
+          health: 3,
+          vx: 0,
+          type: 'thrower',
+          platformY: p.y,
+          shootCooldown: 35 + i * 6,
+          projectileType: i % 2 === 0 ? 'knife' : 'axe'
+        });
+      }
+    });
+    platforms.slice(1).forEach((p, i) => {
+      if (i % 2 === 1) pickups.push({ x: p.x + p.width / 2 - 11, y: p.y - 70, width: 22, height: 22, type: 'gold', value: 16 });
+      if (i % 3 === 0 && i > 5) pickups.push({ x: p.x + 18, y: p.y - 108, width: 22, height: 22, type: 'gold', value: 32 });
+      if (i % 4 === 1 && i > 7) pickups.push({ x: p.x + 22, y: p.y - 90, width: 20, height: 20, type: 'star', value: 350 });
+    });
+    for (let i = 0; i < 12; i++) {
+      hazards.push({
+        x: 420 + i * 310 + (Math.random() - 0.5) * 40,
+        y: groundY - 35,
+        width: 50,
+        height: 50,
+        type: 'gear_trap',
+        timer: Math.floor(Math.random() * 80),
+        active: false
+      });
+    }
   }
 
   player.x = 100;
@@ -661,23 +802,134 @@ function updateEnemies() {
         e.vy = Math.sin(t * 1.2) * 2;
         e.y += e.vy;
         e.y = Math.max(320, Math.min(390, e.y));
+      } else if (e.bossType === 5) {
+        e.dashTimer = (e.dashTimer || 0) + 1;
+        if (e.dashTimer > 80) {
+          e.dashTimer = 0;
+          e.vx = (Math.random() > 0.5 ? 1 : -1) * 4;
+        }
+        if (e.dashTimer > 0 && e.dashTimer < 25) {
+          e.x += e.vx;
+          e.x = Math.max(BOSS_X - 100, Math.min(BOSS_X + 80, e.x));
+        } else {
+          e.vx *= 0.95;
+        }
+        e.vy = Math.sin(t * 2) * 2.5;
+        e.y += e.vy;
+        e.y = Math.max(300, Math.min(400, e.y));
+      } else if (e.bossType === 6) {
+        e.vy = Math.sin(t * 1.8) * 2;
+        e.y += e.vy;
+        e.y = Math.max(270, Math.min(380, e.y));
       }
       // Boss shooting
       e.shootCooldown = (e.shootCooldown || 0) - 1;
       if (e.shootCooldown <= 0 && player.x > e.x - 400) {
+        const isEgg = e.bossType === 1;
+        const isGhost = e.bossType === 2;
+        const isInk = e.bossType === 3;
+        const isCoin = e.bossType === 4;
+        const isIce = e.bossType === 5;
+        const isGear = e.bossType === 6;
+        const mouthX = isEgg ? e.x + 120 : e.x + e.width / 2;
+        const mouthY = isEgg ? e.y + 28 : e.y + e.height / 2;
         const cx = e.x + e.width / 2;
         const cy = e.y + e.height / 2;
-        const dx = player.x + player.width / 2 - cx;
-        const dy = player.y + player.height / 2 - cy;
-        const dist = Math.hypot(dx, dy) || 1;
-        const speed = e.bossType === 1 ? 6 : e.bossType === 2 ? 8 : e.bossType === 3 ? 7 : 9;
-        bossProjectiles.push({
-          x: cx - 7, y: cy - 7,
-          vx: (dx / dist) * speed,
-          vy: (dy / dist) * speed,
-          width: 14, height: 14
-        });
-        e.shootCooldown = e.bossType === 1 ? 90 : e.bossType === 2 ? 60 : e.bossType === 3 ? 70 : 50;
+        const tdx = player.x + player.width / 2 - (isEgg ? mouthX : cx);
+        const tdy = (player.y + player.height / 2) - (isEgg ? mouthY : cy);
+        const dist = Math.hypot(tdx, tdy) || 1;
+        const speed = e.bossType === 1 ? 7.8 : e.bossType === 2 ? 7 : e.bossType === 3 ? 4.5 : e.bossType === 4 ? 8 : e.bossType === 5 ? 6.5 : 8;
+        if (isInk) {
+          const baseAngle = Math.atan2(tdy, tdx);
+          for (let i = 0; i < 5; i++) {
+            const angle = baseAngle + (i - 2) * 0.4 + (Math.random() - 0.5) * 0.25;
+            bossProjectiles.push({
+              x: cx - 8, y: cy - 8,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              width: 18, height: 18,
+              projectileType: 'ink'
+            });
+          }
+        } else if (isCoin) {
+          const baseAngle = Math.atan2(tdy, tdx);
+          for (let i = 0; i < 3; i++) {
+            const angle = baseAngle + (i - 1) * 0.3 + (Math.random() - 0.5) * 0.2;
+            bossProjectiles.push({
+              x: cx - 6, y: cy - 6,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              width: 14, height: 14,
+              projectileType: 'coin',
+              spin: 0.12
+            });
+          }
+        } else if (isGhost) {
+          const baseAngle = Math.atan2(tdy, tdx);
+          const spread = 0.25;
+          for (let i = 0; i < 2; i++) {
+            const angle = baseAngle + (i === 0 ? -spread : spread) + (Math.random() - 0.5) * 0.35;
+            bossProjectiles.push({
+              x: cx - 8, y: cy - 8,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              width: 16, height: 16,
+              projectileType: 'ghost'
+            });
+          }
+        } else if (isIce) {
+          const baseAngle = Math.atan2(tdy, tdx);
+          for (let i = 0; i < 3; i++) {
+            const angle = baseAngle + (i - 1) * 0.35 + (Math.random() - 0.5) * 0.15;
+            bossProjectiles.push({
+              x: cx - 6, y: cy - 6,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              width: 14, height: 14,
+              projectileType: 'iceshard'
+            });
+          }
+        } else if (isGear) {
+          e.phase = (e.phase || 0) % 2;
+          if (e.phase === 0) {
+            for (let i = 0; i < 6; i++) {
+              const angle = (i / 6) * Math.PI * 2 + Math.random() * 0.2;
+              bossProjectiles.push({
+                x: cx - 7, y: cy - 7,
+                vx: Math.cos(angle) * 7,
+                vy: Math.sin(angle) * 7,
+                width: 14, height: 14,
+                projectileType: 'gear',
+                spin: Math.random() * 0.2
+              });
+            }
+          } else {
+            const angle = Math.atan2(tdy, tdx) + (Math.random() - 0.5) * 0.3;
+            bossProjectiles.push({
+              x: cx - 8, y: cy - 8,
+              vx: Math.cos(angle) * 6,
+              vy: Math.sin(angle) * 6,
+              width: 16, height: 16,
+              projectileType: 'gear',
+              homing: true,
+              spin: 0.15
+            });
+          }
+          e.phase++;
+        } else {
+          const dx = tdx;
+          const dy = tdy;
+          bossProjectiles.push({
+            x: isEgg ? mouthX - 6 : cx - 7,
+            y: isEgg ? mouthY - 8 : cy - 7,
+            vx: (dx / dist) * speed,
+            vy: (dy / dist) * speed,
+            width: isEgg ? 12 : 14,
+            height: isEgg ? 16 : 14,
+            projectileType: isEgg ? 'egg' : undefined
+          });
+        }
+        e.shootCooldown = e.bossType === 1 ? 60 : e.bossType === 2 ? 60 : e.bossType === 3 ? 70 : e.bossType === 5 ? 55 : e.bossType === 6 ? 45 : 50;
       }
     }
   }
@@ -687,6 +939,284 @@ function updateCamera() {
   const targetX = player.x - canvas.width / 2 + player.width / 2;
   cameraX += (targetX - cameraX) * CAMERA_SMOOTH;
   cameraX = Math.max(0, Math.min(WORLD_WIDTH - canvas.width, cameraX));
+}
+
+function updateHazards() {
+  const groundY = 480;
+  for (const h of hazards) {
+    if (h.type === 'stalactite') {
+      h.vy = (h.vy || 0) + 0.4;
+      h.y += h.vy;
+      if (h.y > groundY + 50) {
+        h.y = h.startY ?? -30;
+        h.vy = 0;
+      }
+    } else if (h.type === 'steam') {
+      h.timer = (h.timer || 0) + 1;
+      if (h.timer > 100) h.timer = 0;
+      h.active = h.timer > 60 && h.timer < 95;
+    } else if (h.type === 'gear_trap') {
+      h.timer = (h.timer || 0) + 1;
+      if (h.timer > 120) h.timer = 0;
+      h.active = h.timer > 45 && h.timer < 95;
+    } else if (h.type === 'lava') {
+      h.timer = (h.timer || 0) + 1;
+      h.pulse = 0.8 + Math.sin(h.timer * 0.15) * 0.2;
+      const offset = h.eruptOffset || 0;
+      const cycle = (h.timer + offset) % 240;
+      if (cycle >= 80 && cycle < 130) {
+        h.eruptPhase = cycle - 80;
+        h.erupting = true;
+        if (h.eruptPhase < 28) {
+          h.eruptHeight = h.eruptPhase * 9;
+        } else {
+          h.eruptHeight = 252 - (h.eruptPhase - 28) * 6;
+        }
+        if (h.eruptPhase === 14 && !h.fireballsSpawned) {
+          h.fireballsSpawned = true;
+          const cx = h.x + h.width / 2;
+          const topY = h.y - h.eruptHeight;
+          for (let f = 0; f < 2; f++) {
+            const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.2;
+            const spd = 5 + Math.random() * 4;
+            bossProjectiles.push({
+              x: cx - 6 + (Math.random() - 0.5) * 20,
+              y: topY - 10,
+              vx: Math.cos(angle) * spd,
+              vy: Math.sin(angle) * spd,
+              width: 14,
+              height: 14,
+              projectileType: 'lava_fireball'
+            });
+          }
+        }
+      } else {
+        h.erupting = false;
+        h.eruptHeight = 0;
+        if (cycle < 80 || cycle >= 130) h.fireballsSpawned = false;
+      }
+    } else if (h.type === 'sand') {
+      h.timer = (h.timer || 0) + 1;
+    }
+  }
+}
+
+function checkHazardCollision() {
+  if (player.invincible > 0) return;
+  for (const h of hazards) {
+    if ((h.type === 'steam' || h.type === 'gear_trap') && !h.active) continue;
+    let hit = false;
+    if (h.type === 'lava' && h.erupting && h.eruptHeight > 0) {
+      const column = { x: h.x, y: h.y - h.eruptHeight, width: h.width, height: h.eruptHeight };
+      if (collides(player, column)) hit = true;
+    }
+    if (!hit && collides(player, h)) hit = true;
+    if (hit) {
+      hp -= getDamageTaken();
+      player.invincible = 120;
+      player.vx = -player.facing * 8;
+      player.vy = -6;
+      if (hp <= 0) gameRunning = false;
+      break;
+    }
+  }
+}
+
+function drawHazards() {
+  const groundY = 480;
+  for (const h of hazards) {
+    const x = h.x - cameraX;
+    if (x + h.width < -50 || x > canvas.width + 50) continue;
+    if (h.type === 'sand') {
+      const t = (h.timer || 0) * 0.1 + h.x * 0.02;
+      ctx.fillStyle = 'rgba(180, 140, 80, 0.9)';
+      ctx.fillRect(x, h.y, h.width, h.height);
+      ctx.strokeStyle = 'rgba(139, 105, 20, 0.9)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, h.y, h.width, h.height);
+      for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < 4; j++) {
+          const bx = x + 15 + i * 14 + Math.sin(t + i * 1.2) * 4;
+          const by = h.y + 15 + j * 12 + Math.cos(t * 0.8 + j) * 3;
+          const r = 4 + Math.sin(t + i + j) * 2;
+          ctx.fillStyle = `rgba(160, 120, 50, ${0.5 + Math.sin(t + i) * 0.2})`;
+          ctx.beginPath();
+          ctx.arc(bx, by, r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.beginPath();
+      const cx = x + h.width / 2;
+      const cy = h.y + h.height / 2;
+      for (let a = 0; a < Math.PI * 2; a += 0.4) {
+        const dist = 20 + Math.sin(t + a * 2) * 8 + (h.width / 2 - 25) * (a / (Math.PI * 2));
+        const px = cx + Math.cos(a + t * 0.3) * dist;
+        const py = cy + Math.sin(a + t * 0.3) * dist * 0.6;
+        if (a === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(140, 100, 40, 0.4)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(100, 70, 30, 0.5)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    } else if (h.type === 'vine') {
+      const t = Date.now() * 0.003 + h.x * 0.01;
+      const vineW = h.width;
+      const vineH = h.height;
+      const thornCount = Math.max(4, Math.floor(vineH / 14));
+      ctx.strokeStyle = '#1a3d22';
+      ctx.lineWidth = 4;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x + vineW / 2, h.y + vineH);
+      ctx.lineTo(x + vineW / 2, h.y + vineH * 0.5);
+      ctx.stroke();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#2d5a35';
+      ctx.beginPath();
+      ctx.moveTo(x + vineW / 2, h.y + vineH * 0.5);
+      ctx.lineTo(x + vineW / 2, h.y + 18);
+      ctx.stroke();
+      const thornStep = (vineH - 40) / Math.max(1, thornCount - 1);
+      for (let i = 0; i < thornCount; i++) {
+        const thornY = h.y + 22 + i * thornStep;
+        const thornSide = i % 2 === 0 ? -1 : 1;
+        ctx.fillStyle = '#3d6b45';
+        ctx.strokeStyle = '#1a3d22';
+        ctx.beginPath();
+        ctx.moveTo(x + vineW / 2, thornY);
+        ctx.lineTo(x + vineW / 2 + thornSide * 8, thornY - 4);
+        ctx.lineTo(x + vineW / 2 + thornSide * 6, thornY + 2);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+      const headY = h.y + 6;
+      const chomp = Math.abs(Math.sin(t * 3.5));
+      const jawOpen = 0.2 + 0.55 * chomp;
+      const jawTilt = Math.sin(t * 2) * 0.08;
+      ctx.fillStyle = '#2d6b35';
+      ctx.strokeStyle = '#1a4a22';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(x + vineW / 2 - 10, headY + 6 + jawOpen * 3, 14, 9 + jawOpen * 2, -0.2 - jawTilt, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(x + vineW / 2 + 10, headY + 6 + jawOpen * 3, 14, 9 + jawOpen * 2, 0.2 + jawTilt, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#4a8a52';
+      ctx.beginPath();
+      ctx.ellipse(x + vineW / 2 - 10, headY + 6 + jawOpen * 3, 11, 6 + jawOpen, -0.2 - jawTilt, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(x + vineW / 2 + 10, headY + 6 + jawOpen * 3, 11, 6 + jawOpen, 0.2 + jawTilt, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#8b2222';
+      ctx.beginPath();
+      ctx.ellipse(x + vineW / 2 - 10, headY + 7 + jawOpen * 3, 6, 3 + jawOpen, -0.2, 0, Math.PI * 2);
+      ctx.ellipse(x + vineW / 2 + 10, headY + 7 + jawOpen * 3, 6, 3 + jawOpen, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#2a1810';
+      ctx.strokeStyle = '#1a0a08';
+      const toothDrop = 4 + jawOpen * 10;
+      for (let ti = 0; ti < 6; ti++) {
+        const tx = x + vineW / 2 + (ti - 2.5) * 5;
+        ctx.beginPath();
+        ctx.moveTo(tx, headY + 5);
+        ctx.lineTo(tx + 2, headY + 5 + toothDrop);
+        ctx.lineTo(tx, headY + 8 + toothDrop * 0.5);
+        ctx.lineTo(tx - 2, headY + 5 + toothDrop);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+    } else if (h.type === 'stalactite') {
+      ctx.fillStyle = '#4a4a6a';
+      ctx.strokeStyle = '#2a2a4a';
+      ctx.beginPath();
+      ctx.moveTo(x + h.width / 2, h.y + h.height);
+      ctx.lineTo(x, h.y);
+      ctx.lineTo(x + h.width, h.y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    } else if (h.type === 'lava') {
+      const pulse = h.pulse || 1;
+      if (h.erupting && h.eruptHeight > 0) {
+        const colH = h.eruptHeight;
+        const grad = ctx.createLinearGradient(x + h.width / 2, h.y - colH, x + h.width / 2, h.y);
+        grad.addColorStop(0, 'rgba(255, 120, 40, 0.5)');
+        grad.addColorStop(0.4, 'rgba(255, 80, 20, 0.85)');
+        grad.addColorStop(1, 'rgba(255, 60, 10, 0.95)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(x + h.width * 0.15, h.y - colH, h.width * 0.7, colH);
+        ctx.fillStyle = 'rgba(255, 180, 50, 0.6)';
+        ctx.fillRect(x + h.width * 0.2, h.y - colH + 5, h.width * 0.6, colH * 0.3);
+        ctx.strokeStyle = 'rgba(255, 100, 30, 0.9)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x + h.width * 0.15, h.y - colH, h.width * 0.7, colH);
+      }
+      ctx.fillStyle = `rgba(255, 80, 20, ${0.7 * pulse})`;
+      ctx.fillRect(x, h.y, h.width, h.height);
+      ctx.fillStyle = `rgba(255, 180, 40, ${0.4 * pulse})`;
+      ctx.fillRect(x + 5, h.y + 5, h.width - 10, h.height - 10);
+      ctx.strokeStyle = '#cc3300';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, h.y, h.width, h.height);
+    } else if (h.type === 'ice_spike') {
+      ctx.fillStyle = '#a0c0d0';
+      ctx.strokeStyle = '#6a8898';
+      ctx.beginPath();
+      ctx.moveTo(x + h.width / 2, h.y + h.height);
+      ctx.lineTo(x, h.y + h.height);
+      ctx.lineTo(x + h.width / 2, h.y);
+      ctx.lineTo(x + h.width, h.y + h.height);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    } else if (h.type === 'steam') {
+      if (!h.active) continue;
+      ctx.fillStyle = 'rgba(200, 200, 220, 0.5)';
+      ctx.fillRect(x, h.y + 40, h.width, 60);
+      ctx.fillStyle = 'rgba(180, 190, 200, 0.6)';
+      ctx.fillRect(x + 5, h.y + 45, h.width - 10, 50);
+    } else if (h.type === 'gear_trap') {
+      const cx = x + h.width / 2;
+      const cy = h.y + h.height / 2;
+      const r = Math.min(h.width, h.height) / 2 - 2;
+      const spin = (h.timer || 0) * 0.15;
+      const teeth = 12;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(spin);
+      ctx.fillStyle = '#c9a227';
+      ctx.strokeStyle = '#8b6914';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let i = 0; i < teeth * 2; i++) {
+        const outer = i % 2 === 0 ? r : r * 0.75;
+        const a = (i / (teeth * 2)) * Math.PI * 2;
+        const px = Math.cos(a) * outer;
+        const py = Math.sin(a) * outer;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#8b6914';
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 0.35, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#5a4510';
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
 }
 
 function checkEnemyCollision() {
@@ -704,10 +1234,29 @@ function checkEnemyCollision() {
 }
 
 function updateBossProjectiles() {
+  bossProjectiles.forEach(p => {
+    if (p.homing) {
+      const dx = (player.x + player.width / 2) - (p.x + p.width / 2);
+      const dy = (player.y + player.height / 2) - (p.y + p.height / 2);
+      const d = Math.hypot(dx, dy) || 1;
+      const turn = 0.06;
+      p.vx += (dx / d) * turn;
+      p.vy += (dy / d) * turn;
+      const spd = Math.hypot(p.vx, p.vy);
+      if (spd > 7) {
+        p.vx = (p.vx / spd) * 7;
+        p.vy = (p.vy / spd) * 7;
+      }
+    }
+  });
   bossProjectiles = bossProjectiles.filter(p => {
+    if (p.projectileType === 'lava_fireball') {
+      p.vy += 0.12;
+    }
     p.x += p.vx;
     p.y += p.vy;
     if (p.x < cameraX - 50 || p.x > cameraX + canvas.width + 50) return false;
+    if (p.projectileType === 'lava_fireball' && p.y > 560) return false;
     if (collides(p, player)) {
       if (player.invincible <= 0) {
         hp -= getDamageTaken();
@@ -797,6 +1346,21 @@ function drawBackground() {
     lavaGlow.addColorStop(0.5, 'rgba(255, 40, 10, 0.15)');
     lavaGlow.addColorStop(1, 'transparent');
     ctx.fillStyle = lavaGlow;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  } else if (currentLevel === 5) {
+    ctx.fillStyle = 'rgba(200, 230, 255, 0.2)';
+    for (let i = 0; i < 30; i++) {
+      const px = (i * 140 - cameraX * 0.05) % (canvas.width + 300) - 50;
+      const py = (i * 47) % canvas.height;
+      ctx.beginPath();
+      ctx.arc(px, py, 2 + (i % 2) * 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  } else if (currentLevel === 6) {
+    const steamGlow = ctx.createRadialGradient(canvas.width * 0.5, canvas.height - 100, 0, canvas.width * 0.5, canvas.height, 350);
+    steamGlow.addColorStop(0, 'rgba(180, 160, 120, 0.12)');
+    steamGlow.addColorStop(1, 'transparent');
+    ctx.fillStyle = steamGlow;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 
@@ -906,6 +1470,72 @@ function drawBackground() {
     ctx.fill();
   }
   ctx.globalAlpha = 1;
+
+  // Background castle (level 3 only, theme-matched, parallax)
+  if (currentLevel === 3) {
+  const castleSpacing = 2200;
+  const castleDepth = 0.08;
+  for (let rep = 0; rep < 3; rep++) {
+    const baseX = (rep * castleSpacing - cameraX * castleDepth) % (canvas.width + 400) - 150;
+    if (baseX + 320 < 0 || baseX > canvas.width + 100) continue;
+    const wall = theme.platformFill || theme.midHills;
+    const dark = theme.farHills || '#2a2a2a';
+    const accent = theme.accent || '#8b6914';
+    const groundY = canvas.height - 40;
+    ctx.fillStyle = dark;
+    ctx.fillRect(baseX, groundY - 180, 320, 220);
+    ctx.fillStyle = wall;
+    ctx.fillRect(baseX + 8, groundY - 172, 304, 212);
+    ctx.strokeStyle = dark;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(baseX + 8, groundY - 172, 304, 212);
+    for (let b = 0; b < 16; b++) {
+      const bx = baseX + 12 + b * 20;
+      ctx.fillRect(bx, groundY - 172, 14, 12);
+    }
+    const towers = [
+      { x: 0, w: 70, h: 220 },
+      { x: 125, w: 70, h: 200 },
+      { x: 250, w: 70, h: 220 }
+    ];
+    towers.forEach((tw, i) => {
+      const tx = baseX + tw.x;
+      ctx.fillStyle = dark;
+      ctx.fillRect(tx, groundY - tw.h, tw.w, tw.h);
+      ctx.fillStyle = wall;
+      ctx.fillRect(tx + 4, groundY - tw.h + 4, tw.w - 8, tw.h - 8);
+      ctx.strokeStyle = dark;
+      ctx.strokeRect(tx + 4, groundY - tw.h + 4, tw.w - 8, tw.h - 8);
+      for (let c = 0; c < 4; c++) {
+        ctx.fillStyle = dark;
+        ctx.fillRect(tx + 8 + c * 16, groundY - tw.h, 12, 10);
+      }
+      if (i === 1) {
+        ctx.fillStyle = accent;
+        ctx.globalAlpha = 0.6 + Math.sin(t * 2) * 0.2;
+        ctx.beginPath();
+        ctx.arc(tx + tw.w / 2, groundY - tw.h + 35, 18, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = dark;
+        ctx.stroke();
+      }
+    });
+    ctx.fillStyle = dark;
+    ctx.beginPath();
+    ctx.moveTo(baseX + 155, groundY - 200);
+    ctx.lineTo(baseX + 175, groundY - 245);
+    ctx.lineTo(baseX + 195, groundY - 200);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = wall;
+    ctx.fillRect(baseX + 135, groundY - 172, 60, 28);
+    ctx.strokeRect(baseX + 135, groundY - 172, 60, 28);
+    ctx.fillStyle = dark;
+    ctx.fillRect(baseX + 143, groundY - 168, 14, 20);
+  }
+  }
 
   // Fog/mist layer (all levels)
   const fogColors = {
@@ -1124,6 +1754,22 @@ function drawPlayer() {
     ctx.arc(cx - 4, y + 17, 2, 0, Math.PI * 2);
     ctx.arc(cx + 4, y + 17, 2, 0, Math.PI * 2);
     ctx.fill();
+
+    if (player.hasArmor) {
+      ctx.fillStyle = flash ? '#fff' : '#4a5c3a';
+      ctx.strokeStyle = flash ? '#fff' : '#2a3520';
+      ctx.lineWidth = 1;
+      ctx.fillRect(cx - 11, y + 26, 22, 18);
+      ctx.strokeRect(cx - 11, y + 26, 22, 18);
+      ctx.fillStyle = flash ? '#fff' : '#3d4a32';
+      ctx.fillRect(cx - 9, y + 30, 6, 8);
+      ctx.fillRect(cx + 3, y + 30, 6, 8);
+      ctx.strokeStyle = flash ? '#fff' : '#2a3520';
+      ctx.strokeRect(cx - 9, y + 30, 6, 8);
+      ctx.strokeRect(cx + 3, y + 30, 6, 8);
+      ctx.fillStyle = flash ? '#fff' : '#5a6b4a';
+      ctx.fillRect(cx - 1, y + 28, 2, 14);
+    }
   } else {
     // Standing pose
     ctx.fillStyle = flash ? '#fff' : '#8b6914';
@@ -1167,6 +1813,22 @@ function drawPlayer() {
     ctx.arc(cx - 5, y + 18, 2.5, 0, Math.PI * 2);
     ctx.arc(cx + 5, y + 18, 2.5, 0, Math.PI * 2);
     ctx.fill();
+
+    if (player.hasArmor) {
+      ctx.fillStyle = flash ? '#fff' : '#4a5c3a';
+      ctx.strokeStyle = flash ? '#fff' : '#2a3520';
+      ctx.lineWidth = 1;
+      ctx.fillRect(cx - 12, y + 30, 24, 22);
+      ctx.strokeRect(cx - 12, y + 30, 24, 22);
+      ctx.fillStyle = flash ? '#fff' : '#3d4a32';
+      ctx.fillRect(cx - 10, y + 36, 7, 10);
+      ctx.fillRect(cx + 3, y + 36, 7, 10);
+      ctx.strokeStyle = flash ? '#fff' : '#2a3520';
+      ctx.strokeRect(cx - 10, y + 36, 7, 10);
+      ctx.strokeRect(cx + 3, y + 36, 7, 10);
+      ctx.fillStyle = flash ? '#fff' : '#5a6b4a';
+      ctx.fillRect(cx - 1, y + 32, 2, 18);
+    }
   }
 
   const gunY = player.crouching ? y + 26 : y + player.height / 2;
@@ -1261,8 +1923,17 @@ function drawBoss(boss) {
   ctx.lineWidth = 1;
   ctx.strokeRect(barX, barY, barW, 10);
 
-  // Boss 1: Dinosaur (T-Rex style)
+  // Boss 1: Dinosaur (T-Rex style) with egg throw animation
   if (boss.bossType === 1) {
+    const cd = boss.shootCooldown || 0;
+    const windUp = cd > 0 && cd < 18;
+    const justThrew = cd >= 88;
+    const headFwd = justThrew ? 18 : windUp ? -6 : 0;
+    const neckFwd = justThrew ? 12 : windUp ? -4 : 0;
+    const headX = x + 100 + headFwd;
+    const headY = by + 20;
+    const jawOpen = windUp || justThrew;
+
     ctx.fillStyle = '#5a7a4a';
     ctx.strokeStyle = '#3a5a2a';
     ctx.lineWidth = 2;
@@ -1276,32 +1947,52 @@ function drawBoss(boss) {
     ctx.fillRect(x + 85, by + 85, 18, 25);
     ctx.strokeRect(x + 40, by + 85, 18, 25);
     ctx.strokeRect(x + 85, by + 85, 18, 25);
-    // Long neck
+    // Long neck (curve shifts for wind-up / throw)
     ctx.beginPath();
     ctx.moveTo(x + 85, by + 45);
-    ctx.quadraticCurveTo(x + 115, by - 10, x + 105, by + 25);
+    ctx.quadraticCurveTo(x + 115 + neckFwd, by - 10, headX - 5, headY + 5);
     ctx.lineTo(x + 95, by + 50);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    // Head with jaw
+    // Head
     ctx.fillStyle = '#6a8a5a';
     ctx.beginPath();
-    ctx.arc(x + 100, by + 20, 22, 0, Math.PI * 2);
+    ctx.arc(headX, headY, 22, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
+    // Jaw (open when winding up or just threw)
     ctx.fillStyle = '#4a6a3a';
-    ctx.beginPath();
-    ctx.moveTo(x + 115, by + 25);
-    ctx.lineTo(x + 135, by + 35);
-    ctx.lineTo(x + 118, by + 32);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+    if (jawOpen) {
+      ctx.beginPath();
+      ctx.moveTo(headX + 12, headY + 5);
+      ctx.lineTo(headX + 32 + (justThrew ? 8 : 0), headY + 18 + (justThrew ? 6 : 0));
+      ctx.lineTo(headX + 32 + (justThrew ? 8 : 0), headY + 28);
+      ctx.lineTo(headX + 15, headY + 12);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      if (windUp) {
+        ctx.fillStyle = '#e8e0c8';
+        ctx.strokeStyle = '#8b7355';
+        ctx.beginPath();
+        ctx.ellipse(headX + 26, headY + 18, 8, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(headX + 15, headY + 25);
+      ctx.lineTo(headX + 35, headY + 35);
+      ctx.lineTo(headX + 18, headY + 32);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
     // Eye
     ctx.fillStyle = '#1a0a0a';
     ctx.beginPath();
-    ctx.arc(x + 95, by + 15, 5, 0, Math.PI * 2);
+    ctx.arc(headX - 5, headY - 5, 5, 0, Math.PI * 2);
     ctx.fill();
     // Tail
     ctx.fillStyle = '#5a7a4a';
@@ -1434,6 +2125,92 @@ function drawBoss(boss) {
     ctx.fillRect(x + 40, by + 74, 4, 4);
     ctx.fillRect(x + 46, by + 74, 4, 4);
   }
+  // Boss 5: Ice Yeti
+  else if (boss.bossType === 5) {
+    ctx.fillStyle = '#8aa8b8';
+    ctx.strokeStyle = '#5a7888';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(x + 55, by + 75, 45, 38, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#6a8898';
+    ctx.fillRect(x + 25, by + 85, 22, 28);
+    ctx.fillRect(x + 78, by + 85, 22, 28);
+    ctx.strokeRect(x + 25, by + 85, 22, 28);
+    ctx.strokeRect(x + 78, by + 85, 22, 28);
+    ctx.fillStyle = '#9ab8c8';
+    ctx.beginPath();
+    ctx.ellipse(x + 55, by + 35, 35, 32, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#7a98a8';
+    ctx.beginPath();
+    ctx.ellipse(x + 55, by + 18, 28, 22, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#1a0a0a';
+    ctx.beginPath();
+    ctx.arc(x + 45, by + 14, 6, 0, Math.PI * 2);
+    ctx.arc(x + 65, by + 14, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#e0f0ff';
+    ctx.beginPath();
+    ctx.arc(x + 44, by + 13, 2, 0, Math.PI * 2);
+    ctx.arc(x + 64, by + 13, 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(180, 220, 255, 0.9)';
+    ctx.beginPath();
+    ctx.moveTo(x + 75, by + 22);
+    ctx.lineTo(x + 95, by + 28);
+    ctx.lineTo(x + 82, by + 38);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  }
+  // Boss 6: Clockwork King
+  else if (boss.bossType === 6) {
+    ctx.fillStyle = '#5a4a35';
+    ctx.strokeStyle = '#8b6914';
+    ctx.lineWidth = 2;
+    ctx.fillRect(x + 30, by + 50, 60, 70);
+    ctx.strokeRect(x + 30, by + 50, 60, 70);
+    ctx.fillStyle = '#4a3a28';
+    ctx.fillRect(x + 35, by + 55, 50, 25);
+    ctx.strokeRect(x + 35, by + 55, 50, 25);
+    ctx.fillStyle = '#6a5a45';
+    ctx.beginPath();
+    ctx.arc(x + 60, by + 45, 28, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#8b6914';
+    ctx.beginPath();
+    ctx.arc(x + 60, by + 45, 20, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = '#3a2a18';
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2 + Date.now() * 0.002;
+      const gx = x + 60 + Math.cos(a) * 14;
+      const gy = by + 45 + Math.sin(a) * 14;
+      ctx.beginPath();
+      ctx.moveTo(x + 60, by + 45);
+      ctx.lineTo(gx, gy);
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#1a0a0a';
+    ctx.beginPath();
+    ctx.arc(x + 52, by + 40, 5, 0, Math.PI * 2);
+    ctx.arc(x + 68, by + 40, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#c9a227';
+    ctx.fillRect(x + 25, by + 75, 18, 45);
+    ctx.fillRect(x + 77, by + 75, 18, 45);
+    ctx.strokeRect(x + 25, by + 75, 18, 45);
+    ctx.strokeRect(x + 77, by + 75, 18, 45);
+    ctx.fillStyle = '#4a3a28';
+    ctx.fillRect(x + 48, by + 95, 24, 25);
+    ctx.strokeRect(x + 48, by + 95, 24, 25);
+  }
 }
 
 function drawBossProjectiles() {
@@ -1470,6 +2247,139 @@ function drawBossProjectiles() {
       ctx.strokeStyle = '#1a0a0a';
       ctx.stroke();
       ctx.restore();
+    } else if (p.projectileType === 'egg') {
+      const ex = x + p.width / 2;
+      const ey = p.y + p.height / 2;
+      ctx.fillStyle = '#e8e0c8';
+      ctx.strokeStyle = '#8b7355';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(ex, ey, p.width / 2, p.height / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#d4c8a8';
+      ctx.beginPath();
+      ctx.ellipse(ex, ey - 1, (p.width / 2) * 0.6, (p.height / 2) * 0.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (p.projectileType === 'ghost') {
+      const gx = x + p.width / 2;
+      const gy = p.y + p.height / 2;
+      const wobble = Math.sin(Date.now() * 0.008 + p.x * 0.02) * 3;
+      ctx.save();
+      ctx.translate(gx + wobble, gy);
+      ctx.globalAlpha = 0.85;
+      ctx.fillStyle = 'rgba(220, 230, 255, 0.9)';
+      ctx.strokeStyle = 'rgba(180, 190, 220, 0.6)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(0, -2, 7, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-6, 6);
+      ctx.quadraticCurveTo(-8, 12, -4, 14);
+      ctx.quadraticCurveTo(0, 16, 4, 14);
+      ctx.quadraticCurveTo(8, 12, 6, 6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(120, 130, 180, 0.8)';
+      ctx.beginPath();
+      ctx.arc(-2, -4, 2.5, 0, Math.PI * 2);
+      ctx.arc(2, -4, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    } else if (p.projectileType === 'ink') {
+      const ix = x + p.width / 2;
+      const iy = p.y + p.height / 2;
+      ctx.fillStyle = 'rgba(30, 20, 50, 0.95)';
+      ctx.strokeStyle = 'rgba(50, 35, 80, 0.9)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(ix, iy, p.width / 2 - 1, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(60, 40, 90, 0.6)';
+      ctx.beginPath();
+      ctx.arc(ix - 2, iy - 2, 4, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (p.projectileType === 'coin') {
+      const cx = x + p.width / 2;
+      const cy = p.y + p.height / 2;
+      const spin = (p.spin || 0.1) * Date.now() * 0.001;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(spin);
+      ctx.fillStyle = '#c9a227';
+      ctx.strokeStyle = '#8b6914';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 6, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#ffd700';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 4, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    } else if (p.projectileType === 'iceshard') {
+      const ix = x + p.width / 2;
+      const iy = p.y + p.height / 2;
+      ctx.save();
+      ctx.translate(ix, iy);
+      ctx.rotate(Math.atan2(p.vy, p.vx));
+      ctx.fillStyle = 'rgba(180, 220, 255, 0.95)';
+      ctx.strokeStyle = 'rgba(120, 180, 220, 0.9)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(6, 0);
+      ctx.lineTo(-4, -4);
+      ctx.lineTo(-4, 4);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    } else if (p.projectileType === 'gear') {
+      const gx = x + p.width / 2;
+      const gy = p.y + p.height / 2;
+      const spin = (p.spin || 0.1) * Date.now() * 0.001;
+      ctx.save();
+      ctx.translate(gx, gy);
+      ctx.rotate(spin);
+      ctx.fillStyle = '#5a4a35';
+      ctx.strokeStyle = '#8b6914';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(0, 0, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * 5, Math.sin(a) * 5);
+        ctx.lineTo(Math.cos(a + 0.5) * 9, Math.sin(a + 0.5) * 9);
+        ctx.lineTo(Math.cos(a + 1) * 5, Math.sin(a + 1) * 5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+      ctx.restore();
+    } else if (p.projectileType === 'lava_fireball') {
+      const fx = x + p.width / 2;
+      const fy = p.y + p.height / 2;
+      const flicker = 0.85 + Math.sin(Date.now() * 0.02 + p.x) * 0.15;
+      ctx.fillStyle = `rgba(255, 120, 30, ${flicker})`;
+      ctx.beginPath();
+      ctx.arc(fx, fy, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 60, 10, 0.9)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = `rgba(255, 200, 80, ${flicker * 0.8})`;
+      ctx.beginPath();
+      ctx.arc(fx, fy, 4, 0, Math.PI * 2);
+      ctx.fill();
     } else {
       const colors = ['#b8860b', '#5a8a3a', '#6a6aff', '#cc4422'];
       ctx.fillStyle = colors[(currentLevel - 1) % 4];
@@ -1485,8 +2395,8 @@ function drawBossProjectiles() {
 
 function drawEnemies() {
   const theme = LEVEL_THEMES[currentLevel] || LEVEL_THEMES[1];
-  const enemyColor = currentLevel === 1 ? '#8b3a3a' : currentLevel === 2 ? '#4a6b3a' : currentLevel === 3 ? '#4a4a6a' : '#8b4a3a';
-  const eyeColor = currentLevel === 1 ? '#ff6b6b' : currentLevel === 2 ? '#7aaf5a' : currentLevel === 3 ? '#6a6a9a' : '#c05050';
+  const enemyColor = currentLevel === 1 ? '#8b3a3a' : currentLevel === 2 ? '#4a6b3a' : currentLevel === 3 ? '#4a4a6a' : currentLevel === 5 ? '#6a8898' : currentLevel === 6 ? '#5a4a35' : '#8b4a3a';
+  const eyeColor = currentLevel === 1 ? '#ff6b6b' : currentLevel === 2 ? '#7aaf5a' : currentLevel === 3 ? '#6a6a9a' : currentLevel === 5 ? '#a0d0e8' : currentLevel === 6 ? '#c9a227' : '#c05050';
 
   for (const e of enemies) {
     if (e.health <= 0) continue;
@@ -1791,14 +2701,14 @@ function openStore() {
   document.getElementById('storePanel').classList.add('visible');
   renderStore();
   const btn = document.getElementById('storeContinue');
-  btn.textContent = currentLevel < 4 ? 'Continue to Next Level' : 'Complete Adventure';
+  btn.textContent = currentLevel < 6 ? 'Continue to Next Level' : 'Complete Adventure';
   btn.onclick = closeStore;
 }
 
 function closeStore() {
   document.getElementById('storePanel').classList.remove('visible');
   storeOpen = false;
-  if (currentLevel < 4) {
+  if (currentLevel < 6) {
     loadLevel(currentLevel + 1);
   } else {
     victory = true;
@@ -1850,12 +2760,15 @@ function gameLoop() {
     updateEnemies();
     updateBossProjectiles();
     updateCamera();
+    updateHazards();
     checkEnemyCollision();
+    checkHazardCollision();
     checkLevelComplete();
   }
 
   drawBackground();
   drawPlatforms();
+  drawHazards();
   drawPickups();
   drawBullets();
   drawBossProjectiles();
