@@ -21,7 +21,20 @@
       <button class="store-continue" id="storeContinue">Continue to Next Level</button>
     </div>
     <div class="controls-hint">
-      <p>← → Move &nbsp;|&nbsp; ↑ Jump &nbsp;|&nbsp; S Crouch &nbsp;|&nbsp; Z or Space Shoot</p>
+      <p>← → Move &nbsp;|&nbsp; ↑ Jump &nbsp;|&nbsp; S Crouch &nbsp;|&nbsp; Z, Space or LMB Shoot</p>
+    </div>
+    <div id="highScoreOverlay" class="high-score-overlay" style="display: none;">
+      <div id="highScoreEnter" class="high-score-box" style="display: none;">
+        <h2>HIGH SCORE!</h2>
+        <p>Enter your initials</p>
+        <input type="text" id="initialsInput" maxlength="3" placeholder="AAA" autocomplete="off" />
+        <button id="initialsSubmit">OK</button>
+      </div>
+      <div id="highScoreList" class="high-score-box" style="display: none;">
+        <h2>HIGH SCORES</h2>
+        <ol id="highScoreTable"></ol>
+        <p class="refresh-hint">Refresh to play again</p>
+      </div>
     </div>
   </div>
   <script src="game.js"></script>
