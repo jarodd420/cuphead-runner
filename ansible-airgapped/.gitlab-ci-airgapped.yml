@@ -1,0 +1,22 @@
+# GitLab CI job for Ansible on air-gapped runners
+# Use the repackaged image built from ./Dockerfile (no network needed at job runtime).
+
+.default_ansible_job:
+  image: ansible-airgapped:latest
+  before_script:
+    - ansible --version
+    - |
+      mkdir -p ~/.ssh
+      cat <<EOF > ~/.ssh/config
+      Host *
+        StrictHostKeyChecking no
+        UserKnownHostsFile=/dev/null
+      EOF
+      chmod 600 ~/.ssh/config
+
+# Example usage:
+# my_ansible_job:
+#   extends: .default_ansible_job
+#   stage: ansible_build
+#   script:
+#     - ansible-playbook -i inventory playbook.yml

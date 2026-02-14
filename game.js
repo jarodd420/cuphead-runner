@@ -52,6 +52,150 @@ let hazards = [];
 let walkerSpawnTimer = 0;
 const WALKER_SPAWN_INTERVAL = 120;
 
+// ——— Audio (Web Audio API: Zelda-style theme + gun sound) ———
+let audioCtx = null;
+let musicMasterGain = null;
+let musicStarted = false;
+let musicLoopTimeout = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+// Old-school Zelda-style: square waves, heroic melody + bass, looping
+function startThemeMusic() {
+  if (musicStarted) return;
+  try {
+    const ctx = getAudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+    musicStarted = true;
+
+    musicMasterGain = ctx.createGain();
+    musicMasterGain.gain.setValueAtTime(0, ctx.currentTime);
+    musicMasterGain.gain.linearRampToValueAtTime(0.28, ctx.currentTime + 0.5);
+    musicMasterGain.connect(ctx.destination);
+
+    // E major melody (Zelda overworld feel) — quarter = 0.2s (~120 BPM)
+    const quarter = 0.2;
+    const melody = [
+      { f: 329.63, d: quarter },   // E4
+      { f: 329.63, d: quarter },
+      { f: 415.30, d: quarter },   // G#4
+      { f: 329.63, d: quarter },
+      { f: 493.88, d: quarter * 2 }, // B4
+      { f: 0, d: quarter },
+      { f: 493.88, d: quarter },   // B4
+      { f: 440, d: quarter },      // A4
+      { f: 369.99, d: quarter },   // F#4
+      { f: 329.63, d: quarter * 2 }, // E4
+      { f: 0, d: quarter },
+      { f: 246.94, d: quarter },   // B3
+      { f: 246.94, d: quarter },
+      { f: 329.63, d: quarter * 2 },
+      { f: 246.94, d: quarter },
+      { f: 207.65, d: quarter },   // G#3
+      { f: 246.94, d: quarter * 2 },
+    ];
+    const bass = [
+      { f: 82.41, d: quarter * 2 },  // E2
+      { f: 82.41, d: quarter * 2 },
+      { f: 98, d: quarter * 2 },    // G2
+      { f: 82.41, d: quarter * 2 },
+      { f: 123.47, d: quarter * 2 }, // E3
+      { f: 82.41, d: quarter * 2 },
+      { f: 123.47, d: quarter * 2 },
+      { f: 82.41, d: quarter * 2 },
+    ];
+
+    function scheduleLoop(startTime) {
+      const melOsc = ctx.createOscillator();
+      melOsc.type = 'square';
+      melOsc.frequency.setValueAtTime(329.63, startTime);
+      const melGain = ctx.createGain();
+      melGain.gain.setValueAtTime(0, startTime);
+      melOsc.connect(melGain);
+      melGain.connect(musicMasterGain);
+      melOsc.start(startTime);
+      let t = startTime;
+      melody.forEach(({ f, d }) => {
+        if (f > 0) {
+          melOsc.frequency.setValueAtTime(f, t);
+          melGain.gain.setValueAtTime(0.22, t);
+        }
+        melGain.gain.setValueAtTime(0, t + d - 0.01);
+        t += d;
+      });
+      melOsc.stop(t + 0.5);
+
+      const bassOsc = ctx.createOscillator();
+      bassOsc.type = 'square';
+      bassOsc.frequency.setValueAtTime(82.41, startTime);
+      const bassGain = ctx.createGain();
+      bassGain.gain.setValueAtTime(0, startTime);
+      bassOsc.connect(bassGain);
+      bassGain.connect(musicMasterGain);
+      bassOsc.start(startTime);
+      t = startTime;
+      bass.forEach(({ f, d }) => {
+        bassOsc.frequency.setValueAtTime(f, t);
+        bassGain.gain.setValueAtTime(0.2, t);
+        bassGain.gain.setValueAtTime(0, t + d - 0.01);
+        t += d;
+      });
+      bassOsc.stop(t + 0.5);
+
+      const duration = melody.reduce((a, n) => a + n.d, 0);
+      musicLoopTimeout = setTimeout(() => {
+        if (!musicStarted || !audioCtx) return;
+        scheduleLoop(audioCtx.currentTime);
+      }, duration * 1000);
+    }
+    scheduleLoop(ctx.currentTime);
+  } catch (e) {
+    console.warn('Theme music could not start:', e);
+  }
+}
+
+function stopThemeMusic() {
+  if (!musicStarted || !audioCtx) return;
+  try {
+    if (musicLoopTimeout) clearTimeout(musicLoopTimeout);
+    musicLoopTimeout = null;
+    if (musicMasterGain) {
+      musicMasterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
+    }
+    musicMasterGain = null;
+    musicStarted = false;
+  } catch (e) {}
+}
+
+function ensureMusicContext() {
+  const ctx = getAudioCtx();
+  if (ctx.state === 'suspended') ctx.resume();
+  if (!musicStarted && gameRunning) startThemeMusic();
+}
+
+// Gun shot: short 8-bit style "pew" (square wave, quick pitch drop)
+function playGunSound() {
+  try {
+    const ctx = getAudioCtx();
+    if (ctx.state === 'suspended') return;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(520, now);
+    osc.frequency.exponentialRampToValueAtTime(180, now + 0.06);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.2, now);
+    g.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.07);
+  } catch (e) {}
+}
+
 // Level themes - expanded for richer visual variety
 const LEVEL_THEMES = {
   1: { // Desert temple - golden sands, pyramids, palms
@@ -520,15 +664,26 @@ function loadLevel(levelNum) {
       if (i % 3 === 0 && i > 5) pickups.push({ x: p.x + 18, y: p.y - 108, width: 22, height: 22, type: 'gold', value: 32 });
       if (i % 4 === 1 && i > 7) pickups.push({ x: p.x + 22, y: p.y - 90, width: 20, height: 20, type: 'star', value: 350 });
     });
+    const trackYs = [groundY - 75, groundY - 115, groundY - 155];
+    const trackSegmentLen = 380;
     for (let i = 0; i < 12; i++) {
+      const trackIndex = i % 3;
+      const seg = Math.floor(i / 3);
+      const trackXMin = 280 + seg * trackSegmentLen;
+      const trackXMax = trackXMin + trackSegmentLen - 80;
+      const startX = (trackXMin + trackXMax) / 2;
       hazards.push({
-        x: 420 + i * 310 + (Math.random() - 0.5) * 40,
-        y: groundY - 35,
+        x: startX,
+        y: trackYs[trackIndex],
         width: 50,
         height: 50,
         type: 'gear_trap',
         timer: Math.floor(Math.random() * 80),
-        active: false
+        active: false,
+        trackXMin,
+        trackXMax,
+        trackY: trackYs[trackIndex],
+        vx: Math.random() > 0.5 ? 1.4 : -1.4
       });
     }
   }
@@ -591,6 +746,7 @@ function updatePlayer() {
         gunType: player.gun
       });
     }
+    playGunSound();
     player.shootCooldown = gun.cooldown;
   }
 
@@ -959,6 +1115,13 @@ function updateHazards() {
       h.timer = (h.timer || 0) + 1;
       if (h.timer > 120) h.timer = 0;
       h.active = h.timer > 45 && h.timer < 95;
+      if (h.trackXMin != null && h.trackXMax != null) {
+        h.vx = h.vx ?? 1.4;
+        h.x += h.vx;
+        if (h.x <= h.trackXMin) { h.x = h.trackXMin; h.vx = -h.vx; }
+        if (h.x >= h.trackXMax) { h.x = h.trackXMax; h.vx = -h.vx; }
+        h.y = h.trackY;
+      }
     } else if (h.type === 'lava') {
       h.timer = (h.timer || 0) + 1;
       h.pulse = 0.8 + Math.sin(h.timer * 0.15) * 0.2;
@@ -1024,6 +1187,26 @@ function checkHazardCollision() {
 
 function drawHazards() {
   const groundY = 480;
+  if (currentLevel === 6) {
+    const trackYs = [groundY - 75, groundY - 115, groundY - 155];
+    ctx.strokeStyle = '#4a3d28';
+    ctx.lineWidth = 10;
+    ctx.lineCap = 'round';
+    for (const ty of trackYs) {
+      ctx.beginPath();
+      ctx.moveTo(-cameraX, ty);
+      ctx.lineTo(WORLD_WIDTH - cameraX, ty);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-cameraX, ty + 14);
+      ctx.lineTo(WORLD_WIDTH - cameraX, ty + 14);
+      ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(60, 50, 35, 0.5)';
+    for (const ty of trackYs) {
+      ctx.fillRect(-cameraX, ty + 2, WORLD_WIDTH + 100, 10);
+    }
+  }
   for (const h of hazards) {
     const x = h.x - cameraX;
     if (x + h.width < -50 || x > canvas.width + 50) continue;
@@ -2718,6 +2901,7 @@ function closeStore() {
 
 const keys = {};
 document.addEventListener('keydown', e => {
+  ensureMusicContext();
   const k = e.key === ' ' ? ' ' : e.key.toLowerCase();
   keys[k] = true;
   if (e.key === 'Space') keys[' '] = true;
@@ -2729,6 +2913,7 @@ document.addEventListener('keyup', e => {
   if (e.key === 'Space') keys[' '] = false;
 });
 canvas.addEventListener('mousedown', e => {
+  ensureMusicContext();
   if (e.button === 0) keys['mouse0'] = true;
   e.preventDefault();
 });
@@ -2739,6 +2924,7 @@ canvas.addEventListener('mouseleave', () => { keys['mouse0'] = false; });
 
 function gameLoop() {
   if (!gameRunning) {
+    stopThemeMusic();
     onGameEnd();
     ctx.fillStyle = 'rgba(0,0,0,0.7)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);

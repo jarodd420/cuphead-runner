@@ -1,0 +1,34 @@
+# Build ansible-airgapped image and upload tarball as artifact.
+# Run manually from Actions tab, or on push when ansible-airgapped/ changes.
+
+name: Build Ansible air-gapped image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths:
+      - 'ansible-airgapped/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          cd ansible-airgapped
+          docker build -t ansible-airgapped:latest .
+
+      - name: Save tarball
+        run: |
+          cd ansible-airgapped
+          docker save ansible-airgapped:latest -o ansible-airgapped.tar
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ansible-airgapped-tar
+          path: ansible-airgapped/ansible-airgapped.tar
