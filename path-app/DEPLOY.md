@@ -29,6 +29,27 @@ The repo includes a **Blueprint** so you can go from localhost to a live URL in 
 
 **Note:** On the free tier the service may spin down when idle; the first request after idle can take a minute to respond.
 
+**If Render asks for payment information:** Render sometimes requires a card on file even for free tier. Below are options that don’t.
+
+---
+
+## No credit card required
+
+### Option A: Railway (no card, then ~$1/month free credit)
+
+1. Sign up at [Railway](https://railway.app) with GitHub (no credit card).
+2. **New Project** → **Deploy from GitHub** → select this repo.
+3. Set **Root Directory** to `path-app`. Add a **PostgreSQL** plugin (same project).
+4. In the web service, set env vars: **Variables** → add `DATABASE_URL` (use “Add reference” and pick the Postgres `DATABASE_URL`), `SESSION_SECRET` (generate a long random string), `NODE_ENV=production`, `USE_HTTPS=1`.
+5. **Settings** → **Build**: Build Command `npm install`, Start Command `npm start`. Add a **Deploy** hook or run once manually: in a shell with `DATABASE_URL` set, from `path-app` run `npm run schema`.
+6. Deploy. Railway gives a small free trial; after that you get about $1/month free credit (usage beyond that would need a card).
+
+### Option B: Glitch + Supabase (fully free, no card)
+
+**→ Full step-by-step guide: [GLITCH-SUPABASE-SETUP.md](GLITCH-SUPABASE-SETUP.md)**
+
+Summary: (1) Create a free Supabase project, run `path-app/db/schema.sql` in SQL Editor, copy the DB connection string. (2) On Glitch, **New project → Import from GitHub** with this repo; the repo root `package.json` is set up to install and run the app from `path-app`. (3) In Glitch **Tools → Environment** add `DATABASE_URL`, `SESSION_SECRET`, `NODE_ENV`, `USE_HTTPS`. (4) Open the Glitch live URL. No credit card needed.
+
 ---
 
 ## 1. PostgreSQL (required for scaling)

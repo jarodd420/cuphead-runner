@@ -1,0 +1,9 @@
+{
+  "name": "cuphead-runner",
+  "private": true,
+  "description": "Repo root; Fam app lives in path-app. Used by Glitch to run the app from path-app.",
+  "scripts": {
+    "postinstall": "cd path-app && npm install",
+    "start": "cd path-app && npm start"
+  }
+}
