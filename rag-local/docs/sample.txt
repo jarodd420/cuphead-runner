@@ -1,0 +1,6 @@
+This is a sample document for your local RAG. Replace this file (and add more .txt, .md, or .pdf files) with your own content. The RAG will embed these documents and use them to answer your questions.
+
+Quick tips:
+- Add project notes, meeting notes, or documentation as plain text or Markdown.
+- PDFs in the docs folder are also indexed.
+- After adding new files, run with --rebuild to refresh the index.

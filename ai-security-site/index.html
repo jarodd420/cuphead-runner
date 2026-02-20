@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aegis AI Security — Supply Chain &amp; Pipeline Security for AI</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="/" class="logo">Aegis AI Security</a>
+      <nav>
+        <a href="#solutions">Solutions</a>
+        <a href="#delivery-llm-gates">Delivery</a>
+        <a href="#why">Why</a>
+        <a href="#how">How</a>
+        <a href="#why-us">Why Us</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <h1>Secure the AI pipeline.<br>Know what’s in your stack.</h1>
+        <p class="hero-tagline">We help platform and security teams get visibility, control, and governance over AI assets and LLM applications—without needing to be ML experts.</p>
+        <a href="#contact" class="btn btn-primary">Get in touch</a>
+      </div>
+    </section>
+
+    <section id="solutions" class="solutions">
+      <div class="wrap">
+        <h2 class="section-title">Solutions</h2>
+        <div class="solution-cards">
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">⊞</div>
+            <h3>AI Supply Chain &amp; Asset Visibility</h3>
+            <p>Discover and catalog every AI asset across your organization: models, datasets, and third-party AI services. Map ownership, environments, and risk so security and compliance have a single source of truth.</p>
+            <ul>
+              <li>Discovery and inventory of models, datasets, and API usage</li>
+              <li>AI SBOM and risk view for audits and governance</li>
+              <li>Integration with existing DevSecOps and GRC tooling</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-icon" aria-hidden="true">⟩</div>
+            <h3>Security Gates for LLM Apps in CI/CD</h3>
+            <p>Shift left: scan and test LLM-powered applications before they reach production. Catch prompt injection risks, data leakage, and policy violations in the pipeline—the same way you run SAST and DAST today.</p>
+            <ul>
+              <li>Prompt-injection and output-policy checks in the pipeline</li>
+              <li>Guardrails and abuse detection before deploy</li>
+              <li>Fits into your existing CI/CD and platform workflows</li>
+            </ul>
+            <p class="card-cta"><a href="#delivery-llm-gates">How we deliver this →</a></p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="delivery-llm-gates" class="delivery">
+      <div class="wrap">
+        <h2 class="section-title">How we deliver: Security gates for LLM apps</h2>
+        <p class="section-intro">When you engage us to add security gates for LLM applications in your CI/CD pipeline, we follow a clear process so you get a working, maintainable solution that fits your stack and ownership model.</p>
+        <ol class="delivery-steps">
+          <li>
+            <strong>Discovery &amp; scoping</strong>
+            <p>We identify which LLM-powered applications are in scope (internal tools, customer-facing apps, APIs), where they live in your pipeline (repos, branches, CI system), and what you care about most: prompt injection, PII or data leakage, output policy, abuse/misuse. We agree on success criteria, ownership (who maintains the gates), and timeline.</p>
+          </li>
+          <li>
+            <strong>Baseline &amp; threat model</strong>
+            <p>We map how prompts and model outputs flow through your apps—entry points, trust boundaries, and data sensitivity. We define which checks are required for this environment so gates are relevant, not noisy.</p>
+          </li>
+          <li>
+            <strong>Gate design</strong>
+            <p>We define the concrete gates: e.g. prompt-injection tests (static and, where useful, dynamic), output-policy checks (content, format, PII exposure), and abuse/rate signals. We decide what runs where (CI job, pre-merge, pre-deploy) and whether we use existing tools, scripts, or lightweight custom checks so everything fits your workflow.</p>
+          </li>
+          <li>
+            <strong>Integration into your CI/CD</strong>
+            <p>We implement the gates in your pipeline (e.g. GitHub Actions, GitLab CI, Jenkins): add jobs or steps, fail the build on policy violation, and surface results where your team already looks (PR checks, tickets, or Slack). No parallel process—gates run as part of how you already ship.</p>
+          </li>
+          <li>
+            <strong>Policy &amp; thresholds</strong>
+            <p>We help you set policy (what fails the build vs. warning) and tune thresholds so security is enforced without blocking velocity unnecessarily. We document the policy and how to update it so your platform or security team can own it going forward.</p>
+          </li>
+          <li>
+            <strong>Validate &amp; handover</strong>
+            <p>We run through real scenarios, document runbooks and ownership, and hand the solution over to your team. Optional: we can stay on for tuning, new apps, or ongoing support as you expand use of LLMs.</p>
+          </li>
+        </ol>
+        <p class="delivery-note">Outcome: security and policy checks that run automatically in your pipeline, clear ownership, and documentation so your team can maintain and extend the gates without us.</p>
+      </div>
+    </section>
+
+    <section id="why" class="why">
+      <div class="wrap">
+        <h2 class="section-title">Why we do it</h2>
+        <p class="section-intro">AI is shipping faster than most organizations can see it. Models, datasets, and LLM-powered apps are already in your pipeline and in production—often without a clear inventory, ownership, or security gate.</p>
+        <p>We believe the same discipline that made traditional software manageable—supply chain visibility, shift-left security, and governance that lives in the pipeline—should apply to AI. Without it, risk grows in the dark: unknown assets, ungoverned APIs, and applications that reach users before security and compliance have a say.</p>
+        <p>We exist so platform and security teams can get in front of that. Not by slowing innovation, but by making AI as visible, controllable, and auditable as the rest of your stack.</p>
+      </div>
+    </section>
+
+    <section id="how" class="how">
+      <div class="wrap">
+        <h2 class="section-title">How we do it</h2>
+        <p class="section-intro">We start with visibility, then layer on control. We plug into how you already work instead of asking you to adopt a parallel process.</p>
+        <ol class="how-steps">
+          <li><strong>Discover</strong> — We help you find every AI asset: models, datasets, and third-party AI services in use across environments. No guesswork; one source of truth.</li>
+          <li><strong>Inventory &amp; own</strong> — We map each asset to owners and contexts (prod, staging, team, compliance scope). You get an AI-ready register that fits your existing governance.</li>
+          <li><strong>Risk view</strong> — We tie assets to risk: data sensitivity, regulatory exposure, supply chain provenance. So you can prioritize and report with evidence.</li>
+          <li><strong>Gates in the pipeline</strong> — We add security and policy checks where AI is built and deployed: prompt-injection and output-policy tests, guardrails, and abuse detection in CI/CD. Same shift-left mindset you use for code.</li>
+        </ol>
+        <p>We integrate with your existing DevSecOps and GRC tooling. We work alongside your platform and security teams—we don’t replace them. The goal is to make AI a first-class part of your security and compliance story, not a blind spot.</p>
+      </div>
+    </section>
+
+    <section id="why-us" class="why-us">
+      <div class="wrap">
+        <h2 class="section-title">Why Aegis</h2>
+        <p class="section-intro">We speak your language: DevSecOps, risk, and infrastructure. Our team brings CISSP-level governance and hands-on experience securing pipelines and platforms—applied to the AI layer.</p>
+        <ul class="differentiators">
+          <li><strong>Pipeline-native</strong> — Security and governance built into how you ship, not bolted on after.</li>
+          <li><strong>Asset-first</strong> — Start with visibility and inventory; control and policy follow.</li>
+          <li><strong>Platform-aligned</strong> — Built for platform and security teams who need to support AI without becoming ML researchers.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <div class="wrap">
+        <h2 class="section-title">Contact</h2>
+        <p>Ready to get visibility and control over your AI supply chain and LLM applications?</p>
+        <p class="contact-email"><a href="mailto:contact@aegis-ai-security.example.com">contact@aegis-ai-security.example.com</a></p>
+        <p class="contact-note">Replace with your real email and domain when you’re ready to go live.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© <span id="year"></span> Aegis AI Security. All rights reserved.</p>
+    </div>
+  </footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

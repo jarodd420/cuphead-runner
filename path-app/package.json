@@ -1,0 +1,21 @@
+{
+  "name": "path-app",
+  "version": "1.0.0",
+  "description": "Path-like timeline app for close circles, mobile-first",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node scripts/seed.js",
+    "schema": "node scripts/run-schema.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-pg-simple": "^10.0.0",
+    "dotenv": "^17.3.1",
+    "express": "^4.21.0",
+    "express-session": "^1.18.0",
+    "multer": "^2.0.2",
+    "pg": "^8.18.0"
+  }
+}
