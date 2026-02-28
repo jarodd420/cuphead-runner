@@ -844,6 +844,8 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .profile-banner-time {
@@ -926,6 +928,8 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .moment-avatar .moment-avatar-initial {

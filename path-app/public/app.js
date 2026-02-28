@@ -313,8 +313,56 @@ function readFileAsDataUrl(file) {
   });
 }
 
+const COMPRESS_MAX_SIZE = 1200;
+const COMPRESS_QUALITY = 0.85;
+const COMPRESS_MIN_BYTES = 300000;
+
+function compressImageFile(file) {
+  if (!file || !file.type.startsWith('image/')) return Promise.resolve(file);
+  if (file.size < COMPRESS_MIN_BYTES) return Promise.resolve(file);
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let w = img.naturalWidth || img.width;
+      let h = img.naturalHeight || img.height;
+      if (!w || !h) { resolve(file); return; }
+      if (w <= COMPRESS_MAX_SIZE && h <= COMPRESS_MAX_SIZE) { resolve(file); return; }
+      if (w > h) {
+        h = Math.round((h * COMPRESS_MAX_SIZE) / w);
+        w = COMPRESS_MAX_SIZE;
+      } else {
+        w = Math.round((w * COMPRESS_MAX_SIZE) / h);
+        h = COMPRESS_MAX_SIZE;
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) { resolve(file); return; }
+      ctx.drawImage(img, 0, 0, w, h);
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) { resolve(file); return; }
+          const name = (file.name || 'photo').replace(/\.[^.]+$/i, '') + '.jpg';
+          resolve(new File([blob], name, { type: 'image/jpeg', lastModified: Date.now() }));
+        },
+        'image/jpeg',
+        COMPRESS_QUALITY
+      );
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve(file);
+    };
+    img.src = url;
+  });
+}
+
 async function fileToImageUrl(file) {
-  const url = await uploadImageFile(file);
+  const toUpload = await compressImageFile(file);
+  const url = await uploadImageFile(toUpload);
   if (url) return url;
   return readFileAsDataUrl(file);
 }
@@ -339,25 +387,34 @@ function setProfilePreviewOnly(coverUrl, avatarUrl) {
 function setupProfilePhotoFromAlbum() {
   const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
   function isImageFile(file) { return file && file.type && imageTypes.includes(file.type); }
+  let lastProfileObjectUrl = null;
   async function handleProfileFile(inputId, file) {
     if (!file || !isImageFile(file)) {
       showError('Please choose an image (JPEG, PNG, GIF, or WebP)');
       return;
     }
+    if (lastProfileObjectUrl) {
+      URL.revokeObjectURL(lastProfileObjectUrl);
+      lastProfileObjectUrl = null;
+    }
     const input = document.getElementById(inputId);
     if (!input) return;
     const isCover = inputId === 'profile-cover-url';
     const objectUrl = URL.createObjectURL(file);
+    lastProfileObjectUrl = objectUrl;
     try {
       if (isCover) setProfilePreviewOnly(objectUrl, $('#profile-avatar-url')?.value || (currentUser && currentUser.avatar_url));
       else setProfilePreviewOnly($('#profile-cover-url')?.value || (currentUser && currentUser.cover_url), objectUrl);
       const url = await fileToImageUrl(file);
-      URL.revokeObjectURL(objectUrl);
-      if (url) { input.value = url; updateProfilePreviews(); }
-      else showError('Upload failed. Try again or paste a URL.');
+      if (url) {
+        if (lastProfileObjectUrl === objectUrl) lastProfileObjectUrl = null;
+        URL.revokeObjectURL(objectUrl);
+        input.value = url;
+        updateProfilePreviews();
+      } else {
+        showError('Upload failed. Preview kept — try again or paste a URL.');
+      }
     } catch (err) {
-      URL.revokeObjectURL(objectUrl);
-      updateProfilePreviews();
       showError(err.message || 'Failed to use image');
     }
   }
@@ -421,11 +478,19 @@ function updateProfileBanner() {
   const initial = (name || '?').charAt(0).toUpperCase();
   coverEl.style.backgroundImage = safeCssUrl(coverUrl) || 'none';
   if (avatarUrl) {
-    avatarEl.style.backgroundImage = safeCssUrl(avatarUrl);
+    avatarEl.style.backgroundImage = 'none';
     avatarEl.textContent = '';
-    avatarEl.innerHTML = '';
+    let img = avatarEl.querySelector('img');
+    if (!img) {
+      img = document.createElement('img');
+      img.alt = '';
+      img.loading = 'eager';
+      avatarEl.appendChild(img);
+    }
+    img.src = avatarUrl;
   } else {
     avatarEl.style.backgroundImage = 'none';
+    avatarEl.querySelector('img')?.remove();
     avatarEl.textContent = initial;
   }
   if (timeEl) {
