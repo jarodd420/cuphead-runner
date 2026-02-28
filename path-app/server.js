@@ -9,6 +9,9 @@ const api = require('./routes/api');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Required when behind Railway/reverse proxy so req.secure and cookies work over HTTPS
+app.set('trust proxy', 1);
+
 initDb();
 
 let sessionStore = undefined;

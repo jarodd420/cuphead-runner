@@ -27,7 +27,13 @@ router.post('/login', async (req, res) => {
   }
   req.session.userId = user.id;
   req.session.user = profileFromUser(user);
-  res.json({ user: req.session.user });
+  req.session.save((err) => {
+    if (err) {
+      console.error('Session save error:', err);
+      return res.status(500).json({ error: 'Could not save session. Please try again.' });
+    }
+    res.json({ user: req.session.user });
+  });
 });
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -83,7 +89,13 @@ router.post('/signup', async (req, res) => {
     if (pendingFamIds.length) await db.deletePendingInvitesForEmail(pendingFamIds, email);
     req.session.userId = user.id;
     req.session.user = profileFromUser(user);
-    res.status(201).json({ user: req.session.user });
+    req.session.save((err) => {
+      if (err) {
+        console.error('Session save error:', err);
+        return res.status(500).json({ error: 'Could not save session. Please try again.' });
+      }
+      res.status(201).json({ user: req.session.user });
+    });
   } catch (err) {
     console.error('Signup error:', err.message || err);
     const message = err.code === 'ECONNREFUSED' || err.message?.includes('connect')
