@@ -535,6 +535,13 @@ body {
 .profile-photo-actions .btn-photo-action {
   margin: 0;
 }
+.profile-upload-status {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  min-height: 1.2em;
+}
 
 .drop-zone.drop-over {
   outline: 3px solid var(--path-red);

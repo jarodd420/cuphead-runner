@@ -92,10 +92,9 @@
               </div>
             </div>
             <div class="profile-photo-actions">
-              <input type="file" id="profile-cover-file" accept="image/*" class="hidden-input" aria-label="Choose cover photo" />
-              <input type="file" id="profile-avatar-file" accept="image/*" class="hidden-input" aria-label="Choose profile photo" />
               <label for="profile-cover-file" class="btn-photo-action" id="btn-cover-from-album">Choose cover from album</label>
               <label for="profile-avatar-file" class="btn-photo-action" id="btn-avatar-from-album">Choose profile photo from album</label>
+              <span class="profile-upload-status" id="profile-upload-status" aria-live="polite"></span>
             </div>
             <label for="profile-name">Name</label>
             <input type="text" id="profile-name" name="name" placeholder="Your name" />
@@ -112,6 +111,9 @@
           </form>
         </div>
       </div>
+      <!-- Profile file inputs outside overlay so mobile (e.g. iOS) can open picker when label is tapped -->
+      <input type="file" id="profile-cover-file" accept="image/*" class="hidden-input" aria-label="Choose cover photo" />
+      <input type="file" id="profile-avatar-file" accept="image/*" class="hidden-input" aria-label="Choose profile photo" />
 
       <div class="feedback-overlay" id="feedback-overlay" hidden>
         <div class="feedback-card">

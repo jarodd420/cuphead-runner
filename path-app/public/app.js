@@ -388,6 +388,10 @@ function setupProfilePhotoFromAlbum() {
   const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
   function isImageFile(file) { return file && file.type && imageTypes.includes(file.type); }
   let lastProfileObjectUrl = null;
+  const statusEl = $('#profile-upload-status');
+  function setUploadStatus(text) {
+    if (statusEl) statusEl.textContent = text || '';
+  }
   async function handleProfileFile(inputId, file) {
     if (!file || !isImageFile(file)) {
       showError('Please choose an image (JPEG, PNG, GIF, or WebP)');
@@ -402,6 +406,7 @@ function setupProfilePhotoFromAlbum() {
     const isCover = inputId === 'profile-cover-url';
     const objectUrl = URL.createObjectURL(file);
     lastProfileObjectUrl = objectUrl;
+    setUploadStatus('Uploading…');
     try {
       if (isCover) setProfilePreviewOnly(objectUrl, $('#profile-avatar-url')?.value || (currentUser && currentUser.avatar_url));
       else setProfilePreviewOnly($('#profile-cover-url')?.value || (currentUser && currentUser.cover_url), objectUrl);
@@ -411,11 +416,24 @@ function setupProfilePhotoFromAlbum() {
         URL.revokeObjectURL(objectUrl);
         input.value = url;
         updateProfilePreviews();
+        setUploadStatus('Photo ready — tap Save to update profile.');
+        setTimeout(() => setUploadStatus(''), 4000);
       } else {
+        setUploadStatus('');
         showError('Upload failed. Preview kept — try again or paste a URL.');
       }
     } catch (err) {
+      setUploadStatus('');
       showError(err.message || 'Failed to use image');
+      try {
+        const dataUrl = await readFileAsDataUrl(file);
+        if (dataUrl) {
+          input.value = dataUrl;
+          updateProfilePreviews();
+          setUploadStatus('Using photo — tap Save (upload failed).');
+          setTimeout(() => setUploadStatus(''), 4000);
+        }
+      } catch (_) { /* ignore */ }
     }
   }
   const coverFile = $('#profile-cover-file');
