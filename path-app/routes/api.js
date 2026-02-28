@@ -4,6 +4,14 @@ const { getDb } = require('../appDb');
 const { uploadToSupabase } = require('../lib/storage');
 const { sendInviteEmail } = require('../lib/email');
 const { sendFeedbackToSlack } = require('../lib/slack');
+const { appendFeedbackToKanban } = require('../lib/github');
+
+function looksLikeRealFeedback(text) {
+  if (!text || text.length < 10) return false;
+  const letters = (text.match(/[a-zA-Z]/g) || []).length;
+  if (letters < 2) return false;
+  return true;
+}
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
@@ -264,6 +272,9 @@ router.post('/feedback', async (req, res) => {
     message
   );
   if (!sent) return res.status(503).json({ error: 'Feedback is not configured (Slack webhook missing). Your message was not sent.' });
+  if (looksLikeRealFeedback(message)) {
+    await appendFeedbackToKanban(message, user.name || undefined);
+  }
   res.json({ ok: true, message: 'Thanks! Your feedback has been sent.' });
 });
 

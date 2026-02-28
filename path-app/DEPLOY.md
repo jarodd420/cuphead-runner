@@ -141,6 +141,8 @@ Logged-in users can send update suggestions from the app (menu → **Suggest an 
 
 3. Each submission is posted to that channel with the user’s name and email plus their message. If this variable is not set, the in-app form will show an error when they try to send.
 
+**Kanban:** If `GITHUB_TOKEN` and `GITHUB_REPO` are set, each feedback submission is also appended to `FAM_KANBAN.md` in that repo (Backlog section). Cursor can then work from that file when you say “work the kanban” or “what’s next”. See repo root `FAM_KANBAN.md` and `.cursor/rules/fam-kanban.mdc`.
+
 ## 5. Env summary
 
 | Variable | Required | Description |
@@ -154,6 +156,10 @@ Logged-in users can send update suggestions from the app (menu → **Suggest an 
 | `RESEND_FROM` | Optional | Sender for invite emails (default: `Fam <onboarding@resend.dev>`) |
 | `INVITE_BASE_URL` | Optional | App base URL for signup links (default: from request) |
 | `SLACK_FEEDBACK_WEBHOOK_URL` | For feedback | Incoming Webhook URL for feedback/suggestions (e.g. #bots-channel) |
+| `GITHUB_TOKEN` | For kanban | GitHub token (repo scope) so feedback is appended to FAM_KANBAN.md |
+| `GITHUB_REPO` | For kanban | Repo as owner/name (e.g. myuser/cuphead-runner) |
+| `GITHUB_KANBAN_PATH` | Optional | Path to kanban file (default: FAM_KANBAN.md) |
+| `GITHUB_KANBAN_BRANCH` | Optional | Branch to update (default: main) |
 | `PORT` | Optional | Server port (default 3000) |
 | `NODE_ENV` | Optional | `production` in prod |
 | `USE_HTTPS` | Optional | Set to `1` in prod with HTTPS for secure cookies |
