@@ -103,7 +103,32 @@ Images can stay as base64 in the DB for small setups. For scale, use object stor
 
 4. When users upload (profile/moment photos), the app uploads to this bucket and saves the public URL. If these are not set, the app falls back to base64 (works for local/dev).
 
-## 3. Env summary
+## 3. Invite emails (optional)
+
+When someone is invited to a fam by email, the app stores the invite and **optionally** sends an email so they know to sign up.
+
+1. Sign up at [Resend](https://resend.com) (free tier: 100 emails/day from their domain).
+2. Get an API key from the dashboard and set:
+
+   ```env
+   RESEND_API_KEY=re_xxxxxxxx
+   ```
+
+3. Invite emails will be sent from `onboarding@resend.dev` by default. To use your own domain, verify it in Resend and set:
+
+   ```env
+   RESEND_FROM=Fam <invites@yourdomain.com>
+   ```
+
+4. The signup link in the email uses your app URL. If the app runs behind a proxy and `req.protocol`/host are wrong, set the full base URL:
+
+   ```env
+   INVITE_BASE_URL=https://fam-production.up.railway.app
+   ```
+
+If `RESEND_API_KEY` is not set, invites are still saved; the invitee will be added to the fam when they sign up with that email, but they won’t get a notification.
+
+## 4. Env summary
 
 | Variable | Required | Description |
 |----------|----------|-------------|
@@ -112,11 +137,14 @@ Images can stay as base64 in the DB for small setups. For scale, use object stor
 | `SUPABASE_URL` | For image uploads | Supabase project URL |
 | `SUPABASE_SERVICE_KEY` | For image uploads | Service role key (not anon key) |
 | `SUPABASE_STORAGE_BUCKET` | Optional | Bucket name (default: `uploads`) |
+| `RESEND_API_KEY` | For invite emails | Resend API key; if unset, invites are saved but no email sent |
+| `RESEND_FROM` | Optional | Sender for invite emails (default: `Fam <onboarding@resend.dev>`) |
+| `INVITE_BASE_URL` | Optional | App base URL for signup links (default: from request) |
 | `PORT` | Optional | Server port (default 3000) |
 | `NODE_ENV` | Optional | `production` in prod |
 | `USE_HTTPS` | Optional | Set to `1` in prod with HTTPS for secure cookies |
 
-## 4. Deploy to Railway or Render (manual)
+## 5. Deploy to Railway or Render (manual)
 
 If you’re not using the Blueprint (`render.yaml` at repo root):
 
@@ -124,10 +152,10 @@ If you’re not using the Blueprint (`render.yaml` at repo root):
 - **Build**: `npm install`
 - **Start**: `npm start` (or `node server.js`)
 - Add **Postgres** add-on and set `DATABASE_URL`.
-- Add the env vars from section 3 (at least `SESSION_SECRET`, `NODE_ENV`, `USE_HTTPS`).
+- Add the env vars from section 4 (at least `SESSION_SECRET`, `NODE_ENV`, `USE_HTTPS`).
 - Run the schema once: from `path-app`, `npm run schema` (with `DATABASE_URL` set), or run `db/schema.sql` against the DB (see step 1).
 
-## 5. Seeding (local JSON only)
+## 6. Seeding (local JSON only)
 
 The seed script uses the **file-based** DB (`db.js`), not Postgres:
 

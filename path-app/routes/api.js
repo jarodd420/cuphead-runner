@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const { getDb } = require('../appDb');
 const { uploadToSupabase } = require('../lib/storage');
+const { sendInviteEmail } = require('../lib/email');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
@@ -191,7 +192,16 @@ router.post('/fams/:id/invite', async (req, res) => {
     return;
   }
   await db.addFamInvite(famId, emailStr, req.session.userId);
-  res.json({ ok: true, invited: true, message: 'Invite sent. They\'ll join when they sign up.' });
+  const fam = await db.getFamById(famId);
+  const inviter = await db.getUserById(req.session.userId);
+  const baseUrl = (process.env.INVITE_BASE_URL || '').trim() || `${req.protocol}://${req.get('host') || req.hostname}`;
+  const signupUrl = `${baseUrl.replace(/\/$/, '')}/`;
+  const sent = await sendInviteEmail(emailStr, (fam && fam.name) || 'a fam', inviter && inviter.name, signupUrl);
+  res.json({
+    ok: true,
+    invited: true,
+    message: sent ? 'Invite sent. They\'ll get an email and can sign up to join.' : 'Invite saved. They\'ll join when they sign up. (Configure RESEND_API_KEY to send invite emails.)',
+  });
 });
 
 router.get('/profile', async (req, res) => {
