@@ -197,7 +197,11 @@ router.post('/fams/:id/invite', async (req, res) => {
   const inviter = await db.getUserById(req.session.userId);
   const baseUrl = (process.env.INVITE_BASE_URL || '').trim() || `${req.protocol}://${req.get('host') || req.hostname}`;
   const signupUrl = `${baseUrl.replace(/\/$/, '')}/`;
+  const hasResendKey = !!(process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.trim());
   const sent = await sendInviteEmail(emailStr, (fam && fam.name) || 'a fam', inviter && inviter.name, signupUrl);
+  if (!sent) {
+    console.warn('[invite] Email not sent. RESEND_API_KEY set:', hasResendKey);
+  }
   res.json({
     ok: true,
     invited: true,

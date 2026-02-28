@@ -1,5 +1,4 @@
 // Send invite email via Resend. No-op if RESEND_API_KEY is not set.
-const apiKey = process.env.RESEND_API_KEY;
 const from = process.env.RESEND_FROM || 'Fam <onboarding@resend.dev>';
 
 /**
@@ -11,6 +10,7 @@ const from = process.env.RESEND_FROM || 'Fam <onboarding@resend.dev>';
  * @returns {Promise<boolean>} - true if sent, false if skipped (no API key) or failed
  */
 async function sendInviteEmail(to, famName, inviterName, signupUrl) {
+  const apiKey = (process.env.RESEND_API_KEY || '').trim();
   if (!apiKey || !to || !famName || !signupUrl) return false;
   try {
     const { Resend } = require('resend');
