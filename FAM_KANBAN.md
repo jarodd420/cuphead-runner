@@ -18,6 +18,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] Password instructions before password field (min 8 chars, letter + number)
+- [x] Profile/cover: choose from album (file input for phone)
 - [x] Invite emails (Resend; domain required for non-test)
 - [x] User feedback to Slack
 - [x] Feedback form in app (Suggest an update)

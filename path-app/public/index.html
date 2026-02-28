@@ -33,7 +33,8 @@
         <form id="form-signup" class="auth-form">
           <input type="text" name="name" placeholder="Name" required autocomplete="name" maxlength="100" />
           <input type="email" name="email" placeholder="Email" required autocomplete="email" />
-          <input type="password" name="password" placeholder="Password (min 8 chars, letter + number)" required autocomplete="new-password" minlength="8" />
+          <p class="auth-password-hint">Password must be at least 8 characters and include both a letter and a number.</p>
+          <input type="password" name="password" placeholder="Password" required autocomplete="new-password" minlength="8" />
           <input type="password" name="password_confirm" placeholder="Confirm password" required autocomplete="new-password" minlength="8" />
           <label class="auth-terms">
             <input type="checkbox" name="accept_terms" required />
@@ -82,19 +83,25 @@
           <h2>Edit profile</h2>
           <form id="form-profile">
             <div class="profile-preview-row">
-              <div class="profile-cover-preview drop-zone" id="profile-cover-preview" data-drop-for="profile-cover-url" title="Drop photo for cover">
-                <span class="drop-zone-hint">Drop cover photo</span>
+              <div class="profile-cover-preview drop-zone" id="profile-cover-preview" data-drop-for="profile-cover-url" title="Drop or choose cover photo">
+                <span class="drop-zone-hint">Drop or choose cover</span>
               </div>
-              <div class="profile-avatar-preview drop-zone" id="profile-avatar-preview" data-drop-for="profile-avatar-url" title="Drop profile photo">
-                <span class="drop-zone-hint">Drop photo</span>
+              <div class="profile-avatar-preview drop-zone" id="profile-avatar-preview" data-drop-for="profile-avatar-url" title="Drop or choose profile photo">
+                <span class="drop-zone-hint">Drop or choose photo</span>
               </div>
+            </div>
+            <div class="profile-photo-actions">
+              <input type="file" id="profile-cover-file" accept="image/*" class="hidden-input" aria-label="Choose cover photo from device" />
+              <input type="file" id="profile-avatar-file" accept="image/*" class="hidden-input" aria-label="Choose profile photo from device" />
+              <button type="button" class="btn-photo-action" id="btn-cover-from-album">Choose cover from album</button>
+              <button type="button" class="btn-photo-action" id="btn-avatar-from-album">Choose profile photo from album</button>
             </div>
             <label for="profile-name">Name</label>
             <input type="text" id="profile-name" name="name" placeholder="Your name" />
-            <label for="profile-avatar-url">Profile photo URL or drop above</label>
-            <input type="text" id="profile-avatar-url" name="avatar_url" placeholder="https://... or drop photo above" />
-            <label for="profile-cover-url">Cover photo URL or drop above</label>
-            <input type="text" id="profile-cover-url" name="cover_url" placeholder="https://... or drop photo above" />
+            <label for="profile-avatar-url">Profile photo (URL, or use album/drop above)</label>
+            <input type="text" id="profile-avatar-url" name="avatar_url" placeholder="https://... or choose from album" />
+            <label for="profile-cover-url">Cover photo (URL, or use album/drop above)</label>
+            <input type="text" id="profile-cover-url" name="cover_url" placeholder="https://... or choose from album" />
             <label for="profile-bio">Bio</label>
             <textarea id="profile-bio" name="bio" placeholder="A short bio..." rows="3"></textarea>
             <div class="form-actions">

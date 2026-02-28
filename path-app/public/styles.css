@@ -514,6 +514,16 @@ body {
   border-radius: 50%;
 }
 
+.profile-photo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.profile-photo-actions .btn-photo-action {
+  margin: 0;
+}
+
 .drop-zone.drop-over {
   outline: 3px solid var(--path-red);
   outline-offset: 2px;
@@ -607,6 +617,13 @@ body {
   color: var(--text);
   font-size: 1rem;
   font-family: inherit;
+}
+
+.auth-password-hint {
+  margin: 0 0 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.35;
 }
 
 .auth-form input::placeholder {

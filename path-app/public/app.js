@@ -315,6 +315,40 @@ async function fileToImageUrl(file) {
   return readFileAsDataUrl(file);
 }
 
+function setupProfilePhotoFromAlbum() {
+  const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  function isImageFile(file) { return file && file.type && imageTypes.includes(file.type); }
+  async function handleProfileFile(inputId, file) {
+    if (!file || !isImageFile(file)) {
+      showError('Please choose an image (JPEG, PNG, GIF, or WebP)');
+      return;
+    }
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    try {
+      const url = await fileToImageUrl(file);
+      if (url) { input.value = url; updateProfilePreviews(); }
+      else showError('Upload failed. Try again or paste a URL.');
+    } catch (err) {
+      showError(err.message || 'Failed to use image');
+    }
+  }
+  const coverFile = $('#profile-cover-file');
+  const avatarFile = $('#profile-avatar-file');
+  $('#btn-cover-from-album')?.addEventListener('click', () => coverFile?.click());
+  $('#btn-avatar-from-album')?.addEventListener('click', () => avatarFile?.click());
+  coverFile?.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) handleProfileFile('profile-cover-url', file);
+    e.target.value = '';
+  });
+  avatarFile?.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) handleProfileFile('profile-avatar-url', file);
+    e.target.value = '';
+  });
+}
+
 function setupProfileDropZones() {
   const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
   function isImageFile(file) { return file && file.type && imageTypes.includes(file.type); }
@@ -552,6 +586,7 @@ function init() {
     el?.addEventListener('input', updateProfilePreviews);
   });
   setupProfileDropZones();
+  setupProfilePhotoFromAlbum();
 
   btnCancelProfile?.addEventListener('click', () => {
     profileOverlay.hidden = true;
