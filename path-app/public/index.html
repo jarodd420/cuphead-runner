@@ -88,13 +88,14 @@
               </div>
               <div class="profile-avatar-preview drop-zone" id="profile-avatar-preview" data-drop-for="profile-avatar-url" title="Drop or choose profile photo">
                 <span class="drop-zone-hint">Drop or choose photo</span>
+                <span class="profile-avatar-initial" aria-hidden="true"></span>
               </div>
             </div>
             <div class="profile-photo-actions">
-              <input type="file" id="profile-cover-file" accept="image/*" class="hidden-input" aria-label="Choose cover photo from device" />
-              <input type="file" id="profile-avatar-file" accept="image/*" class="hidden-input" aria-label="Choose profile photo from device" />
-              <button type="button" class="btn-photo-action" id="btn-cover-from-album">Choose cover from album</button>
-              <button type="button" class="btn-photo-action" id="btn-avatar-from-album">Choose profile photo from album</button>
+              <input type="file" id="profile-cover-file" accept="image/*" class="hidden-input" aria-label="Choose cover photo" />
+              <input type="file" id="profile-avatar-file" accept="image/*" class="hidden-input" aria-label="Choose profile photo" />
+              <label for="profile-cover-file" class="btn-photo-action" id="btn-cover-from-album">Choose cover from album</label>
+              <label for="profile-avatar-file" class="btn-photo-action" id="btn-avatar-from-album">Choose profile photo from album</label>
             </div>
             <label for="profile-name">Name</label>
             <input type="text" id="profile-name" name="name" placeholder="Your name" />
@@ -160,10 +161,9 @@
             </div>
             <div class="moment-photo-section" id="moment-photo-section" hidden>
               <div class="moment-photo-actions">
-                <input type="file" id="moment-photo-camera" accept="image/*" capture="environment" class="hidden-input" />
                 <input type="file" id="moment-photo-file" accept="image/*" class="hidden-input" />
-                <button type="button" class="btn-photo-action" id="btn-moment-take-photo">Take photo</button>
-                <button type="button" class="btn-photo-action" id="btn-moment-choose-photo">Choose photo</button>
+                <label for="moment-photo-file" class="btn-photo-action" id="btn-moment-take-photo">Take photo</label>
+                <label for="moment-photo-file" class="btn-photo-action" id="btn-moment-choose-photo">Choose from album</label>
               </div>
               <div class="moment-photo-preview-wrap" id="moment-photo-preview-wrap" hidden>
                 <img class="moment-photo-preview" id="moment-photo-preview" alt="Preview" />

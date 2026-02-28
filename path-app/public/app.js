@@ -281,9 +281,13 @@ function updateProfilePreviews() {
   }
   if (avatarPreview) {
     avatarPreview.style.backgroundImage = safeCssUrl(avatarUrl) || 'none';
-    avatarPreview.textContent = currentUser && !avatarUrl ? (currentUser.name || '?').charAt(0).toUpperCase() : '';
     const hint = avatarPreview.querySelector('.drop-zone-hint');
+    const initialEl = avatarPreview.querySelector('.profile-avatar-initial');
     if (hint) hint.style.display = avatarUrl ? 'none' : 'flex';
+    if (initialEl) {
+      initialEl.textContent = !avatarUrl && currentUser && currentUser.name ? currentUser.name.charAt(0).toUpperCase() : (!avatarUrl ? '?' : '');
+      initialEl.style.display = !avatarUrl ? 'flex' : 'none';
+    }
   }
 }
 
@@ -315,6 +319,23 @@ async function fileToImageUrl(file) {
   return readFileAsDataUrl(file);
 }
 
+function setProfilePreviewOnly(coverUrl, avatarUrl) {
+  const coverPreview = $('#profile-cover-preview');
+  const avatarPreview = $('#profile-avatar-preview');
+  if (coverPreview) {
+    coverPreview.style.backgroundImage = safeCssUrl(coverUrl) || 'none';
+    const hint = coverPreview.querySelector('.drop-zone-hint');
+    if (hint) hint.style.display = coverUrl ? 'none' : 'flex';
+  }
+  if (avatarPreview) {
+    avatarPreview.style.backgroundImage = safeCssUrl(avatarUrl) || 'none';
+    const hint = avatarPreview.querySelector('.drop-zone-hint');
+    const initialEl = avatarPreview.querySelector('.profile-avatar-initial');
+    if (hint) hint.style.display = avatarUrl ? 'none' : 'flex';
+    if (initialEl) initialEl.style.display = avatarUrl ? 'none' : 'flex';
+  }
+}
+
 function setupProfilePhotoFromAlbum() {
   const imageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
   function isImageFile(file) { return file && file.type && imageTypes.includes(file.type); }
@@ -325,18 +346,23 @@ function setupProfilePhotoFromAlbum() {
     }
     const input = document.getElementById(inputId);
     if (!input) return;
+    const isCover = inputId === 'profile-cover-url';
+    const objectUrl = URL.createObjectURL(file);
     try {
+      if (isCover) setProfilePreviewOnly(objectUrl, $('#profile-avatar-url')?.value || (currentUser && currentUser.avatar_url));
+      else setProfilePreviewOnly($('#profile-cover-url')?.value || (currentUser && currentUser.cover_url), objectUrl);
       const url = await fileToImageUrl(file);
+      URL.revokeObjectURL(objectUrl);
       if (url) { input.value = url; updateProfilePreviews(); }
       else showError('Upload failed. Try again or paste a URL.');
     } catch (err) {
+      URL.revokeObjectURL(objectUrl);
+      updateProfilePreviews();
       showError(err.message || 'Failed to use image');
     }
   }
   const coverFile = $('#profile-cover-file');
   const avatarFile = $('#profile-avatar-file');
-  $('#btn-cover-from-album')?.addEventListener('click', () => coverFile?.click());
-  $('#btn-avatar-from-album')?.addEventListener('click', () => avatarFile?.click());
   coverFile?.addEventListener('change', (e) => {
     const file = e.target.files && e.target.files[0];
     if (file) handleProfileFile('profile-cover-url', file);
@@ -723,15 +749,7 @@ function init() {
     setOverlayOpen(true);
   });
 
-  const photoCameraInput = $('#moment-photo-camera');
   const photoFileInput = $('#moment-photo-file');
-  $('#btn-moment-take-photo')?.addEventListener('click', () => photoCameraInput?.click());
-  $('#btn-moment-choose-photo')?.addEventListener('click', () => photoFileInput?.click());
-  photoCameraInput?.addEventListener('change', (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (file) setMomentPhotoFromFile(file);
-    e.target.value = '';
-  });
   photoFileInput?.addEventListener('change', (e) => {
     const file = e.target.files && e.target.files[0];
     if (file) setMomentPhotoFromFile(file);

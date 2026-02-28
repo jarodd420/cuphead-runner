@@ -514,6 +514,18 @@ body {
   border-radius: 50%;
 }
 
+.profile-avatar-preview .profile-avatar-initial {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
 .profile-photo-actions {
   display: flex;
   flex-wrap: wrap;
@@ -1369,6 +1381,7 @@ body {
 }
 
 .btn-photo-action {
+  display: inline-block;
   padding: 10px 16px;
   border: 1px solid var(--path-red);
   border-radius: var(--radius-sm);
@@ -1378,6 +1391,7 @@ body {
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .btn-photo-action:active {
