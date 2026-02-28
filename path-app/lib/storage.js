@@ -20,7 +20,13 @@ async function uploadToSupabase(buffer, contentType, objectPath) {
     const err = await res.text();
     throw new Error(err || `Storage upload failed: ${res.status}`);
   }
-  return `${base}/storage/v1/object/public/${bucket}/${objectPath}`;
+  let publicPath = `${bucket}/${objectPath}`;
+  try {
+    const data = await res.json();
+    if (data && data.Key) publicPath = data.Key;
+  } catch (_) {}
+  const encoded = publicPath.split('/').map(encodeURIComponent).join('/');
+  return `${base}/storage/v1/object/public/${encoded}`;
 }
 
 module.exports = { uploadToSupabase };

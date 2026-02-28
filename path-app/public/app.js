@@ -485,6 +485,10 @@ function updateProfileBanner() {
       img = document.createElement('img');
       img.alt = '';
       img.loading = 'eager';
+      img.onerror = () => {
+        img.remove();
+        avatarEl.textContent = initial;
+      };
       avatarEl.appendChild(img);
     }
     img.src = avatarUrl;
