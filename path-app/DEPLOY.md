@@ -128,7 +128,20 @@ When someone is invited to a fam by email, the app stores the invite and **optio
 
 If `RESEND_API_KEY` is not set, invites are still saved; the invitee will be added to the fam when they sign up with that email, but they won’t get a notification.
 
-## 4. Env summary
+## 4. User feedback to Slack (optional)
+
+Logged-in users can send update suggestions from the app (menu → **Suggest an update**). To have those posts go to a private Slack channel (e.g. `#bots-channel`):
+
+1. In Slack: **Settings** → **Integrations** → **Incoming Webhooks** → **Add to Slack** → choose the channel (e.g. `#bots-channel`) → copy the webhook URL.
+2. Set in your app environment:
+
+   ```env
+   SLACK_FEEDBACK_WEBHOOK_URL=https://hooks.slack.com/services/T…/B…/…
+   ```
+
+3. Each submission is posted to that channel with the user’s name and email plus their message. If this variable is not set, the in-app form will show an error when they try to send.
+
+## 5. Env summary
 
 | Variable | Required | Description |
 |----------|----------|-------------|
@@ -140,11 +153,12 @@ If `RESEND_API_KEY` is not set, invites are still saved; the invitee will be add
 | `RESEND_API_KEY` | For invite emails | Resend API key; if unset, invites are saved but no email sent |
 | `RESEND_FROM` | Optional | Sender for invite emails (default: `Fam <onboarding@resend.dev>`) |
 | `INVITE_BASE_URL` | Optional | App base URL for signup links (default: from request) |
+| `SLACK_FEEDBACK_WEBHOOK_URL` | For feedback | Incoming Webhook URL for feedback/suggestions (e.g. #bots-channel) |
 | `PORT` | Optional | Server port (default 3000) |
 | `NODE_ENV` | Optional | `production` in prod |
 | `USE_HTTPS` | Optional | Set to `1` in prod with HTTPS for secure cookies |
 
-## 5. Deploy to Railway or Render (manual)
+## 6. Deploy to Railway or Render (manual)
 
 If you’re not using the Blueprint (`render.yaml` at repo root):
 
@@ -152,10 +166,10 @@ If you’re not using the Blueprint (`render.yaml` at repo root):
 - **Build**: `npm install`
 - **Start**: `npm start` (or `node server.js`)
 - Add **Postgres** add-on and set `DATABASE_URL`.
-- Add the env vars from section 4 (at least `SESSION_SECRET`, `NODE_ENV`, `USE_HTTPS`).
+- Add the env vars from section 5 (at least `SESSION_SECRET`, `NODE_ENV`, `USE_HTTPS`).
 - Run the schema once: from `path-app`, `npm run schema` (with `DATABASE_URL` set), or run `db/schema.sql` against the DB (see step 1).
 
-## 6. Seeding (local JSON only)
+## 7. Seeding (local JSON only)
 
 The seed script uses the **file-based** DB (`db.js`), not Postgres:
 

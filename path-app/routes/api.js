@@ -3,6 +3,7 @@ const multer = require('multer');
 const { getDb } = require('../appDb');
 const { uploadToSupabase } = require('../lib/storage');
 const { sendInviteEmail } = require('../lib/email');
+const { sendFeedbackToSlack } = require('../lib/slack');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
@@ -245,6 +246,21 @@ router.patch('/profile', async (req, res) => {
       bio: user.bio,
     },
   });
+});
+
+router.post('/feedback', async (req, res) => {
+  const message = (req.body && req.body.message) ? String(req.body.message).trim() : '';
+  if (!message) return res.status(400).json({ error: 'Please enter your feedback or suggestion.' });
+  if (message.length > 2000) return res.status(400).json({ error: 'Message is too long (max 2000 characters).' });
+  const db = getDb();
+  const user = await db.getUserById(req.session.userId);
+  if (!user) return res.status(401).json({ error: 'Not logged in' });
+  const sent = await sendFeedbackToSlack(
+    { name: user.name, email: user.email },
+    message
+  );
+  if (!sent) return res.status(503).json({ error: 'Feedback is not configured (Slack webhook missing). Your message was not sent.' });
+  res.json({ ok: true, message: 'Thanks! Your feedback has been sent.' });
 });
 
 module.exports = router;

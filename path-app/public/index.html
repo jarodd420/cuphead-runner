@@ -51,6 +51,7 @@
           <button type="button" class="icon-btn header-icon" id="btn-menu" title="Menu" aria-label="Menu" aria-expanded="false" aria-haspopup="true">☰</button>
           <div class="header-menu" id="header-menu" hidden>
             <button type="button" id="btn-edit-profile">Edit profile</button>
+            <button type="button" id="btn-feedback">Suggest an update</button>
             <button type="button" id="btn-logout">Sign out</button>
           </div>
         </div>
@@ -99,6 +100,20 @@
             <div class="form-actions">
               <button type="button" class="btn-cancel" id="btn-cancel-profile">Cancel</button>
               <button type="submit" class="btn-post">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="feedback-overlay" id="feedback-overlay" hidden>
+        <div class="feedback-card">
+          <h2>Suggest an update</h2>
+          <p class="feedback-hint">Share an idea or report something that could be better. Your message goes to the team.</p>
+          <form id="form-feedback">
+            <textarea id="feedback-message" name="message" placeholder="Your suggestion or feedback..." rows="4" maxlength="2000"></textarea>
+            <div class="form-actions">
+              <button type="button" class="btn-cancel" id="btn-cancel-feedback">Cancel</button>
+              <button type="submit" class="btn-post">Send</button>
             </div>
           </form>
         </div>

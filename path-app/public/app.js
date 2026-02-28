@@ -31,9 +31,11 @@ function showScreen(id) {
   const addOverlay = $('#add-moment-overlay');
   const profileOverlay = $('#profile-overlay');
   const famsOverlay = $('#fams-overlay');
+  const feedbackOverlay = $('#feedback-overlay');
   if (addOverlay) addOverlay.hidden = true;
   if (profileOverlay) profileOverlay.hidden = true;
   if (famsOverlay) famsOverlay.hidden = true;
+  if (feedbackOverlay) feedbackOverlay.hidden = true;
   setOverlayOpen(false);
 }
 
@@ -446,6 +448,8 @@ function init() {
   const btnAddMoment = $('#btn-add-moment');
   const addMomentOverlay = $('#add-moment-overlay');
   const profileOverlay = $('#profile-overlay');
+  const famsOverlay = $('#fams-overlay');
+  const feedbackOverlay = $('#feedback-overlay');
   const formMoment = $('#form-moment');
   const formProfile = $('#form-profile');
   const btnCancelMoment = $('#btn-cancel-moment');
@@ -484,6 +488,9 @@ function init() {
     } else if (famsOverlay && !famsOverlay.hidden) {
       famsOverlay.hidden = true;
       setOverlayOpen(false);
+    } else if (feedbackOverlay && !feedbackOverlay.hidden) {
+      feedbackOverlay.hidden = true;
+      setOverlayOpen(false);
     } else if (headerMenu && !headerMenu.hidden) {
       headerMenu.hidden = true;
     }
@@ -492,6 +499,50 @@ function init() {
   btnEditProfile?.addEventListener('click', () => {
     if (headerMenu) headerMenu.hidden = true;
     openProfileEditor();
+  });
+  $('#btn-feedback')?.addEventListener('click', () => {
+    if (headerMenu) headerMenu.hidden = true;
+    const overlay = $('#feedback-overlay');
+    const ta = $('#feedback-message');
+    if (overlay) overlay.hidden = false;
+    if (ta) { ta.value = ''; ta.focus(); }
+    setOverlayOpen(true);
+  });
+  $('#btn-cancel-feedback')?.addEventListener('click', () => {
+    const overlay = $('#feedback-overlay');
+    if (overlay) overlay.hidden = true;
+    setOverlayOpen(false);
+  });
+  $('#feedback-overlay')?.addEventListener('click', (e) => {
+    if (e.target.id === 'feedback-overlay') {
+      e.target.hidden = true;
+      setOverlayOpen(false);
+    }
+  });
+  $('#form-feedback')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const ta = $('#feedback-message');
+    const message = (ta && ta.value) ? ta.value.trim() : '';
+    if (!message) {
+      showError('Please enter your feedback or suggestion.');
+      return;
+    }
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn?.textContent;
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+    try {
+      const data = await api('/api/feedback', { method: 'POST', body: JSON.stringify({ message }) });
+      $('#feedback-overlay').hidden = true;
+      setOverlayOpen(false);
+      if (ta) ta.value = '';
+      showError(data.message || 'Thanks! Your feedback has been sent.'); // reuse toast for success
+      const t = document.querySelector('.error-toast');
+      if (t) { t.classList.add('success-toast'); t.classList.remove('error-toast'); }
+    } catch (err) {
+      showError(err.message || 'Could not send feedback.');
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalText; }
+    }
   });
   // Prevent menu from closing when clicking a menu button (so Edit profile fires)
   headerMenu?.addEventListener('click', (e) => e.stopPropagation());
@@ -661,7 +712,6 @@ function init() {
     setOverlayOpen(false);
   });
 
-  const famsOverlay = $('#fams-overlay');
   const famsList = $('#fams-list');
   const btnCloseFams = $('#btn-close-fams');
   const btnFams = $('#btn-fams');
