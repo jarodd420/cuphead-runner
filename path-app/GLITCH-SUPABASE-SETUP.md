@@ -1,5 +1,7 @@
 # Fam on Glitch + Supabase (no credit card)
 
+> **Glitch is shutting down.** Hosting and project profiles end **July 8, 2025**. Use this guide only if you still have an existing Glitch project to maintain. For new deploys or to migrate, use **[DEPLOY.md](DEPLOY.md)** — e.g. **Render** (Blueprint), **Railway + Supabase**, or **Render + your existing Supabase** (same DB, new host).
+
 Step-by-step to get Fam live using free Glitch (app) and Supabase (database).
 
 ---
@@ -58,7 +60,7 @@ Step-by-step to get Fam live using free Glitch (app) and Supabase (database).
   Make sure you ran the full `path-app/db/schema.sql` in Supabase SQL Editor (Part 1, step 2).
 
 - **“Connection refused” or database errors**  
-  Check that `DATABASE_URL` in Glitch is exactly the Supabase URI, with the correct password and no extra spaces. Use the Session pooler (port 6543) for a persistent Node server.
+  Supabase free-tier projects **pause after ~7 days of inactivity**. In the [Supabase Dashboard](https://supabase.com/dashboard), open your project — if it says **Paused**, click **Restore project** / **Unpause**, wait a minute, then try again. Otherwise, check that `DATABASE_URL` in Glitch is exactly the Supabase URI, with the correct password and no extra spaces. Use the Session pooler (port 6543) for a persistent Node server.
 
 - **App sleeps**  
   Glitch free tier may put the app to sleep after inactivity; the first load after that can take 30–60 seconds.

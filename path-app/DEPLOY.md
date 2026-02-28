@@ -7,9 +7,15 @@ The app supports two backends:
 
 ---
 
-## Host on the internet (Render, one-click)
+## Host on the internet
 
-The repo includes a **Blueprint** so you can go from localhost to a live URL in a few minutes.
+**No credit card?** Use **[Railway + Supabase](#option-b-railway--supabase-no-card-for-signup-railway-has-limited-free-credit)** (or Option A) below — sign up with GitHub, no payment info required.
+
+---
+
+### Render Blueprint (one-click, but requires payment information)
+
+The repo includes a **Blueprint** so you can go from localhost to a live URL in a few minutes. **Render typically requires a credit card on file** to use Blueprints (even for free tier).
 
 1. **Push your code** (including `render.yaml` at the **repo root**) to GitHub, GitLab, or Bitbucket.
 
@@ -29,7 +35,7 @@ The repo includes a **Blueprint** so you can go from localhost to a live URL in 
 
 **Note:** On the free tier the service may spin down when idle; the first request after idle can take a minute to respond.
 
-**If Render asks for payment information:** Render sometimes requires a card on file even for free tier. Below are options that don’t.
+**If you don’t want to add a card:** Use the options in the next section (Railway + Supabase, or Railway + Render’s Postgres) — no payment info required to sign up.
 
 ---
 
@@ -44,11 +50,18 @@ The repo includes a **Blueprint** so you can go from localhost to a live URL in 
 5. **Settings** → **Build**: Build Command `npm install`, Start Command `npm start`. Add a **Deploy** hook or run once manually: in a shell with `DATABASE_URL` set, from `path-app` run `npm run schema`.
 6. Deploy. Railway gives a small free trial; after that you get about $1/month free credit (usage beyond that would need a card).
 
-### Option B: Glitch + Supabase (fully free, no card)
+### Option B: Railway + Supabase (no card for signup; Railway has limited free credit)
 
-**→ Full step-by-step guide: [GLITCH-SUPABASE-SETUP.md](GLITCH-SUPABASE-SETUP.md)**
+1. Create a free [Supabase](https://supabase.com) project, run `path-app/db/schema.sql` in SQL Editor, copy the **Database** → **Connection string (URI)** (Session pooler, port 6543).
+2. Sign up at [Railway](https://railway.app) with GitHub (no credit card). **New Project** → **Deploy from GitHub** → select this repo.
+3. Set **Root Directory** to `path-app`. In **Variables** add: `DATABASE_URL` (your Supabase URI), `SESSION_SECRET` (long random string), `NODE_ENV=production`, `USE_HTTPS=1`.
+4. **Settings** → Build: `npm install`, Start: `npm start`. Deploy; then in a one-off shell (or locally with `DATABASE_URL` set) run `npm run schema` from `path-app` if tables don’t exist yet.
+5. Use the Railway-generated URL. No credit card needed to start; Railway gives limited free credit per month.
 
-Summary: (1) Create a free Supabase project, run `path-app/db/schema.sql` in SQL Editor, copy the DB connection string. (2) On Glitch, **New project → Import from GitHub** with this repo; the repo root `package.json` is set up to install and run the app from `path-app`. (3) In Glitch **Tools → Environment** add `DATABASE_URL`, `SESSION_SECRET`, `NODE_ENV`, `USE_HTTPS`. (4) Open the Glitch live URL. No credit card needed.
+**Migrating from Glitch:** Keep your existing Supabase project. Deploy the same repo to Render or Railway and set `DATABASE_URL` to your current Supabase connection string. Your data stays in Supabase; only the app host changes.
+
+**Railway + Supabase: `ENETUNREACH` or connection refused**  
+Railway’s network may not reach Supabase’s **direct** DB (port 5432, sometimes over IPv6). Use the **Session pooler** URL instead: in Supabase → **Project Settings** → **Database** → **Connection string** → pick **URI** and the **Session** (port **6543**) option. It should look like `postgresql://postgres.[ref]:[PASSWORD]@aws-0-[region].pooler.supabase.com:6543/postgres`. Set that as `DATABASE_URL` in Railway and redeploy.
 
 ---
 

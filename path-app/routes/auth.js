@@ -63,26 +63,34 @@ function validateSignup(body) {
 }
 
 router.post('/signup', async (req, res) => {
-  const validated = validateSignup(req.body);
-  if (validated.error) {
-    return res.status(400).json({ error: validated.error });
+  try {
+    const validated = validateSignup(req.body);
+    if (validated.error) {
+      return res.status(400).json({ error: validated.error });
+    }
+    const { email, password, name } = validated;
+    const db = getDb();
+    const existing = await db.getUserByEmail(email);
+    if (existing) {
+      return res.status(409).json({ error: 'An account with this email already exists' });
+    }
+    const user = await db.createUser({ email, password, name });
+    await db.createFam({ name: 'My Fam', created_by: user.id });
+    const pendingFamIds = await db.getPendingInvitesByEmail(email);
+    for (const famId of pendingFamIds) {
+      await db.addFamMember(famId, user.id, null);
+    }
+    if (pendingFamIds.length) await db.deletePendingInvitesForEmail(pendingFamIds, email);
+    req.session.userId = user.id;
+    req.session.user = profileFromUser(user);
+    res.status(201).json({ user: req.session.user });
+  } catch (err) {
+    console.error('Signup error:', err.message || err);
+    const message = err.code === 'ECONNREFUSED' || err.message?.includes('connect')
+      ? 'Database is unavailable. Try again in a moment.'
+      : (err.message || 'Sign up failed. Please try again.');
+    res.status(500).json({ error: message });
   }
-  const { email, password, name } = validated;
-  const db = getDb();
-  const existing = await db.getUserByEmail(email);
-  if (existing) {
-    return res.status(409).json({ error: 'An account with this email already exists' });
-  }
-  const user = await db.createUser({ email, password, name });
-  await db.createFam({ name: 'My Fam', created_by: user.id });
-  const pendingFamIds = await db.getPendingInvitesByEmail(email);
-  for (const famId of pendingFamIds) {
-    await db.addFamMember(famId, user.id, null);
-  }
-  if (pendingFamIds.length) await db.deletePendingInvitesForEmail(pendingFamIds, email);
-  req.session.userId = user.id;
-  req.session.user = profileFromUser(user);
-  res.status(201).json({ user: req.session.user });
 });
 
 router.post('/logout', (req, res) => {

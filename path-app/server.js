@@ -50,7 +50,10 @@ app.get('*', (req, res) => {
 const HOST = process.env.HOST || '0.0.0.0';
 app.listen(PORT, HOST, () => {
   console.log(`Fam running at http://localhost:${PORT}`);
-  if (process.env.DATABASE_URL) console.log('Using PostgreSQL + session store');
+  if (process.env.DATABASE_URL) {
+    const dbHost = require('url').parse(process.env.DATABASE_URL).hostname || '(unknown)';
+    console.log('Using PostgreSQL + session store; DB host:', dbHost);
+  }
   if (HOST === '0.0.0.0') {
     console.log(`Access from other devices: http://[YOUR_IP]:${PORT}`);
   }

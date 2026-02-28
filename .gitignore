@@ -2,6 +2,12 @@
 .DS_Store
 Thumbs.db
 
+# Env (never commit secrets; Railway sets DATABASE_URL etc. in production)
+.env
+.env.local
+path-app/.env
+path-app/.env.local
+
 # Editor
 .vscode/
 .idea/
