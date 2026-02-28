@@ -469,9 +469,8 @@ body {
 .profile-cover-preview {
   height: 120px;
   background: var(--bg-input);
-  background-size: contain;
+  background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
 }
 
 .profile-avatar-preview {
@@ -482,9 +481,8 @@ body {
   height: 64px;
   border-radius: 50%;
   background: var(--bg-input);
-  background-size: contain;
+  background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
   border: 3px solid var(--bg-card);
   display: flex;
   align-items: center;
@@ -781,9 +779,8 @@ body {
   position: absolute;
   inset: 0;
   background: var(--bg-input);
-  background-size: contain;
+  background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
 }
 
 .profile-banner-avatar-wrap {
@@ -801,9 +798,8 @@ body {
   height: 72px;
   border-radius: 50%;
   background: var(--bg-input);
-  background-size: contain;
+  background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
   border: 3px solid var(--bg-card);
   flex-shrink: 0;
   display: flex;
@@ -818,7 +814,7 @@ body {
 .profile-banner-avatar img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .profile-banner-time {
@@ -900,7 +896,7 @@ body {
 .moment-avatar .moment-avatar-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .moment-avatar .moment-avatar-initial {
@@ -962,17 +958,13 @@ body {
   border-radius: var(--radius-sm);
   overflow: hidden;
   background: var(--bg-input);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .moment-image {
-  max-width: 100%;
-  max-height: 280px;
-  width: auto;
+  width: 100%;
   height: auto;
-  object-fit: contain;
+  max-height: 280px;
+  object-fit: cover;
   display: block;
   vertical-align: top;
 }
