@@ -56,7 +56,7 @@ async function sendFeedbackToSlack(user, message) {
 
 function escapeSlack(s) {
   if (typeof s !== 'string') return '';
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(>/g, '&gt;');
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 module.exports = { sendFeedbackToSlack };
