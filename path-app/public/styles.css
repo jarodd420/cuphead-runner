@@ -1012,12 +1012,6 @@ body {
   height: 100%;
 }
 
-.moment-avatar-me {
-  width: 60px;
-  height: 60px;
-  font-size: 1.5rem;
-}
-
 .moment-content {
   flex: 1;
   min-width: 0;
@@ -1119,6 +1113,7 @@ body {
   cursor: pointer;
   touch-action: none;
   transform-origin: center center;
+  transition: transform 0.12s ease-out;
 }
 
 .image-lightbox-img-wrap img {

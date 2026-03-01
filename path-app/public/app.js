@@ -128,11 +128,9 @@ function renderTimeline(moments) {
     const row = document.createElement('article');
     row.className = 'moment-row';
     const avatarWrapData = `data-user-id="${m.user_id}" data-user-name="${escapeHtml(m.user_name || '')}" data-user-avatar="${escapeHtml(m.user_avatar || '')}" data-user-cover="${escapeHtml(m.user_cover || '')}" data-user-bio="${escapeHtml(m.user_bio || '')}"`;
-    const isMe = currentUser && String(m.user_id) === String(currentUser.id);
-    const avatarClass = 'moment-avatar' + (isMe ? ' moment-avatar-me' : '');
     row.innerHTML = `
       <div class="moment-node" aria-hidden="true"></div>
-      <div class="${avatarClass}" role="button" tabindex="0" title="View profile" ${avatarWrapData}>${avatarHtml}</div>
+      <div class="moment-avatar" role="button" tabindex="0" title="View profile" ${avatarWrapData}>${avatarHtml}</div>
       <div class="moment-content">
         <div class="moment-meta">
           <span class="moment-name">${escapeHtml(m.user_name || 'Someone')}</span>

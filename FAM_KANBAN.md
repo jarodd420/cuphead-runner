@@ -8,12 +8,6 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
-- [ ] (from jared rodriguez) should we even have comments on this app?
-
-- [ ] (from jared rodriguez) undo the increase in the current users icon in the feed
-
-- [ ] (from jared rodriguez) the picture zoom in and zoom out is much better but can we smooth out the intrraction more?
-
 ## In progress
 
 - *(Nothing)*
@@ -24,6 +18,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from jared rodriguez) Undo increase in current user's icon in the feed
+- [x] (from jared rodriguez) Lightbox: smooth out zoom/pan interaction (transition on transform)
 - [x] (from jared rodriguez) Lightbox: recenter to original center when zooming back out
 - [x] (from jared rodriguez) In the feed, tap own icon shows contact card (not profile editor)
 - [x] (from jared rodriguez) Logged-in user's profile icon 50% bigger on home screen
