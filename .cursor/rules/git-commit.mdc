@@ -1,0 +1,14 @@
+---
+description: Git commit format — no trailer
+alwaysApply: true
+---
+
+# Git commits
+
+When running git commit in this project:
+
+- Use only: `git commit -m "Your message"`.
+- Do **not** add `--trailer "Made-with: Cursor"` or any other `--trailer` option.
+- Standard flow: `git add -A .` then `git commit -m "message"` then `git push`.
+
+The user's Git does not support `--trailer`; using it causes the commit to fail.

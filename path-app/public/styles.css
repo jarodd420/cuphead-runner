@@ -1012,6 +1012,12 @@ body {
   height: 100%;
 }
 
+.moment-avatar-me {
+  width: 60px;
+  height: 60px;
+  font-size: 1.5rem;
+}
+
 .moment-content {
   flex: 1;
   min-width: 0;

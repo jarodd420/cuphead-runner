@@ -8,13 +8,7 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
-- [ ] (from jared rodriguez) the image pinch to zoom is great and the move around the image is great but as you zoom back out it doesnt recenter back to the original center point
-
-- [ ] (from jared rodriguez) in the feed when you click on your own icon it should show your contact card not go to edit your profile
-
 - [ ] (from jared rodriguez) should we even have comments on this app?
-
-- [ ] (from jared rodriguez) make the logged in persons profile icon 50% bigger on the home screen
 
 ## In progress
 
@@ -26,6 +20,9 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from jared rodriguez) Lightbox: recenter to original center when zooming back out
+- [x] (from jared rodriguez) In the feed, tap own icon shows contact card (not profile editor)
+- [x] (from jared rodriguez) Logged-in user's profile icon 50% bigger on home screen
 - [x] (from jared rodriguez) Contact card: larger profile picture (120px), tap own icon opens profile editor
 - [x] (from jared rodriguez) Lightbox: min zoom 1 (no zoom out past original), pan/drag when zoomed
 - [x] (from jared rodriguez) In lightbox view, tap the picture again to close (same as cancel)

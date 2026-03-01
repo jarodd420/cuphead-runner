@@ -128,9 +128,11 @@ function renderTimeline(moments) {
     const row = document.createElement('article');
     row.className = 'moment-row';
     const avatarWrapData = `data-user-id="${m.user_id}" data-user-name="${escapeHtml(m.user_name || '')}" data-user-avatar="${escapeHtml(m.user_avatar || '')}" data-user-cover="${escapeHtml(m.user_cover || '')}" data-user-bio="${escapeHtml(m.user_bio || '')}"`;
+    const isMe = currentUser && String(m.user_id) === String(currentUser.id);
+    const avatarClass = 'moment-avatar' + (isMe ? ' moment-avatar-me' : '');
     row.innerHTML = `
       <div class="moment-node" aria-hidden="true"></div>
-      <div class="moment-avatar" role="button" tabindex="0" title="View profile" ${avatarWrapData}>${avatarHtml}</div>
+      <div class="${avatarClass}" role="button" tabindex="0" title="View profile" ${avatarWrapData}>${avatarHtml}</div>
       <div class="moment-content">
         <div class="moment-meta">
           <span class="moment-name">${escapeHtml(m.user_name || 'Someone')}</span>
@@ -198,7 +200,12 @@ function renderTimeline(moments) {
       if (!userId) return;
       const myId = currentUser && String(currentUser.id);
       if (myId && String(userId) === myId) {
-        openProfileEditor();
+        openContactCard({
+          name: (currentUser && currentUser.name) || 'Someone',
+          avatar_url: (currentUser && currentUser.avatar_url) || '',
+          cover_url: (currentUser && currentUser.cover_url) || '',
+          bio: (currentUser && currentUser.bio) || '',
+        });
         return;
       }
       openContactCard({
@@ -855,6 +862,10 @@ function init() {
         const dist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
         const scale = Math.max(1, Math.min(4, (pinchStartScale * dist) / pinchStartDist));
         lightboxImgWrap.dataset.scale = String(scale);
+        if (scale <= 1) {
+          lightboxImgWrap.dataset.translateX = '0';
+          lightboxImgWrap.dataset.translateY = '0';
+        }
         applyLightboxTransform();
       } else if (e.touches.length === 1 && parseFloat(lightboxImgWrap.dataset.scale || '1') > 1) {
         e.preventDefault();
