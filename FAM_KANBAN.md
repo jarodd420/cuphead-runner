@@ -16,6 +16,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from Meg) Be able to tap on someone else’s profile picture and see a bigger photo
 
+- [ ] (from jared rodriguez) when you click a picture and are in the download mode it would be nice to be able to pinch zoom in and out also
+
 ## In progress
 
 - *(Nothing)*
