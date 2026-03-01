@@ -414,6 +414,50 @@ body {
   font-size: 0.85rem;
   color: var(--text-muted);
 }
+.fam-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+.fam-member {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.fam-member-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.fam-member-avatar .fam-member-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+.fam-member-avatar .fam-member-initial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.fam-member-name {
+  font-size: 0.9rem;
+  color: var(--text);
+}
 .fam-invite-row {
   display: flex;
   gap: 8px;

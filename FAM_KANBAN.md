@@ -8,8 +8,6 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
-- [ ] (from jared rodriguez) I'd like to know who's currently in my 'fams'.  maybe something in the top right 'fams' icon where you can see the profile icon and the persons name
-
 ## In progress
 
 - *(Nothing)*
@@ -20,6 +18,7 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from jared rodriguez) Show who's in my fams — profile icon + name in fams overlay
 - [x] Password instructions before password field (min 8 chars, letter + number)
 - [x] Profile/cover: choose from album (file input for phone)
 - [x] Invite emails (Resend; domain required for non-test)

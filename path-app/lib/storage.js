@@ -18,6 +18,11 @@ async function uploadToSupabase(buffer, contentType, objectPath) {
   });
   if (!res.ok) {
     const err = await res.text();
+    if (res.status === 404 && (err || '').toLowerCase().includes('bucket')) {
+      throw new Error(
+        `Storage bucket "${bucket}" not found. Create it in Supabase Dashboard → Storage → New bucket → name "${bucket}" → set Public.`
+      );
+    }
     throw new Error(err || `Storage upload failed: ${res.status}`);
   }
   let publicPath = `${bucket}/${objectPath}`;

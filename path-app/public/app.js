@@ -892,18 +892,28 @@ function init() {
         famsList.innerHTML = '<p class="fams-empty">You have no fams yet. Start one and invite people by email.</p>';
         return;
       }
-      famsList.innerHTML = famsData.map(f => `
+      famsList.innerHTML = famsData.map(f => {
+        const members = f.members || [];
+        const membersHtml = members.map(m => {
+          const initial = (m.name || '?').charAt(0).toUpperCase();
+          const avatarHtml = m.avatar_url
+            ? `<img class="fam-member-avatar-img" src="${escapeHtml(m.avatar_url)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><span class="fam-member-initial" style="display:none">${escapeHtml(initial)}</span>`
+            : `<span class="fam-member-initial">${escapeHtml(initial)}</span>`;
+          return `<div class="fam-member"><span class="fam-member-avatar" aria-hidden="true">${avatarHtml}</span><span class="fam-member-name">${escapeHtml(m.name || 'Someone')}</span></div>`;
+        }).join('');
+        return `
         <div class="fam-item" data-fam-id="${f.id}">
           <div class="fam-item-header">
             <span class="fam-item-name">${escapeHtml(f.name)}</span>
             <span class="fam-item-count">${f.member_count || 0} member${(f.member_count || 0) !== 1 ? 's' : ''}</span>
           </div>
+          ${members.length ? `<div class="fam-members">${membersHtml}</div>` : ''}
           <div class="fam-invite-row">
             <input type="email" class="fam-invite-email" placeholder="Email to invite" data-fam-id="${f.id}" />
             <button type="button" class="btn-invite-fam" data-fam-id="${f.id}">Invite</button>
           </div>
-        </div>
-      `).join('');
+        </div>`;
+      }).join('');
       famsList.querySelectorAll('.btn-invite-fam').forEach(btn => {
         btn.addEventListener('click', async () => {
           const famId = btn.getAttribute('data-fam-id');

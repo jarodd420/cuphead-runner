@@ -91,14 +91,14 @@ Images can stay as base64 in the DB for small setups. For scale, use object stor
 
 ### Supabase Storage
 
-1. In Supabase: Storage → New bucket → name `uploads` → Public.
+1. In Supabase: **Storage** → create a bucket (e.g. `uploads` or `fam`) and set it **Public** so profile/moment images are viewable. If you already have a bucket (e.g. `fam`), set `SUPABASE_STORAGE_BUCKET=fam` in your app env. If you see "bucket not found", the bucket name in env must match a bucket in Storage.
 2. Get **Project URL** and **Service Role Key** (Settings → API).
 3. Set:
 
    ```env
    SUPABASE_URL=https://YOUR_PROJECT.supabase.co
    SUPABASE_SERVICE_KEY=your_service_role_key
-   SUPABASE_STORAGE_BUCKET=uploads   # optional, default is uploads
+   SUPABASE_STORAGE_BUCKET=fam       # or uploads; use the bucket name you created in Storage
    ```
 
 4. When users upload (profile/moment photos), the app uploads to this bucket and saves the public URL. If these are not set, the app falls back to base64 (works for local/dev).
@@ -151,7 +151,7 @@ Logged-in users can send update suggestions from the app (menu → **Suggest an 
 | `SESSION_SECRET` | Recommended | Strong random string for session signing |
 | `SUPABASE_URL` | For image uploads | Supabase project URL |
 | `SUPABASE_SERVICE_KEY` | For image uploads | Service role key (not anon key) |
-| `SUPABASE_STORAGE_BUCKET` | Optional | Bucket name (default: `uploads`) |
+| `SUPABASE_STORAGE_BUCKET` | Optional | Bucket name (default: `uploads`). Set to your existing bucket, e.g. `fam`, if you already created one. |
 | `RESEND_API_KEY` | For invite emails | Resend API key; if unset, invites are saved but no email sent |
 | `RESEND_FROM` | Optional | Sender for invite emails (default: `Fam <onboarding@resend.dev>`) |
 | `INVITE_BASE_URL` | Optional | App base URL for signup links (default: from request) |

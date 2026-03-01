@@ -165,7 +165,14 @@ router.get('/users', async (req, res) => {
 router.get('/fams', async (req, res) => {
   const db = getDb();
   const fams = await db.getFamsForUser(req.session.userId);
-  res.json({ fams });
+  const famsWithMembers = await Promise.all(fams.map(async (f) => {
+    const members = await db.getFamMembers(f.id);
+    return {
+      ...f,
+      members: members.map((m) => ({ id: m.id, name: m.name, avatar_url: m.avatar_url })),
+    };
+  }));
+  res.json({ fams: famsWithMembers });
 });
 
 router.post('/fams', async (req, res) => {
