@@ -8,6 +8,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
+- [ ] (from jared rodriguez) when you click on a person from the feed the persons bio card looks good but id like the persons picture to be larger more like the original. also if you are in the feed and click your own icon it sho
+
 ## In progress
 
 - *(Nothing)*
