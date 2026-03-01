@@ -10,6 +10,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from Meg) Should be able to crop and center profile photo
 
+- [ ] (from Meg) Why is there a grey dot on your profile picture?
+
 ## In progress
 
 - *(Nothing)*
