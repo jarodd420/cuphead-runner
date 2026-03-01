@@ -8,6 +8,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
+- [ ] (from jared rodriguez) the image pinch to zoom is great and the move around the image is great but as you zoom back out it doesnt recenter back to the original center point
+
 ## In progress
 
 - *(Nothing)*
