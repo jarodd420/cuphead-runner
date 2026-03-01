@@ -292,16 +292,21 @@ function updateProfilePreviews() {
 }
 
 async function uploadImageFile(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  let res;
   try {
-    const fd = new FormData();
-    fd.append('file', file);
-    const res = await fetch('/api/upload', { method: 'POST', body: fd, credentials: 'include' });
-    if (res.ok) {
-      const data = await res.json();
-      return data.url || null;
-    }
-  } catch (e) {}
-  return null;
+    res = await fetch('/api/upload', { method: 'POST', body: fd, credentials: 'include' });
+  } catch (e) {
+    throw new Error('Network error — check connection and try again.');
+  }
+  const text = await res.text();
+  let data = {};
+  try {
+    if (text) data = JSON.parse(text);
+  } catch (_) {}
+  if (res.ok) return data.url || null;
+  throw new Error(data.error || `Upload failed (${res.status})`);
 }
 
 function readFileAsDataUrl(file) {
@@ -438,14 +443,29 @@ function setupProfilePhotoFromAlbum() {
   }
   const coverFile = $('#profile-cover-file');
   const avatarFile = $('#profile-avatar-file');
+  // Use programmatic click so the file picker opens reliably on iOS (label+hidden input often fails)
+  $('#btn-cover-from-album')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    coverFile?.click();
+  });
+  $('#btn-avatar-from-album')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    avatarFile?.click();
+  });
   coverFile?.addEventListener('change', (e) => {
     const file = e.target.files && e.target.files[0];
-    if (file) handleProfileFile('profile-cover-url', file);
+    if (file) {
+      setUploadStatus('Photo selected, uploading…');
+      handleProfileFile('profile-cover-url', file);
+    }
     e.target.value = '';
   });
   avatarFile?.addEventListener('change', (e) => {
     const file = e.target.files && e.target.files[0];
-    if (file) handleProfileFile('profile-avatar-url', file);
+    if (file) {
+      setUploadStatus('Photo selected, uploading…');
+      handleProfileFile('profile-avatar-url', file);
+    }
     e.target.value = '';
   });
 }

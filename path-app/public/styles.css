@@ -1385,8 +1385,9 @@ body {
 
 .hidden-input {
   position: absolute;
-  width: 0;
-  height: 0;
+  width: 1px;
+  height: 1px;
+  left: -9999px;
   opacity: 0;
   pointer-events: none;
 }
