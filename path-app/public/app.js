@@ -718,6 +718,7 @@ function openContactCard(user) {
     bioEl.textContent = user.bio || '';
     bioEl.hidden = !(user.bio && user.bio.trim());
   }
+  overlay.dataset.contactCardAvatarUrl = (user.avatar_url && user.avatar_url.trim()) ? user.avatar_url : '';
   overlay.hidden = false;
   setOverlayOpen(true);
 }
@@ -843,7 +844,12 @@ function init() {
       const s = parseFloat(lightboxImgWrap.dataset.scale || '1') || 1;
       lightboxImgWrap.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + s + ')';
     }
+    function setInteracting(on) {
+      if (on) lightboxImgWrap.classList.add('lightbox-interacting');
+      else lightboxImgWrap.classList.remove('lightbox-interacting');
+    }
     lightboxImgWrap.addEventListener('touchstart', (e) => {
+      setInteracting(true);
       if (e.touches.length === 2) {
         pinchStartDist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
         pinchStartScale = parseFloat(lightboxImgWrap.dataset.scale || '1') || 1;
@@ -879,16 +885,27 @@ function init() {
       }
     }, { passive: false });
     lightboxImgWrap.addEventListener('touchend', (e) => {
+      if (e.touches.length === 0) setInteracting(false);
       if (e.touches.length < 2) pinchStartDist = 0;
       if (e.touches.length === 1) {
         panStartTranslateX = parseFloat(lightboxImgWrap.dataset.translateX || '0') || 0;
         panStartTranslateY = parseFloat(lightboxImgWrap.dataset.translateY || '0') || 0;
       }
     }, { passive: true });
+    lightboxImgWrap.addEventListener('touchcancel', () => setInteracting(false));
   }
 
   $('#contact-card-backdrop')?.addEventListener('click', closeContactCard);
   $('#contact-card-close')?.addEventListener('click', closeContactCard);
+  $('#contact-card-avatar')?.addEventListener('click', (e) => {
+    const overlay = $('#contact-card-overlay');
+    const url = overlay?.dataset?.contactCardAvatarUrl;
+    if (url) {
+      openImageLightbox(url);
+    }
+  });
+  $('#contact-card-avatar')?.setAttribute('role', 'button');
+  $('#contact-card-avatar')?.setAttribute('title', 'View full picture');
 
   $('#profile-banner-avatar')?.addEventListener('click', () => openProfileEditor());
   $('#profile-banner-avatar')?.setAttribute('role', 'button');

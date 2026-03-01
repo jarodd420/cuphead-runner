@@ -8,8 +8,6 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
-- [ ] (from jared rodriguez) when looking at a users contact card if you click on the user icon it should open the full picture for viewing
-
 ## In progress
 
 - *(Nothing)*
@@ -20,6 +18,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from jared rodriguez) Contact card: tap user avatar to open full picture in lightbox
+- [x] (from jared rodriguez) Lightbox: smoother pinch/pan — no transition during touch, will-change for compositing (fix freeze and flash)
 - [x] (from jared rodriguez) Undo increase in current user's icon in the feed
 - [x] (from jared rodriguez) Lightbox: smooth out zoom/pan interaction (transition on transform)
 - [x] (from jared rodriguez) Lightbox: recenter to original center when zooming back out
