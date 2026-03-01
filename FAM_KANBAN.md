@@ -12,6 +12,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) undo the increase in the current users icon in the feed
 
+- [ ] (from jared rodriguez) the picture zoom in and zoom out is much better but can we smooth out the intrraction more?
+
 ## In progress
 
 - *(Nothing)*
