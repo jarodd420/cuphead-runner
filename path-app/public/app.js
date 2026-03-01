@@ -127,10 +127,10 @@ function renderTimeline(moments) {
       </div>`;
     const row = document.createElement('article');
     row.className = 'moment-row';
+    const avatarWrapData = `data-user-id="${m.user_id}" data-user-name="${escapeHtml(m.user_name || '')}" data-user-avatar="${escapeHtml(m.user_avatar || '')}" data-user-cover="${escapeHtml(m.user_cover || '')}" data-user-bio="${escapeHtml(m.user_bio || '')}"`;
     row.innerHTML = `
       <div class="moment-node" aria-hidden="true"></div>
-      <div class="moment-avatar">${avatarHtml}</div>
-      <div class="moment-type-badge ${escapeHtml(typeClass)}" title="${escapeHtml(type.label)}">${type.icon}</div>
+      <div class="moment-avatar" role="button" tabindex="0" title="View profile" ${avatarWrapData}>${avatarHtml}</div>
       <div class="moment-content">
         <div class="moment-meta">
           <span class="moment-name">${escapeHtml(m.user_name || 'Someone')}</span>
@@ -188,6 +188,30 @@ function renderTimeline(moments) {
         e.preventDefault();
         const img = wrap.querySelector('.moment-image');
         if (img && img.src) openImageLightbox(img.src);
+      }
+    });
+  });
+  $$('.moment-avatar').forEach(avatarEl => {
+    avatarEl.addEventListener('click', (e) => {
+      e.preventDefault();
+      const userId = avatarEl.getAttribute('data-user-id');
+      if (!userId) return;
+      const myId = currentUser && String(currentUser.id);
+      if (myId && String(userId) === myId) {
+        openProfileEditor();
+        return;
+      }
+      openContactCard({
+        name: avatarEl.getAttribute('data-user-name') || 'Someone',
+        avatar_url: avatarEl.getAttribute('data-user-avatar') || '',
+        cover_url: avatarEl.getAttribute('data-user-cover') || '',
+        bio: avatarEl.getAttribute('data-user-bio') || '',
+      });
+    });
+    avatarEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        avatarEl.click();
       }
     });
   });
@@ -619,17 +643,80 @@ function updateProfileBanner() {
 function openImageLightbox(imageUrl) {
   const overlay = $('#image-lightbox-overlay');
   const imgEl = $('#image-lightbox-img');
+  const imgWrap = $('#image-lightbox-img-wrap');
   const downloadLink = $('#image-lightbox-download');
   if (!overlay || !imgEl || !downloadLink) return;
   imgEl.src = imageUrl;
   downloadLink.href = imageUrl;
   downloadLink.download = 'moment-photo.jpg';
+  if (imgWrap) {
+    imgWrap.style.transform = 'scale(1)';
+    imgWrap.dataset.scale = '1';
+  }
   overlay.hidden = false;
   setOverlayOpen(true);
 }
 
 function closeImageLightbox() {
   const overlay = $('#image-lightbox-overlay');
+  if (overlay) overlay.hidden = true;
+  setOverlayOpen(false);
+}
+
+function openContactCard(user) {
+  const overlay = $('#contact-card-overlay');
+  const coverEl = $('#contact-card-cover');
+  const avatarEl = $('#contact-card-avatar');
+  const nameEl = $('#contact-card-name');
+  const bioEl = $('#contact-card-bio');
+  if (!overlay || !nameEl) return;
+  if (coverEl) {
+    coverEl.style.backgroundImage = (user.cover_url && user.cover_url.trim()) ? 'url("' + String(user.cover_url).replace(/\\/g, '\\\\').replace(/"/g, '\\22') + '")' : 'none';
+    coverEl.style.backgroundSize = 'cover';
+    coverEl.style.backgroundPosition = 'center';
+  }
+  if (avatarEl) {
+    avatarEl.style.backgroundImage = 'none';
+    avatarEl.textContent = '';
+    avatarEl.removeAttribute('style');
+    const name = user.name || 'Someone';
+    const initial = name.charAt(0).toUpperCase();
+    if (user.avatar_url && user.avatar_url.trim()) {
+      const img = document.createElement('img');
+      img.alt = '';
+      img.src = user.avatar_url;
+      img.onerror = () => {
+        img.remove();
+        avatarEl.textContent = initial;
+        avatarEl.style.display = 'flex';
+        avatarEl.style.alignItems = 'center';
+        avatarEl.style.justifyContent = 'center';
+        avatarEl.style.fontSize = '2rem';
+        avatarEl.style.fontWeight = '600';
+        avatarEl.style.color = 'var(--text-muted)';
+      };
+      avatarEl.appendChild(img);
+    } else {
+      avatarEl.textContent = initial;
+      avatarEl.style.display = 'flex';
+      avatarEl.style.alignItems = 'center';
+      avatarEl.style.justifyContent = 'center';
+      avatarEl.style.fontSize = '2rem';
+      avatarEl.style.fontWeight = '600';
+      avatarEl.style.color = 'var(--text-muted)';
+    }
+  }
+  nameEl.textContent = user.name || 'Someone';
+  if (bioEl) {
+    bioEl.textContent = user.bio || '';
+    bioEl.hidden = !(user.bio && user.bio.trim());
+  }
+  overlay.hidden = false;
+  setOverlayOpen(true);
+}
+
+function closeContactCard() {
+  const overlay = $('#contact-card-overlay');
   if (overlay) overlay.hidden = true;
   setOverlayOpen(false);
 }
@@ -737,9 +824,43 @@ function init() {
 
   $('#image-lightbox-backdrop')?.addEventListener('click', closeImageLightbox);
   $('#image-lightbox-close')?.addEventListener('click', closeImageLightbox);
+  $('#image-lightbox-img')?.addEventListener('click', (e) => { e.stopPropagation(); closeImageLightbox(); });
+
+  const lightboxImgWrap = $('#image-lightbox-img-wrap');
+  if (lightboxImgWrap) {
+    let pinchStartDist = 0, pinchStartScale = 1;
+    lightboxImgWrap.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        pinchStartDist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+        pinchStartScale = parseFloat(lightboxImgWrap.dataset.scale || '1') || 1;
+      }
+    }, { passive: true });
+    lightboxImgWrap.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2 && pinchStartDist > 0) {
+        e.preventDefault();
+        const dist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+        const scale = Math.max(0.5, Math.min(4, (pinchStartScale * dist) / pinchStartDist));
+        lightboxImgWrap.style.transform = 'scale(' + scale + ')';
+        lightboxImgWrap.dataset.scale = String(scale);
+      }
+    }, { passive: false });
+    lightboxImgWrap.addEventListener('touchend', () => { pinchStartDist = 0; }, { passive: true });
+  }
+
+  $('#contact-card-backdrop')?.addEventListener('click', closeContactCard);
+  $('#contact-card-close')?.addEventListener('click', closeContactCard);
+
+  $('#profile-banner-avatar')?.addEventListener('click', () => openProfileEditor());
+  $('#profile-banner-avatar')?.setAttribute('role', 'button');
+  $('#profile-banner-avatar')?.setAttribute('title', 'Edit profile');
 
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
+    const contactCard = $('#contact-card-overlay');
+    if (contactCard && !contactCard.hidden) {
+      closeContactCard();
+      return;
+    }
     const lightbox = $('#image-lightbox-overlay');
     if (lightbox && !lightbox.hidden) {
       closeImageLightbox();

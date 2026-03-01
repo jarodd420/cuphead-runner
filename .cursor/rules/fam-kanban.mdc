@@ -5,14 +5,15 @@ alwaysApply: true
 
 # Fam kanban tasking
 
-When the user asks to **work the kanban**, **work the board**, **work the list**, **work through the kanban**, **what's next**, or similar:
+When the user asks to **work the kanban**, **work the board**, **work the list**, **work through the kanban**, **what's next**, **what's on the board**, or similar:
 
-1. **Read** `FAM_KANBAN.md` at the repo root.
-2. **Do as many items as you reasonably can in one run.** Don’t stop after one task unless the user asked for a single item or the remaining items need clarification. Pick from **Backlog / To do** or **In progress**; if nothing is in progress, move one Backlog item to **In progress** and do it, then continue with more.
-3. **Update the file** when you start or finish each item:
+1. **Run `git pull`** first so the board is up to date (e.g. if feedback was appended from the app or another machine).
+2. **Read** `FAM_KANBAN.md` at the repo root.
+3. **Do as many items as you reasonably can in one run.** Don’t stop after one task unless the user asked for a single item or the remaining items need clarification. Pick from **Backlog / To do** or **In progress**; if nothing is in progress, move one Backlog item to **In progress** and do it, then continue with more.
+4. **Update the file** when you start or finish each item:
    - When starting a task: move that line from Backlog to **In progress** (or leave it there if already there).
    - When finishing: move the task from **In progress** to **Done** and mark it `[x]`.
    - If an item is clearly nonsensical, spam, or not a real suggestion: move it to **Won't do** (don’t implement it).
-4. Keep the same format: `- [ ]` for open, `- [x]` for done; keep sections `## Backlog / To do`, `## In progress`, `## Won't do`, `## Done`.
+5. Keep the same format: `- [ ]` for open, `- [x]` for done; keep sections `## Backlog / To do`, `## In progress`, `## Won't do`, `## Done`.
 
 New feedback from the app is appended to Backlog only if it looks like real text (min length, has letters). Nonsensical posts still go to Slack but not the kanban. When working the list, move junk to Won't do.

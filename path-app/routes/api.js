@@ -76,6 +76,7 @@ router.get('/timeline', async (req, res) => {
       user_name: userMap[m.user_id]?.name,
       user_avatar: userMap[m.user_id]?.avatar_url,
       user_cover: userMap[m.user_id]?.cover_url,
+      user_bio: userMap[m.user_id]?.bio ?? null,
       comments: momentComments,
       reactions: reactionCounts,
       my_reaction: myReaction ? myReaction.emoji : null,

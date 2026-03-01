@@ -147,11 +147,26 @@
       <div class="image-lightbox-overlay" id="image-lightbox-overlay" hidden>
         <div class="image-lightbox-backdrop" id="image-lightbox-backdrop"></div>
         <div class="image-lightbox-content">
-          <img id="image-lightbox-img" alt="Moment photo" />
+          <div class="image-lightbox-img-wrap" id="image-lightbox-img-wrap">
+            <img id="image-lightbox-img" alt="Moment photo" title="Tap to close" />
+          </div>
           <div class="image-lightbox-actions">
             <a id="image-lightbox-download" class="btn-post" href="#" download target="_blank" rel="noopener">Download</a>
             <button type="button" class="btn-cancel" id="image-lightbox-close">Close</button>
           </div>
+        </div>
+      </div>
+
+      <div class="contact-card-overlay" id="contact-card-overlay" hidden>
+        <div class="contact-card-backdrop" id="contact-card-backdrop"></div>
+        <div class="contact-card" id="contact-card">
+          <div class="contact-card-cover" id="contact-card-cover"></div>
+          <div class="contact-card-avatar-wrap">
+            <div class="contact-card-avatar" id="contact-card-avatar"></div>
+          </div>
+          <h2 class="contact-card-name" id="contact-card-name"></h2>
+          <div class="contact-card-bio" id="contact-card-bio"></div>
+          <button type="button" class="btn-cancel contact-card-close" id="contact-card-close">Close</button>
         </div>
       </div>
 

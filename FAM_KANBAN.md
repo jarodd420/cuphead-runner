@@ -8,16 +8,6 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
-- [ ] (from jared rodriguez) the tap to download is a nice feature. i think when you are in that view if you tap the picture again it sjould be the equivalent of a cancel
-
-- [ ] (from jared rodriguez) on the feed remove the moment type icon from the list. it takes up real estate and doesnt provide value
-
-- [ ] (from Meg) Capability to tap on profile picture and edit it
-
-- [ ] (from Meg) Be able to tap on someone else’s profile picture and see a bigger photo
-
-- [ ] (from jared rodriguez) when you click a picture and are in the download mode it would be nice to be able to pinch zoom in and out also
-
 ## In progress
 
 - *(Nothing)*
@@ -28,6 +18,11 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from jared rodriguez) In lightbox view, tap the picture again to close (same as cancel)
+- [x] (from jared rodriguez) Remove moment type icon from the feed
+- [x] (from Meg) Tap on own profile picture to edit it
+- [x] (from Meg) Tap someone else’s profile picture → contact card (avatar, cover, name, bio)
+- [x] (from jared rodriguez) Pinch to zoom in/out when viewing a picture in the lightbox
 - [x] (from Meg) Crop and center profile photo — center square crop before upload
 - [x] (from Meg) Grey dot on profile picture — removed list-style/pseudo-elements; avatar uses object-fit cover
 - [x] (from Meg) Crop and edit cover photo — center 3:1 crop before upload
