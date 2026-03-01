@@ -36,7 +36,7 @@ async function appendFeedbackToKanban(feedbackText, fromName) {
     let content = Buffer.from(getData.content, 'base64').toString('utf8');
 
     const label = fromName ? ` (from ${fromName})` : '';
-    const safeText = feedbackText.replace(/\r?\n/g, ' ').trim().slice(0, 200);
+    const safeText = feedbackText.replace(/\r?\n/g, ' ').trim().slice(0, 800);
     const newLine = `- [ ]${label} ${safeText}\n`;
 
     const backlogHeader = '## Backlog / To do';

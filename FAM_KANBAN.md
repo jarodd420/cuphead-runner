@@ -8,10 +8,6 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
-- [ ] (from jared rodriguez) when you click on a person from the feed the persons bio card looks good but id like the persons picture to be larger more like the original. also if you are in the feed and click your own icon it sho
-
-- [ ] (from jared rodriguez) i suggested the pinch zoom to be in and out but it shouldnt be able to zoom out any further than the original. also you should be able to kove around the picture with your finger (whatever that is cal
-
 ## In progress
 
 - *(Nothing)*
@@ -22,6 +18,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from jared rodriguez) Contact card: larger profile picture (120px), tap own icon opens profile editor
+- [x] (from jared rodriguez) Lightbox: min zoom 1 (no zoom out past original), pan/drag when zoomed
 - [x] (from jared rodriguez) In lightbox view, tap the picture again to close (same as cancel)
 - [x] (from jared rodriguez) Remove moment type icon from the feed
 - [x] (from Meg) Tap on own profile picture to edit it

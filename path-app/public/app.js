@@ -650,8 +650,10 @@ function openImageLightbox(imageUrl) {
   downloadLink.href = imageUrl;
   downloadLink.download = 'moment-photo.jpg';
   if (imgWrap) {
-    imgWrap.style.transform = 'scale(1)';
+    imgWrap.style.transform = 'translate(0px, 0px) scale(1)';
     imgWrap.dataset.scale = '1';
+    imgWrap.dataset.translateX = '0';
+    imgWrap.dataset.translateY = '0';
   }
   overlay.hidden = false;
   setOverlayOpen(true);
@@ -691,7 +693,7 @@ function openContactCard(user) {
         avatarEl.style.display = 'flex';
         avatarEl.style.alignItems = 'center';
         avatarEl.style.justifyContent = 'center';
-        avatarEl.style.fontSize = '2rem';
+        avatarEl.style.fontSize = '3rem';
         avatarEl.style.fontWeight = '600';
         avatarEl.style.color = 'var(--text-muted)';
       };
@@ -701,7 +703,7 @@ function openContactCard(user) {
       avatarEl.style.display = 'flex';
       avatarEl.style.alignItems = 'center';
       avatarEl.style.justifyContent = 'center';
-      avatarEl.style.fontSize = '2rem';
+      avatarEl.style.fontSize = '3rem';
       avatarEl.style.fontWeight = '600';
       avatarEl.style.color = 'var(--text-muted)';
     }
@@ -829,22 +831,51 @@ function init() {
   const lightboxImgWrap = $('#image-lightbox-img-wrap');
   if (lightboxImgWrap) {
     let pinchStartDist = 0, pinchStartScale = 1;
+    let panStartX = 0, panStartY = 0, panStartTranslateX = 0, panStartTranslateY = 0;
+    function applyLightboxTransform() {
+      const tx = parseFloat(lightboxImgWrap.dataset.translateX || '0') || 0;
+      const ty = parseFloat(lightboxImgWrap.dataset.translateY || '0') || 0;
+      const s = parseFloat(lightboxImgWrap.dataset.scale || '1') || 1;
+      lightboxImgWrap.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + s + ')';
+    }
     lightboxImgWrap.addEventListener('touchstart', (e) => {
       if (e.touches.length === 2) {
         pinchStartDist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
         pinchStartScale = parseFloat(lightboxImgWrap.dataset.scale || '1') || 1;
+      } else if (e.touches.length === 1) {
+        panStartX = e.touches[0].clientX;
+        panStartY = e.touches[0].clientY;
+        panStartTranslateX = parseFloat(lightboxImgWrap.dataset.translateX || '0') || 0;
+        panStartTranslateY = parseFloat(lightboxImgWrap.dataset.translateY || '0') || 0;
       }
     }, { passive: true });
     lightboxImgWrap.addEventListener('touchmove', (e) => {
       if (e.touches.length === 2 && pinchStartDist > 0) {
         e.preventDefault();
         const dist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
-        const scale = Math.max(0.5, Math.min(4, (pinchStartScale * dist) / pinchStartDist));
-        lightboxImgWrap.style.transform = 'scale(' + scale + ')';
+        const scale = Math.max(1, Math.min(4, (pinchStartScale * dist) / pinchStartDist));
         lightboxImgWrap.dataset.scale = String(scale);
+        applyLightboxTransform();
+      } else if (e.touches.length === 1 && parseFloat(lightboxImgWrap.dataset.scale || '1') > 1) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - panStartX;
+        const dy = e.touches[0].clientY - panStartY;
+        lightboxImgWrap.dataset.translateX = String(panStartTranslateX + dx);
+        lightboxImgWrap.dataset.translateY = String(panStartTranslateY + dy);
+        panStartX = e.touches[0].clientX;
+        panStartY = e.touches[0].clientY;
+        panStartTranslateX = panStartTranslateX + dx;
+        panStartTranslateY = panStartTranslateY + dy;
+        applyLightboxTransform();
       }
     }, { passive: false });
-    lightboxImgWrap.addEventListener('touchend', () => { pinchStartDist = 0; }, { passive: true });
+    lightboxImgWrap.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) pinchStartDist = 0;
+      if (e.touches.length === 1) {
+        panStartTranslateX = parseFloat(lightboxImgWrap.dataset.translateX || '0') || 0;
+        panStartTranslateY = parseFloat(lightboxImgWrap.dataset.translateY || '0') || 0;
+      }
+    }, { passive: true });
   }
 
   $('#contact-card-backdrop')?.addEventListener('click', closeContactCard);
