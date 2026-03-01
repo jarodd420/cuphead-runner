@@ -8,6 +8,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
+- [ ] (from jared rodriguez) the tap to download is a nice feature. i think when you are in that view if you tap the picture again it sjould be the equivalent of a cancel
+
 ## In progress
 
 - *(Nothing)*
