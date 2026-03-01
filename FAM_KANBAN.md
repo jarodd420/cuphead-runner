@@ -10,6 +10,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) should we even have comments on this app?
 
+- [ ] (from jared rodriguez) undo the increase in the current users icon in the feed
+
 ## In progress
 
 - *(Nothing)*
