@@ -258,6 +258,8 @@ async function openProfileEditor() {
   if (bioEl) bioEl.value = (currentUser && currentUser.bio) || '';
   updateProfilePreviews();
   const overlay = $('#profile-overlay');
+  const statusEl = $('#profile-upload-status');
+  if (statusEl) statusEl.textContent = '';
   if (overlay) {
     overlay.hidden = false;
     setOverlayOpen(true);
@@ -422,7 +424,6 @@ function setupProfilePhotoFromAlbum() {
         input.value = url;
         updateProfilePreviews();
         setUploadStatus('Photo ready — tap Save to update profile.');
-        setTimeout(() => setUploadStatus(''), 4000);
       } else {
         setUploadStatus('');
         showError('Upload failed. Preview kept — try again or paste a URL.');
@@ -436,7 +437,6 @@ function setupProfilePhotoFromAlbum() {
           input.value = dataUrl;
           updateProfilePreviews();
           setUploadStatus('Using photo — tap Save (upload failed).');
-          setTimeout(() => setUploadStatus(''), 4000);
         }
       } catch (_) { /* ignore */ }
     }
@@ -753,6 +753,8 @@ function init() {
         }),
       });
       currentUser = profile;
+      const statusEl = $('#profile-upload-status');
+      if (statusEl) statusEl.textContent = '';
       profileOverlay.hidden = true;
       setOverlayOpen(false);
       updateProfileBanner();
