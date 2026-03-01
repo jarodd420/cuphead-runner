@@ -14,6 +14,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from Meg) Should be able to crop and edit cover photo
 
+- [ ] (from Meg) Should be able to tap on photos instead of holding down on photo to make it bigger. And should be a clearer way to download the photo
+
 ## In progress
 
 - *(Nothing)*
