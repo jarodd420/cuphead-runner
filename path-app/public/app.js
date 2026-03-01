@@ -96,7 +96,7 @@ function renderTimeline(moments) {
       ? `<img class="moment-avatar-img" src="${escapeHtml(m.user_avatar)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><span class="moment-avatar-initial" style="display:none">${escapeHtml(initial)}</span>`
       : `<span class="moment-avatar-initial">${escapeHtml(initial)}</span>`;
     const bodyHtml = m.body ? `<div class="moment-body">${escapeHtml(m.body)}</div>` : '';
-    const imageHtml = m.image_url ? `<div class="moment-image-wrap"><img class="moment-image" src="${escapeHtml(m.image_url)}" alt="" loading="lazy" onerror="this.onerror=null;this.style.background='var(--bg-input)';this.style.minHeight='80px';this.alt='Image unavailable (check bucket is public)';" /></div>` : '';
+    const imageHtml = m.image_url ? `<div class="moment-image-wrap" role="button" tabindex="0" title="Tap to view or download"><img class="moment-image" src="${escapeHtml(m.image_url)}" alt="" loading="lazy" onerror="this.onerror=null;this.style.background='var(--bg-input)';this.style.minHeight='80px';this.alt='Image unavailable (check bucket is public)';" /></div>` : '';
     const commentCount = (m.comments || []).length;
     const commentsList = (m.comments || []).map(c => {
       const cTime = new Date(c.created_at).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
@@ -175,6 +175,20 @@ function renderTimeline(moments) {
       sendReaction(momentId, emoji, list);
       const picker = btn.closest('.moment-reaction-picker');
       if (picker) picker.hidden = true;
+    });
+  });
+  $$('.moment-image-wrap').forEach(wrap => {
+    wrap.addEventListener('click', (e) => {
+      e.preventDefault();
+      const img = wrap.querySelector('.moment-image');
+      if (img && img.src) openImageLightbox(img.src);
+    });
+    wrap.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const img = wrap.querySelector('.moment-image');
+        if (img && img.src) openImageLightbox(img.src);
+      }
     });
   });
 }
@@ -369,6 +383,62 @@ function compressImageFile(file) {
   });
 }
 
+/** Center-crop image for profile (square) or cover (wide). Returns a new File or the original on failure. */
+function centerCropProfileImage(file, isCover) {
+  if (!file || !file.type.startsWith('image/')) return Promise.resolve(file);
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let w = img.naturalWidth || img.width;
+      let h = img.naturalHeight || img.height;
+      if (!w || !h) { resolve(file); return; }
+      let sw, sh, sx, sy;
+      if (isCover) {
+        const targetRatio = 3;
+        const currentRatio = w / h;
+        if (currentRatio > targetRatio) {
+          sh = h;
+          sw = h * targetRatio;
+          sx = (w - sw) / 2;
+          sy = 0;
+        } else {
+          sw = w;
+          sh = w / targetRatio;
+          sx = 0;
+          sy = (h - sh) / 2;
+        }
+      } else {
+        const size = Math.min(w, h);
+        sw = sh = size;
+        sx = (w - size) / 2;
+        sy = (h - size) / 2;
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = sw;
+      canvas.height = sh;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) { resolve(file); return; }
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) { resolve(file); return; }
+          const name = (file.name || 'photo').replace(/\.[^.]+$/i, '') + '.jpg';
+          resolve(new File([blob], name, { type: 'image/jpeg', lastModified: Date.now() }));
+        },
+        'image/jpeg',
+        COMPRESS_QUALITY
+      );
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve(file);
+    };
+    img.src = url;
+  });
+}
+
 async function fileToImageUrl(file) {
   const toUpload = await compressImageFile(file);
   const url = await uploadImageFile(toUpload);
@@ -419,7 +489,8 @@ function setupProfilePhotoFromAlbum() {
     try {
       if (isCover) setProfilePreviewOnly(objectUrl, $('#profile-avatar-url')?.value || (currentUser && currentUser.avatar_url));
       else setProfilePreviewOnly($('#profile-cover-url')?.value || (currentUser && currentUser.cover_url), objectUrl);
-      const url = await fileToImageUrl(file);
+      const cropped = await centerCropProfileImage(file, isCover);
+      const url = await fileToImageUrl(cropped);
       if (url) {
         if (lastProfileObjectUrl === objectUrl) lastProfileObjectUrl = null;
         URL.revokeObjectURL(objectUrl);
@@ -545,6 +616,24 @@ function updateProfileBanner() {
   }
 }
 
+function openImageLightbox(imageUrl) {
+  const overlay = $('#image-lightbox-overlay');
+  const imgEl = $('#image-lightbox-img');
+  const downloadLink = $('#image-lightbox-download');
+  if (!overlay || !imgEl || !downloadLink) return;
+  imgEl.src = imageUrl;
+  downloadLink.href = imageUrl;
+  downloadLink.download = 'moment-photo.jpg';
+  overlay.hidden = false;
+  setOverlayOpen(true);
+}
+
+function closeImageLightbox() {
+  const overlay = $('#image-lightbox-overlay');
+  if (overlay) overlay.hidden = true;
+  setOverlayOpen(false);
+}
+
 async function loadTimeline() {
   const loading = $('#timeline-loading');
   const empty = $('#timeline-empty');
@@ -646,8 +735,16 @@ function init() {
     }
   });
 
+  $('#image-lightbox-backdrop')?.addEventListener('click', closeImageLightbox);
+  $('#image-lightbox-close')?.addEventListener('click', closeImageLightbox);
+
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
+    const lightbox = $('#image-lightbox-overlay');
+    if (lightbox && !lightbox.hidden) {
+      closeImageLightbox();
+      return;
+    }
     if (addMomentOverlay && !addMomentOverlay.hidden) {
       addMomentOverlay.hidden = true;
       setOverlayOpen(false);

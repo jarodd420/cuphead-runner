@@ -8,16 +8,6 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
-- [ ] (from Meg) Should be able to crop and center profile photo
-
-- [ ] (from Meg) Why is there a grey dot on your profile picture?
-
-- [ ] (from Meg) Should be able to crop and edit cover photo
-
-- [ ] (from Meg) Should be able to tap on photos instead of holding down on photo to make it bigger. And should be a clearer way to download the photo
-
-- [ ] (from Meg) Pick a new color besides red. Red is too aggressive
-
 ## In progress
 
 - *(Nothing)*
@@ -28,6 +18,11 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from Meg) Crop and center profile photo — center square crop before upload
+- [x] (from Meg) Grey dot on profile picture — removed list-style/pseudo-elements; avatar uses object-fit cover
+- [x] (from Meg) Crop and edit cover photo — center 3:1 crop before upload
+- [x] (from Meg) Tap on photos to make bigger + clearer download — lightbox with Download button
+- [x] (from Meg) New color besides red — primary accent now teal (#0d9488)
 - [x] (from jared rodriguez) Show who's in my fams — profile icon + name in fams overlay
 - [x] Password instructions before password field (min 8 chars, letter + number)
 - [x] Profile/cover: choose from album (file input for phone)

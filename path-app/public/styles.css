@@ -1,7 +1,7 @@
 :root {
-  --path-red: #c41e3a;
-  --path-red-dark: #a01830;
-  --path-red-focus: rgba(196, 30, 58, 0.35);
+  --path-red: #0d9488;
+  --path-red-dark: #0f766e;
+  --path-red-focus: rgba(13, 148, 136, 0.35);
   --bg: #f5f0e8;
   --bg-card: #fff;
   --bg-input: #ebe6de;
@@ -881,6 +881,7 @@ body {
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
+  list-style: none;
 }
 
 .profile-banner-avatar {
@@ -899,6 +900,13 @@ body {
   font-weight: 600;
   color: var(--text-muted);
   overflow: hidden;
+  list-style: none;
+}
+
+.profile-banner-avatar::before,
+.profile-banner-avatar::after {
+  content: none;
+  display: none;
 }
 
 .profile-banner-avatar img {
@@ -1052,6 +1060,7 @@ body {
   border-radius: var(--radius-sm);
   overflow: hidden;
   background: var(--bg-input);
+  cursor: pointer;
 }
 
 .moment-image {
@@ -1059,8 +1068,58 @@ body {
   height: auto;
   max-height: 280px;
   object-fit: cover;
+  object-position: center;
   display: block;
   vertical-align: top;
+}
+
+/* Image lightbox: tap to view full size + download */
+.image-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.85);
+  animation: overlay-fade-in var(--transition-overlay);
+}
+
+.image-lightbox-overlay[hidden] {
+  display: none;
+}
+
+.image-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
+
+.image-lightbox-content {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.image-lightbox-content img {
+  max-width: 100%;
+  max-height: calc(100vh - 120px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+
+.image-lightbox-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .moment-body {

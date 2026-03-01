@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <meta name="theme-color" content="#c41e3a" />
+  <meta name="theme-color" content="#0d9488" />
   <meta name="description" content="Fam — Share moments with your close circle." />
   <title>Fam</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -141,6 +141,17 @@
           </div>
           <div class="fams-list" id="fams-list"></div>
           <button type="button" class="btn-cancel fams-close" id="btn-close-fams">Close</button>
+        </div>
+      </div>
+
+      <div class="image-lightbox-overlay" id="image-lightbox-overlay" hidden>
+        <div class="image-lightbox-backdrop" id="image-lightbox-backdrop"></div>
+        <div class="image-lightbox-content">
+          <img id="image-lightbox-img" alt="Moment photo" />
+          <div class="image-lightbox-actions">
+            <a id="image-lightbox-download" class="btn-post" href="#" download target="_blank" rel="noopener">Download</a>
+            <button type="button" class="btn-cancel" id="image-lightbox-close">Close</button>
+          </div>
         </div>
       </div>
 
