@@ -12,6 +12,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from Meg) Why is there a grey dot on your profile picture?
 
+- [ ] (from Meg) Should be able to crop and edit cover photo
+
 ## In progress
 
 - *(Nothing)*
