@@ -14,6 +14,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) should we even have comments on this app?
 
+- [ ] (from jared rodriguez) make the logged in persons profile icon 50% bigger on the home screen
+
 ## In progress
 
 - *(Nothing)*
