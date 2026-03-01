@@ -12,6 +12,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) on the feed remove the moment type icon from the list. it takes up real estate and doesnt provide value
 
+- [ ] (from Meg) Capability to tap on profile picture and edit it
+
 ## In progress
 
 - *(Nothing)*
