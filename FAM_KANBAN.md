@@ -14,6 +14,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from Meg) Capability to tap on profile picture and edit it
 
+- [ ] (from Meg) Be able to tap on someone else’s profile picture and see a bigger photo
+
 ## In progress
 
 - *(Nothing)*
