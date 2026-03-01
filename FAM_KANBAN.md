@@ -12,6 +12,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) in the feed when you click on your own icon it should show your contact card not go to edit your profile
 
+- [ ] (from jared rodriguez) should we even have comments on this app?
+
 ## In progress
 
 - *(Nothing)*
