@@ -105,10 +105,11 @@ function renderTimeline(moments) {
     const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
     const reactionSummary = (m.reactions && Object.keys(m.reactions).length) ? Object.entries(m.reactions).map(([emoji, count]) => count ? `${emoji} ${count}` : '').filter(Boolean).join('  ') : '';
     const myReactionEmoji = m.my_reaction || '';
+    const reactIconHtml = myReactionEmoji ? myReactionEmoji : '<span class="moment-react-icon" aria-hidden="true">🙂</span>';
     const commentsHtml = `
       <div class="moment-actions">
         <div class="moment-reactions-wrap">
-          <button type="button" class="moment-react-btn" data-moment-id="${m.id}" title="React">${myReactionEmoji || '🙌'}<span class="moment-react-summary">${escapeHtml(reactionSummary)}</span></button>
+          <button type="button" class="moment-react-btn" data-moment-id="${m.id}" title="React">${reactIconHtml}<span class="moment-react-summary">${escapeHtml(reactionSummary)}</span></button>
           <div class="moment-reaction-picker" data-moment-id="${m.id}" hidden>
             ${REACTION_EMOJIS.map(emoji => `<button type="button" class="moment-picker-emoji" data-moment-id="${m.id}" data-emoji="${escapeHtml(emoji)}">${emoji}</button>`).join('')}
           </div>
@@ -209,7 +210,8 @@ function sendReaction(momentId, emoji, list) {
       if (!btn) { loadTimeline(); return; }
       const summary = (newCounts && Object.keys(newCounts).length) ? Object.entries(newCounts).map(([e, c]) => c ? `${e} ${c}` : '').filter(Boolean).join('  ') : '';
       const summarySpan = summary ? `<span class="moment-react-summary">${escapeHtml(summary)}</span>` : '<span class="moment-react-summary"></span>';
-      btn.innerHTML = (my_reaction || '🙌') + summarySpan;
+      const iconHtml = my_reaction ? my_reaction : '<span class="moment-react-icon" aria-hidden="true">🙂</span>';
+      btn.innerHTML = iconHtml + summarySpan;
     })
     .catch(err => showError(err.message || 'Failed to react'));
 }

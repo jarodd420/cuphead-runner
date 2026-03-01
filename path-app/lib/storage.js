@@ -23,6 +23,11 @@ async function uploadToSupabase(buffer, contentType, objectPath) {
         `Storage bucket "${bucket}" not found. Create it in Supabase Dashboard → Storage → New bucket → name "${bucket}" → set Public.`
       );
     }
+    if (res.status === 403 && (err || '').toLowerCase().includes('row-level security')) {
+      throw new Error(
+        `Storage 403: RLS policy blocking upload. Use the Service Role key (Settings → API → service_role). Then in Supabase SQL Editor run the policies in path-app/docs/storage-policies.sql for bucket "${bucket}".`
+      );
+    }
     throw new Error(err || `Storage upload failed: ${res.status}`);
   }
   let publicPath = `${bucket}/${objectPath}`;

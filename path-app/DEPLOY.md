@@ -103,6 +103,8 @@ Images can stay as base64 in the DB for small setups. For scale, use object stor
 
 4. When users upload (profile/moment photos), the app uploads to this bucket and saves the public URL. If these are not set, the app falls back to base64 (works for local/dev).
 
+5. **If you get 403 "row violates row-level security policy"**: Supabase Storage uses RLS. Use the **Service role** key (Settings → API → `service_role` secret, not anon). Then in **SQL Editor** run the policies that allow uploads and public read for your bucket — see `path-app/docs/storage-policies.sql`. Change `'fam'` in that file to your bucket name if different, then run it.
+
 ## 3. Invite emails (optional)
 
 When someone is invited to a fam by email, the app stores the invite and **optionally** sends an email so they know to sign up.

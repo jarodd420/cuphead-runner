@@ -69,6 +69,10 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px;
+  background-image: linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.28) 100%), url('/images/family_camping.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 #root[data-screen="login"] #screen-signup,
 #root[data-screen="login"] #screen-app,
@@ -644,11 +648,17 @@ body {
 }
 
 /* ----- Login / Signup ----- */
-#screen-login, #screen-signup {
+#screen-signup {
   align-items: center;
   justify-content: center;
   padding: 24px;
   background: var(--bg);
+}
+#screen-login {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  /* background set per-screen above (login uses image) */
 }
 
 .login-card {
@@ -1097,6 +1107,12 @@ body {
 .moment-react-btn:hover {
   background: var(--bg-input);
   border-color: var(--text-muted);
+}
+
+/* Grey emoji icon when no reaction (Apple-style “emoji” key) */
+.moment-react-icon {
+  filter: grayscale(1);
+  opacity: 0.85;
 }
 
 .moment-react-summary {
