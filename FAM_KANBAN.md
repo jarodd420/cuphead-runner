@@ -8,6 +8,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
+- [ ] (from jared rodriguez) when looking at a users contact card if you click on the user icon it should open the full picture for viewing
+
 ## In progress
 
 - *(Nothing)*
