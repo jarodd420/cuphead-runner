@@ -16,6 +16,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from Meg) Should be able to tap on photos instead of holding down on photo to make it bigger. And should be a clearer way to download the photo
 
+- [ ] (from Meg) Pick a new color besides red. Red is too aggressive
+
 ## In progress
 
 - *(Nothing)*
