@@ -10,6 +10,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) the image pinch to zoom is great and the move around the image is great but as you zoom back out it doesnt recenter back to the original center point
 
+- [ ] (from jared rodriguez) in the feed when you click on your own icon it should show your contact card not go to edit your profile
+
 ## In progress
 
 - *(Nothing)*
