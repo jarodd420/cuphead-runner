@@ -10,6 +10,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) the tap to download is a nice feature. i think when you are in that view if you tap the picture again it sjould be the equivalent of a cancel
 
+- [ ] (from jared rodriguez) on the feed remove the moment type icon from the list. it takes up real estate and doesnt provide value
+
 ## In progress
 
 - *(Nothing)*
