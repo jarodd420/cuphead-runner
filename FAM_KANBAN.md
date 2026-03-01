@@ -8,6 +8,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
+- [ ] (from Meg) Should be able to crop and center profile photo
+
 ## In progress
 
 - *(Nothing)*
