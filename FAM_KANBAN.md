@@ -10,6 +10,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) when you click on a person from the feed the persons bio card looks good but id like the persons picture to be larger more like the original. also if you are in the feed and click your own icon it sho
 
+- [ ] (from jared rodriguez) i suggested the pinch zoom to be in and out but it shouldnt be able to zoom out any further than the original. also you should be able to kove around the picture with your finger (whatever that is cal
+
 ## In progress
 
 - *(Nothing)*
