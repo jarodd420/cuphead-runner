@@ -901,7 +901,6 @@ function init() {
     const overlay = $('#contact-card-overlay');
     const url = overlay?.dataset?.contactCardAvatarUrl;
     if (url) {
-      closeContactCard();
       openImageLightbox(url);
     }
   });
