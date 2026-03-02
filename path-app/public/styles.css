@@ -1076,6 +1076,17 @@ body {
   vertical-align: top;
 }
 
+.moment-video-wrap {
+  cursor: default;
+}
+
+.moment-video-wrap .moment-video {
+  width: 100%;
+  max-height: 280px;
+  display: block;
+  background: #000;
+}
+
 /* Image lightbox: tap to view full size + download (above contact card when opened from it) */
 .image-lightbox-overlay {
   position: fixed;
@@ -1470,36 +1481,52 @@ body {
 }
 
 
-/* ----- FAB Add button (red, bottom-left, original Path) ----- */
-.fab-add {
+/* ----- FAB row: media + message (bottom-left) ----- */
+.fab-row {
   position: fixed;
   left: 20px;
   bottom: calc(24px + var(--safe-bottom));
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  z-index: 10;
+}
+
+.fab-add {
   width: 56px;
   height: 56px;
   border: none;
   border-radius: 14px;
-  background: var(--path-red);
   color: #fff;
-  font-size: 1.75rem;
-  font-weight: 300;
+  font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(196, 30, 58, 0.4);
-  z-index: 10;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
-.fab-add:hover {
+.fab-media {
+  background: var(--path-red);
+  box-shadow: 0 4px 14px rgba(196, 30, 58, 0.4);
+}
+.fab-media:hover {
   background: var(--path-red-dark);
   box-shadow: 0 6px 18px rgba(196, 30, 58, 0.45);
 }
+.fab-message {
+  background: var(--accent);
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.4);
+}
+.fab-message:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.45);
+}
+
 .fab-add:active {
-  background: var(--path-red-dark);
   transform: scale(0.98);
 }
 .fab-add:focus-visible {
@@ -1603,6 +1630,19 @@ body {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.moment-photo-hint {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.moment-preview-video {
+  max-width: 100%;
+  max-height: 200px;
+  display: block;
+  border-radius: var(--radius-sm);
 }
 
 .hidden-input {

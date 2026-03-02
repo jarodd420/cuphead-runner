@@ -8,8 +8,6 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
-- [ ] (from jared rodriguez) lets redesign the bottom left button that shows the moment.  instead of that lets have two icons. one for pictures or videos, one to most a message. videos should be restricted in length to 60 seconds for now
-
 ## In progress
 
 - *(Nothing)*
@@ -20,6 +18,7 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from jared rodriguez) Redesign bottom-left: two FABs — 📷 photo/video (video max 60s), 💬 post message
 - [x] (from jared rodriguez) Contact card: tap user avatar to open full picture in lightbox
 - [x] (from jared rodriguez) Lightbox: smoother pinch/pan — no transition during touch, will-change for compositing (fix freeze and flash)
 - [x] (from jared rodriguez) Undo increase in current user's icon in the feed

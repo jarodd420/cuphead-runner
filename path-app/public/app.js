@@ -8,13 +8,18 @@ const MOMENT_TYPES = [
   { id: 'exercise', label: 'Exercise', icon: '🏃' },
   { id: 'travel', label: 'Travel', icon: '✈️' },
   { id: 'photo', label: 'Photo', icon: '📷' },
+  { id: 'video', label: 'Video', icon: '📹' },
   { id: 'book', label: 'Book', icon: '📖' },
 ];
 
 // Selected moment type (survives form reset; used on submit)
 let selectedMomentType = '';
-// Photo moment: data URL when user takes/selects a photo
+// Photo/video moment: data URL or uploaded URL
 let momentPhotoDataUrl = '';
+// True when current media is video (so we use type 'video' and render <video> in feed)
+let momentMediaIsVideo = false;
+// Add-moment overlay mode: 'media' (photo/video) or 'message' (text only)
+let addMomentMode = 'media';
 // Current user profile (avatar_url, cover_url, name, bio)
 let currentUser = null;
 
@@ -96,7 +101,11 @@ function renderTimeline(moments) {
       ? `<img class="moment-avatar-img" src="${escapeHtml(m.user_avatar)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" /><span class="moment-avatar-initial" style="display:none">${escapeHtml(initial)}</span>`
       : `<span class="moment-avatar-initial">${escapeHtml(initial)}</span>`;
     const bodyHtml = m.body ? `<div class="moment-body">${escapeHtml(m.body)}</div>` : '';
-    const imageHtml = m.image_url ? `<div class="moment-image-wrap" role="button" tabindex="0" title="Tap to view or download"><img class="moment-image" src="${escapeHtml(m.image_url)}" alt="" loading="lazy" onerror="this.onerror=null;this.style.background='var(--bg-input)';this.style.minHeight='80px';this.alt='Image unavailable (check bucket is public)';" /></div>` : '';
+    const imageHtml = m.image_url
+      ? (m.type === 'video'
+        ? `<div class="moment-image-wrap moment-video-wrap" title="Video"><video class="moment-image moment-video" src="${escapeHtml(m.image_url)}" controls loop playsinline preload="metadata" /></div>`
+        : `<div class="moment-image-wrap" role="button" tabindex="0" title="Tap to view or download"><img class="moment-image" src="${escapeHtml(m.image_url)}" alt="" loading="lazy" onerror="this.onerror=null;this.style.background='var(--bg-input)';this.style.minHeight='80px';this.alt='Image unavailable (check bucket is public)';" /></div>`)
+      : '';
     const commentCount = (m.comments || []).length;
     const commentsList = (m.comments || []).map(c => {
       const cTime = new Date(c.created_at).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
@@ -771,21 +780,68 @@ function updateMomentPhotoUI() {
   const section = $('#moment-photo-section');
   const previewWrap = $('#moment-photo-preview-wrap');
   const previewImg = $('#moment-photo-preview');
+  const previewVideo = $('#moment-video-preview');
   if (!section) return;
-  const isPhoto = selectedMomentType === 'photo';
-  section.hidden = !isPhoto;
+  const showMediaSection = addMomentMode === 'media' && (selectedMomentType === 'photo' || selectedMomentType === 'video');
+  section.hidden = !showMediaSection;
   if (previewWrap) previewWrap.hidden = !momentPhotoDataUrl;
-  if (previewImg && momentPhotoDataUrl) previewImg.src = momentPhotoDataUrl;
+  if (previewImg) {
+    previewImg.hidden = momentMediaIsVideo || !momentPhotoDataUrl;
+    if (!momentMediaIsVideo && momentPhotoDataUrl) previewImg.src = momentPhotoDataUrl;
+  }
+  if (previewVideo) {
+    previewVideo.hidden = !momentMediaIsVideo || !momentPhotoDataUrl;
+    if (momentMediaIsVideo && momentPhotoDataUrl) {
+      previewVideo.src = momentPhotoDataUrl;
+    }
+  }
+  const typesRow = $('#moment-types');
+  if (typesRow) typesRow.hidden = addMomentMode === 'message';
+}
+
+const VIDEO_MAX_SECONDS = 60;
+
+function getVideoDuration(file) {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    video.onloadedmetadata = () => {
+      URL.revokeObjectURL(video.src);
+      resolve(video.duration);
+    };
+    video.onerror = () => {
+      URL.revokeObjectURL(video.src);
+      reject(new Error('Could not read video'));
+    };
+    video.src = URL.createObjectURL(file);
+  });
 }
 
 async function setMomentPhotoFromFile(file) {
-  if (!file || !file.type.startsWith('image/')) return;
+  if (!file) return;
+  const isImage = file.type.startsWith('image/');
+  const isVideo = file.type.startsWith('video/');
+  if (!isImage && !isVideo) return;
   try {
-    const url = await fileToImageUrl(file);
-    momentPhotoDataUrl = url;
+    if (isVideo) {
+      const duration = await getVideoDuration(file);
+      if (duration > VIDEO_MAX_SECONDS) {
+        showError('Video must be 60 seconds or shorter');
+        return;
+      }
+      const url = await uploadImageFile(file);
+      momentPhotoDataUrl = url;
+      momentMediaIsVideo = true;
+      selectedMomentType = 'video';
+      bindMomentTypes();
+    } else {
+      const url = await fileToImageUrl(file);
+      momentPhotoDataUrl = url;
+      momentMediaIsVideo = false;
+    }
     updateMomentPhotoUI();
   } catch (err) {
-    showError(err.message || 'Failed to load image');
+    showError(err.message || (isVideo ? 'Failed to upload video' : 'Failed to load image'));
   }
 }
 
@@ -798,7 +854,6 @@ function init() {
   const btnEditProfile = $('#btn-edit-profile');
   const btnMenu = $('#btn-menu');
   const headerMenu = $('#header-menu');
-  const btnAddMoment = $('#btn-add-moment');
   const addMomentOverlay = $('#add-moment-overlay');
   const profileOverlay = $('#profile-overlay');
   const famsOverlay = $('#fams-overlay');
@@ -1126,14 +1181,29 @@ function init() {
   });
 
   bindMomentTypes();
-  btnAddMoment?.addEventListener('click', () => {
-    setMomentTypeSelection();
+
+  function openAddMomentOverlay(mode) {
+    addMomentMode = mode;
     formMoment?.reset();
     momentPhotoDataUrl = '';
+    momentMediaIsVideo = false;
+    const overlayTitle = addMomentOverlay?.querySelector('.add-moment-card h2');
+    if (mode === 'message') {
+      selectedMomentType = 'thought';
+      bindMomentTypes();
+      if (overlayTitle) overlayTitle.textContent = 'Post a message';
+    } else {
+      selectedMomentType = 'photo';
+      setMomentTypeSelection();
+      if (overlayTitle) overlayTitle.textContent = 'New moment';
+    }
     updateMomentPhotoUI();
     addMomentOverlay.hidden = false;
     setOverlayOpen(true);
-  });
+  }
+
+  $('#btn-fab-media')?.addEventListener('click', () => openAddMomentOverlay('media'));
+  $('#btn-fab-message')?.addEventListener('click', () => openAddMomentOverlay('message'));
 
   const photoFileInput = $('#moment-photo-file');
   photoFileInput?.addEventListener('change', (e) => {
@@ -1143,6 +1213,7 @@ function init() {
   });
   $('#btn-remove-moment-photo')?.addEventListener('click', () => {
     momentPhotoDataUrl = '';
+    momentMediaIsVideo = false;
     updateMomentPhotoUI();
   });
 
@@ -1266,8 +1337,8 @@ function init() {
     const fd = new FormData(form);
     const type = selectedMomentType || MOMENT_TYPES[0].id;
     const body = fd.get('body')?.trim() || null;
-    if (type === 'photo' && !momentPhotoDataUrl && !body) {
-      showError('Add a photo or a comment');
+    if ((type === 'photo' || type === 'video') && !momentPhotoDataUrl && !body) {
+      showError('Add a photo/video or a comment');
       return;
     }
     const submitBtn = form.querySelector('button[type="submit"]');
@@ -1282,12 +1353,13 @@ function init() {
         body: JSON.stringify({
           type,
           body,
-          image_url: type === 'photo' ? (momentPhotoDataUrl || null) : null,
+          image_url: (type === 'photo' || type === 'video') ? (momentPhotoDataUrl || null) : null,
         }),
       });
       addMomentOverlay.hidden = true;
       setOverlayOpen(false);
       momentPhotoDataUrl = '';
+      momentMediaIsVideo = false;
       loadTimeline();
     } catch (err) {
       showError(err.message || 'Failed to post');
