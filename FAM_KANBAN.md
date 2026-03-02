@@ -8,8 +8,6 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
-- [ ] (from jared rodriguez) the download button seems to have stopped working
-
 - [ ] (from jared rodriguez) when you select photos from library you should be able to select multiple photos at once for upload to the site
 
 ## In progress
@@ -22,6 +20,7 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from jared rodriguez) the download button seems to have stopped working
 - [x] (from jared rodriguez) Redesign bottom-left: two FABs — 📷 photo/video (video max 60s), 💬 post message
 - [x] (from jared rodriguez) Contact card: tap user avatar to open full picture in lightbox
 - [x] (from jared rodriguez) Lightbox: smoother pinch/pan — no transition during touch, will-change for compositing (fix freeze and flash)

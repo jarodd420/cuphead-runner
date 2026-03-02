@@ -660,9 +660,16 @@ function openImageLightbox(imageUrl) {
   const imgWrap = $('#image-lightbox-img-wrap');
   const downloadLink = $('#image-lightbox-download');
   if (!overlay || !imgEl || !downloadLink) return;
+  // Revoke any previous blob URL so we don't leak
+  if (overlay.dataset.downloadBlobUrl) {
+    URL.revokeObjectURL(overlay.dataset.downloadBlobUrl);
+    delete overlay.dataset.downloadBlobUrl;
+  }
   imgEl.src = imageUrl;
+  const ext = (imageUrl.match(/\.(jpe?g|png|gif|webp|mp4|webm)(\?|$)/i) || [null, 'jpg'])[1];
+  const downloadFilename = 'moment-photo.' + ext;
   downloadLink.href = imageUrl;
-  downloadLink.download = 'moment-photo.jpg';
+  downloadLink.setAttribute('download', downloadFilename);
   if (imgWrap) {
     imgWrap.style.transform = 'translate(0px, 0px) scale(1)';
     imgWrap.dataset.scale = '1';
@@ -671,11 +678,28 @@ function openImageLightbox(imageUrl) {
   }
   overlay.hidden = false;
   setOverlayOpen(true);
+  // Fetch as blob so the download attribute is honored (cross-origin direct links often ignore it)
+  fetch(imageUrl, { mode: 'cors' }).then(r => {
+    if (!r.ok) return;
+    return r.blob();
+  }).then(blob => {
+    if (!blob || !overlay.dataset || overlay.hidden) return;
+    const blobUrl = URL.createObjectURL(blob);
+    overlay.dataset.downloadBlobUrl = blobUrl;
+    downloadLink.href = blobUrl;
+    downloadLink.setAttribute('download', downloadFilename);
+  }).catch(() => { /* keep direct href so at least open-in-new-tab works */ });
 }
 
 function closeImageLightbox() {
   const overlay = $('#image-lightbox-overlay');
-  if (overlay) overlay.hidden = true;
+  if (overlay) {
+    if (overlay.dataset.downloadBlobUrl) {
+      URL.revokeObjectURL(overlay.dataset.downloadBlobUrl);
+      delete overlay.dataset.downloadBlobUrl;
+    }
+    overlay.hidden = true;
+  }
   setOverlayOpen(false);
 }
 
