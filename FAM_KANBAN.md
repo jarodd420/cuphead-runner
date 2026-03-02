@@ -14,6 +14,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from Meg) When you tap on a photo to make it larger the download button should download the photo directly to the user’s photo library on their phone.
 
+- [ ] (from Meg) Remove all moment types except photo, video, and text (comment)
+
 ## In progress
 
 - *(Nothing)*
