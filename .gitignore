@@ -13,3 +13,6 @@ path-app/.env.local
 .idea/
 *.swp
 *.swo
+
+# OpenClaw (local config copy; contains tokens)
+openclaw-mac-mini-ux.json
