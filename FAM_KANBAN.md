@@ -12,6 +12,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) the download button seems to have stopped working
 
+- [ ] (from jared rodriguez) when you select photos from library you should be able to select multiple photos at once for upload to the site
+
 ## In progress
 
 - *(Nothing)*
