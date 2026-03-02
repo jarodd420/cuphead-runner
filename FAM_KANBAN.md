@@ -10,6 +10,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) when you select photos from library you should be able to select multiple photos at once for upload to the site
 
+- [ ] (from Meg) Posting a photo should be a plus icon on the bottom left of the main page and then user can pick to post a photo, video, or only text.
+
 ## In progress
 
 - *(Nothing)*
