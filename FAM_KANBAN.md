@@ -10,6 +10,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) lets redesign the bottom left button that shows the moment.  instead of that lets have two icons. one for pictures or videos, one to most a message. videos should be restricted in length to 60 seconds for now
 
+- [ ] (from jared rodriguez) the download button seems to have stopped working
+
 ## In progress
 
 - *(Nothing)*
