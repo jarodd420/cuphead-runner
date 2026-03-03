@@ -7,7 +7,7 @@ alwaysApply: true
 
 When the user asks to **work the kanban**, **work the board**, **work the list**, **work through the kanban**, **what's next**, **what's on the board**, or similar:
 
-1. **Run `git pull`** first so the board is up to date (e.g. if feedback was appended from the app or another machine).
+1. **Always run `git pull`** first (before reading or reporting the board) so the board is up to date (e.g. if feedback was appended from the app or another machine). This applies even when the user only asks what's on the board—pull first, then read and report.
 2. **Read** `FAM_KANBAN.md` at the repo root.
 3. **Do as many items as you reasonably can in one run.** Don’t stop after one task unless the user asked for a single item or the remaining items need clarification. Pick from **Backlog / To do** or **In progress**; if nothing is in progress, move one Backlog item to **In progress** and do it, then continue with more.
 4. **Update the file** when you start or finish each item:

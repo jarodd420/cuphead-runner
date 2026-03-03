@@ -41,18 +41,11 @@ for (let i = 0; i < 100; i++) {
   });
 }
 
-const momentTypes = ['wake_up', 'eat', 'music', 'movie', 'thought', 'sleep', 'exercise', 'travel', 'photo', 'book'];
+const momentTypes = ['photo', 'video', 'text'];
 const bodies = {
-  wake_up: ['Good morning world', 'Up and at em', ''],
-  eat: ['Brunch with friends', 'Coffee and croissant', 'Dinner was amazing'],
-  music: ['Listening to my playlist', 'Concert tonight!', ''],
-  movie: ['Watching a classic', 'Movie night', ''],
-  thought: ['Feeling grateful today', 'What a day.', ''],
-  sleep: ['Good night', 'Off to bed', ''],
-  exercise: ['Morning run', 'Gym session', ''],
-  travel: ['Exploring the city', 'Trip of a lifetime', ''],
   photo: ['Sunset', 'Best day ever', ''],
-  book: ['Reading something good', "Can't put this down", '']
+  video: ['Quick clip', 'Check this out', ''],
+  text: ['Feeling grateful today', 'What a day.', 'Good morning!', "Can't put this down", '']
 };
 
 let momentId = 1;

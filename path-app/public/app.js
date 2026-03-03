@@ -1,15 +1,8 @@
+// Only photo, video, text (comment). Legacy feed types fall back to generic in typeMap.
 const MOMENT_TYPES = [
-  { id: 'wake_up', label: 'Wake up', icon: '🌅' },
-  { id: 'eat', label: 'Eating', icon: '🍽️' },
-  { id: 'music', label: 'Music', icon: '🎵' },
-  { id: 'movie', label: 'Movie', icon: '🎬' },
-  { id: 'thought', label: 'Thought', icon: '💭' },
-  { id: 'sleep', label: 'Sleep', icon: '😴' },
-  { id: 'exercise', label: 'Exercise', icon: '🏃' },
-  { id: 'travel', label: 'Travel', icon: '✈️' },
   { id: 'photo', label: 'Photo', icon: '📷' },
   { id: 'video', label: 'Video', icon: '📹' },
-  { id: 'book', label: 'Book', icon: '📖' },
+  { id: 'text', label: 'Comment', icon: '💬' },
 ];
 
 // Selected moment type (survives form reset; used on submit)
@@ -776,38 +769,13 @@ async function loadTimeline() {
   }
 }
 
-function bindMomentTypes() {
-  const container = $('#moment-types');
-  if (!container) return;
-  $$('.moment-type-btn', container).forEach(btn => {
-    const id = btn.dataset.type;
-    if (!id) return;
-    btn.addEventListener('click', () => {
-      selectedMomentType = id;
-      $$('.moment-type-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      updateMomentPhotoUI();
-    });
-  });
-}
-
-function setMomentTypeSelection() {
-  selectedMomentType = MOMENT_TYPES[0].id;
-  momentPhotoDataUrl = '';
-  updateMomentPhotoUI();
-  $$('.moment-type-btn').forEach(btn => {
-    btn.classList.toggle('selected', btn.dataset.type === selectedMomentType);
-  });
-}
-
 function updateMomentPhotoUI() {
   const section = $('#moment-photo-section');
   const previewWrap = $('#moment-photo-preview-wrap');
   const previewImg = $('#moment-photo-preview');
   const previewVideo = $('#moment-video-preview');
   if (!section) return;
-  const showMediaSection = addMomentMode === 'media' && (selectedMomentType === 'photo' || selectedMomentType === 'video');
-  section.hidden = !showMediaSection;
+  section.hidden = addMomentMode !== 'media';
   if (previewWrap) previewWrap.hidden = !momentPhotoDataUrl;
   if (previewImg) {
     previewImg.hidden = momentMediaIsVideo || !momentPhotoDataUrl;
@@ -819,8 +787,6 @@ function updateMomentPhotoUI() {
       previewVideo.src = momentPhotoDataUrl;
     }
   }
-  const typesRow = $('#moment-types');
-  if (typesRow) typesRow.hidden = addMomentMode === 'message';
 }
 
 const VIDEO_MAX_SECONDS = 60;
@@ -857,7 +823,6 @@ async function setMomentPhotoFromFile(file) {
       momentPhotoDataUrl = url;
       momentMediaIsVideo = true;
       selectedMomentType = 'video';
-      bindMomentTypes();
     } else {
       const url = await fileToImageUrl(file);
       momentPhotoDataUrl = url;
@@ -1204,24 +1169,22 @@ function init() {
     showScreen('login');
   });
 
-  bindMomentTypes();
-
   function openAddMomentOverlay(mode) {
     addMomentMode = mode;
     formMoment?.reset();
     momentPhotoDataUrl = '';
     momentMediaIsVideo = false;
-    const overlayTitle = addMomentOverlay?.querySelector('.add-moment-card h2');
+    const overlayTitle = $('#add-moment-title');
     if (mode === 'message') {
-      selectedMomentType = 'thought';
-      bindMomentTypes();
-      if (overlayTitle) overlayTitle.textContent = 'Post a message';
+      selectedMomentType = 'text';
+      if (overlayTitle) overlayTitle.textContent = 'Post a comment';
     } else {
       selectedMomentType = 'photo';
-      setMomentTypeSelection();
-      if (overlayTitle) overlayTitle.textContent = 'New moment';
+      if (overlayTitle) overlayTitle.textContent = 'Photo or video';
     }
     updateMomentPhotoUI();
+    const bodyInput = $('#moment-body-input');
+    if (bodyInput) bodyInput.placeholder = mode === 'message' ? 'Write a comment...' : 'Add a comment (optional)...';
     addMomentOverlay.hidden = false;
     setOverlayOpen(true);
   }
@@ -1359,9 +1322,14 @@ function init() {
     e.preventDefault();
     const form = e.target;
     const fd = new FormData(form);
-    const type = selectedMomentType || MOMENT_TYPES[0].id;
     const body = fd.get('body')?.trim() || null;
-    if ((type === 'photo' || type === 'video') && !momentPhotoDataUrl && !body) {
+    const type = addMomentMode === 'message' ? 'text' : (momentMediaIsVideo ? 'video' : 'photo');
+    if (type === 'text') {
+      if (!body) {
+        showError('Write something to post');
+        return;
+      }
+    } else if (!momentPhotoDataUrl && !body) {
       showError('Add a photo/video or a comment');
       return;
     }

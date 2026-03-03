@@ -76,8 +76,8 @@
         <div class="timeline-loading" id="timeline-loading">Loading…</div>
         <div class="timeline-empty" id="timeline-empty" hidden><span class="timeline-empty-icon" aria-hidden="true">✨</span>No moments yet.<br />Tap 📷 or 💬 to share.</div>
         <div class="fab-row" aria-label="Add moment">
-          <button type="button" class="fab-add fab-media" id="btn-fab-media" title="Photo or video" aria-label="Photo or video (video max 60s)">📷</button>
-          <button type="button" class="fab-add fab-message" id="btn-fab-message" title="Post a message" aria-label="Post a message">💬</button>
+          <button type="button" class="fab-add fab-media" id="btn-fab-media" title="Camera" aria-label="Camera — take or pick photo or video (video max 60s)">📷</button>
+          <button type="button" class="fab-add fab-message" id="btn-fab-message" title="Comment" aria-label="Post a comment">💬</button>
         </div>
       </main>
 
@@ -175,22 +175,8 @@
 
       <div class="add-moment-overlay" id="add-moment-overlay" hidden>
         <div class="add-moment-card">
-          <h2>New moment</h2>
+          <h2 id="add-moment-title">Photo or video</h2>
           <form id="form-moment">
-            <label class="moment-type-label">Moment type</label>
-            <div class="moment-types" id="moment-types" role="group" aria-label="Moment type">
-              <button type="button" class="moment-type-btn" data-type="wake_up" title="Wake up">🌅</button>
-              <button type="button" class="moment-type-btn" data-type="eat" title="Eating">🍽️</button>
-              <button type="button" class="moment-type-btn" data-type="music" title="Music">🎵</button>
-              <button type="button" class="moment-type-btn" data-type="movie" title="Movie">🎬</button>
-              <button type="button" class="moment-type-btn" data-type="thought" title="Thought">💭</button>
-              <button type="button" class="moment-type-btn" data-type="sleep" title="Sleep">😴</button>
-              <button type="button" class="moment-type-btn" data-type="exercise" title="Exercise">🏃</button>
-              <button type="button" class="moment-type-btn" data-type="travel" title="Travel">✈️</button>
-              <button type="button" class="moment-type-btn" data-type="photo" title="Photo">📷</button>
-              <button type="button" class="moment-type-btn" data-type="video" title="Video">📹</button>
-              <button type="button" class="moment-type-btn" data-type="book" title="Book">📖</button>
-            </div>
             <div class="moment-photo-section" id="moment-photo-section" hidden>
               <div class="moment-photo-actions">
                 <input type="file" id="moment-photo-file" accept="image/*,video/*" class="hidden-input" />
@@ -203,7 +189,7 @@
                 <button type="button" class="btn-remove-photo" id="btn-remove-moment-photo" title="Remove">×</button>
               </div>
             </div>
-            <textarea name="body" placeholder="Add a comment (optional)..." rows="3"></textarea>
+            <textarea name="body" id="moment-body-input" placeholder="Add a comment (optional)..." rows="3"></textarea>
             <div class="form-actions">
               <button type="button" class="btn-cancel" id="btn-cancel-moment">Cancel</button>
               <button type="submit" class="btn-post">Post</button>
