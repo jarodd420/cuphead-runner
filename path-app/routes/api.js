@@ -47,6 +47,7 @@ router.post('/openclaw-feedback', async (req, res) => {
     await appendFeedbackToKanban(message, fromName || undefined);
   }
 
+  console.log('[openclaw-feedback] received from', fromName, '| length', message.length);
   res.json({ ok: true, message: 'Thanks! Your feedback has been sent.' });
 });
 
