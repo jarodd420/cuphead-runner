@@ -2,6 +2,11 @@
   --path-red: #0d9488;
   --path-red-dark: #0f766e;
   --path-red-focus: rgba(13, 148, 136, 0.35);
+  /* Header palette (FamApp icon vibe: warm beach / family) */
+  --header-bg-start: #7eb8d4;
+  --header-bg-end: #c9a86c;
+  --header-text: #2c2c2c;
+  --header-icon-bg-hover: rgba(0, 0, 0, 0.08);
   --bg: #f5f0e8;
   --bg-card: #fff;
   --bg-input: #ebe6de;
@@ -775,7 +780,7 @@ body {
 
 .auth-switch a:hover { text-decoration: underline; }
 
-/* ----- App header (original Path: red bar, script logo) ----- */
+/* ----- App header (FamApp: warm bar to match family icon) ----- */
 .app-header {
   position: sticky;
   top: 0;
@@ -785,8 +790,8 @@ body {
   justify-content: space-between;
   padding: 12px 16px;
   padding-top: calc(12px + var(--safe-top));
-  background: var(--path-red);
-  border-bottom: none;
+  background: linear-gradient(135deg, var(--header-bg-start) 0%, var(--header-bg-end) 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .header-left {
@@ -798,7 +803,7 @@ body {
   font-family: 'Great Vibes', cursive;
   font-size: 1.75rem;
   font-weight: 400;
-  color: #fff;
+  color: var(--header-text);
   letter-spacing: 0.02em;
 }
 
@@ -813,7 +818,7 @@ body {
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: #fff;
+  color: var(--header-text);
   font-size: 1.25rem;
   cursor: pointer;
   display: flex;
@@ -822,7 +827,15 @@ body {
 }
 
 .icon-btn.header-icon:active {
-  background: rgba(255,255,255,0.2);
+  background: var(--header-icon-bg-hover);
+}
+
+/* FamApp icon (top right) */
+.header-icon-fam img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  pointer-events: none;
 }
 
 /* Header dropdown menu */
