@@ -786,8 +786,9 @@ body {
   top: 0;
   z-index: 10;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-between;
+  min-height: calc(56px + 24px + var(--safe-top));
   padding: 12px 16px;
   padding-top: calc(12px + var(--safe-top));
   background: linear-gradient(135deg, var(--header-bg-start) 0%, var(--header-bg-end) 100%);
@@ -797,6 +798,8 @@ body {
 .header-left {
   position: relative;
   width: 40px;
+  display: flex;
+  align-items: center;
 }
 
 .header-title {
@@ -805,6 +808,8 @@ body {
   font-weight: 400;
   color: var(--header-text);
   letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
 }
 
 .header-actions {
@@ -830,12 +835,21 @@ body {
   background: var(--header-icon-bg-hover);
 }
 
-/* FamApp icon (top right) */
+/* FamApp icon (top right): full height of header bar, preserve aspect ratio */
+.header-icon-fam {
+  width: auto;
+  height: 56px;
+  min-width: 0;
+  padding: 0;
+  border-radius: var(--radius-sm);
+}
 .header-icon-fam img {
-  width: 36px;
-  height: 36px;
+  height: 100%;
+  width: auto;
+  max-height: 56px;
   object-fit: contain;
   pointer-events: none;
+  display: block;
 }
 
 /* Header dropdown menu */

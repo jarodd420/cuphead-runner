@@ -8,17 +8,9 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
-- [ ] (from jared rodriguez) when you select photos from library you should be able to select multiple photos at once for upload to the site
-
 - [ ] (from Meg) Posting a photo should be a plus icon on the bottom left of the main page and then user can pick to post a photo, video, or only text.
 
 - [ ] (from Meg) When you tap on a photo to make it larger the download button should download the photo directly to the user’s photo library on their phone.
-
-- [ ] (from Meg) Remove all moment types except photo, video, and text (comment)
-
-- [ ] (from jared rodriguez) double the size of the top right icon
-
-- [ ] (from jrod assistant) the top right icon is tiny.  triple the size of it
 
 ## In progress
 
@@ -26,10 +18,13 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Won't do
 
+- (from jared rodriguez) Select multiple photos from library at once for upload — dropped per product decision
 - *(Nonsensical, spam, or off-topic — move here when working the list)*
 
 ## Done
 
+- [x] (from Meg) Remove all moment types except photo, video, and text (comment)
+- [x] (from jared rodriguez / jrod assistant) Top right icon: full height of header bar, preserve aspect ratio
 - [x] (from jared rodriguez) the download button seems to have stopped working
 - [x] (from jared rodriguez) Redesign bottom-left: two FABs — 📷 photo/video (video max 60s), 💬 post message
 - [x] (from jared rodriguez) Contact card: tap user avatar to open full picture in lightbox
