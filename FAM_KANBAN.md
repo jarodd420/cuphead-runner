@@ -18,6 +18,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) double the size of the top right icon
 
+- [ ] (from jrod assistant) the top right icon is tiny.  triple the size of it
+
 ## In progress
 
 - *(Nothing)*
