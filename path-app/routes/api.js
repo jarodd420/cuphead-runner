@@ -14,7 +14,8 @@ function looksLikeRealFeedback(text) {
 }
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+// 100MB for video (gallery clips); images still small
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 100 * 1024 * 1024 } });
 
 function requireAuth(req, res, next) {
   if (!req.session?.userId) return res.status(401).json({ error: 'Not logged in' });
@@ -69,7 +70,9 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     res.json({ url });
   } catch (e) {
     console.error('[upload] Supabase storage error:', e.message);
-    res.status(500).json({ error: e.message || 'Upload failed' });
+    const msg = e.message || 'Upload failed';
+    const isSize = /too large|payload|413|size limit/i.test(msg);
+    res.status(isSize ? 413 : 500).json({ error: isSize ? 'Video is too large. Try a shorter clip (under 100 MB).' : msg });
   }
 });
 

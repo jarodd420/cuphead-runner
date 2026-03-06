@@ -28,6 +28,9 @@ async function uploadToSupabase(buffer, contentType, objectPath) {
         `Storage 403: RLS policy blocking upload. Use the Service Role key (Settings → API → service_role). Then in Supabase SQL Editor run the policies in path-app/docs/storage-policies.sql for bucket "${bucket}".`
       );
     }
+    if (res.status === 413 || (err || '').toLowerCase().includes('too large') || (err || '').toLowerCase().includes('payload')) {
+      throw new Error('File too large for storage. Try a shorter video (under 100 MB).');
+    }
     throw new Error(err || `Storage upload failed: ${res.status}`);
   }
   let publicPath = `${bucket}/${objectPath}`;

@@ -44,6 +44,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/auth', auth);
 app.use('/api', api);
 
+// Multer file-too-large (and other multer errors) so we return 413 instead of 500
+app.use((err, req, res, next) => {
+  if (err && err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(413).json({ error: 'Video is too large (max 100 MB). Try a shorter clip.' });
+  }
+  if (err && err.code && String(err.code).startsWith('LIMIT_')) {
+    return res.status(400).json({ error: err.message || 'Upload limit exceeded' });
+  }
+  next(err);
+});
+
 app.get('/health', (req, res) => res.json({ ok: true }));
 
 app.get('*', (req, res) => {
