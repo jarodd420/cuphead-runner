@@ -162,6 +162,7 @@ Logged-in users can send update suggestions from the app (menu → **Suggest an 
 | `GITHUB_REPO` | For kanban | Repo as owner/name (e.g. myuser/cuphead-runner) |
 | `GITHUB_KANBAN_PATH` | Optional | Path to kanban file (default: FAM_KANBAN.md) |
 | `GITHUB_KANBAN_BRANCH` | Optional | Branch to update (default: main) |
+| `OPENCLAW_FEEDBACK_TOKEN` | Optional | Shared secret for OpenClaw; when set, the `/api/openclaw-feedback` endpoint can append suggestions directly to FAM_KANBAN.md |
 | `PORT` | Optional | Server port (default 3000) |
 | `NODE_ENV` | Optional | `production` in prod |
 | `USE_HTTPS` | Optional | Set to `1` in prod with HTTPS for secure cookies |

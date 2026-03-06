@@ -21,6 +21,34 @@ function requireAuth(req, res, next) {
   next();
 }
 
+// OpenClaw → Kanban feedback endpoint (no user session, shared secret header)
+router.post('/openclaw-feedback', async (req, res) => {
+  const shared = (process.env.OPENCLAW_FEEDBACK_TOKEN || '').trim();
+  if (!shared) return res.status(503).json({ error: 'OpenClaw feedback is not configured.' });
+
+  const provided = String(req.headers['x-openclaw-token'] || '').trim();
+  if (!provided || provided !== shared) return res.status(401).json({ error: 'Unauthorized' });
+
+  const message = (req.body && req.body.message) ? String(req.body.message).trim() : '';
+  if (!message) return res.status(400).json({ error: 'Please enter your feedback or suggestion.' });
+  if (message.length > 2000) return res.status(400).json({ error: 'Message is too long (max 2000 characters).' });
+
+  const fromName = (req.body && req.body.fromName) ? String(req.body.fromName).trim() : 'OpenClaw (UX tester)';
+
+  // Slack is optional here; failures are logged inside sendFeedbackToSlack
+  try {
+    await sendFeedbackToSlack({ name: fromName, email: '' }, message);
+  } catch (_) {
+    // ignore
+  }
+
+  if (looksLikeRealFeedback(message)) {
+    await appendFeedbackToKanban(message, fromName || undefined);
+  }
+
+  res.json({ ok: true, message: 'Thanks! Your feedback has been sent.' });
+});
+
 router.use(requireAuth);
 
 router.post('/upload', upload.single('file'), async (req, res) => {
