@@ -651,6 +651,22 @@ body {
 #form-profile .form-actions {
   margin-top: 20px;
 }
+.profile-secondary-actions {
+  margin: 16px 0 0;
+  font-size: 0.9rem;
+}
+.profile-secondary-actions .btn-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--path-red);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+.profile-secondary-actions .btn-link:hover {
+  color: var(--path-red-dark, #a00);
+}
 
 /* ----- Login / Signup ----- */
 #screen-signup {

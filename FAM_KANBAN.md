@@ -10,8 +10,6 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from OpenClaw) Repeated profile setup: users are prompted to set up their profile twice during initial setup. Simplify onboarding by combining or removing redundant steps.
 
-- [ ] (from OpenClaw) Cluttered navigation bar: too many options, confusing for first-time users. Streamline by grouping similar features and removing less frequently used items.
-
 - [ ] (from Meg) When you tap on a photo to make it larger the download button should download the photo directly to the user’s photo library on their phone.
 
 ## In progress
@@ -56,3 +54,4 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 - [x] User feedback to Slack
 - [x] Feedback form in app (Suggest an update)
 - [x] Image display (cover) preference
+- [x] (from OpenClaw) Cluttered navigation bar: streamlined — "Suggest an update" moved into Edit profile overlay; header menu now Edit profile + Sign out only
