@@ -16,6 +16,18 @@ let addMomentMode = 'media';
 // Current user profile (avatar_url, cover_url, name, bio)
 let currentUser = null;
 
+// Pause feed videos when they scroll out of view
+const feedVideoObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      const video = entry.target;
+      if (!(video instanceof HTMLVideoElement)) return;
+      if (!entry.isIntersecting) video.pause();
+    });
+  },
+  { root: null, rootMargin: '0px', threshold: 0 }
+);
+
 function $(sel, el = document) { return el.querySelector(sel); }
 function $$(sel, el = document) { return Array.from(el.querySelectorAll(sel)); }
 
@@ -77,6 +89,7 @@ function renderTimeline(moments) {
   const loading = $('#timeline-loading');
   const empty = $('#timeline-empty');
   loading.hidden = true;
+  feedVideoObserver.disconnect();
   list.innerHTML = '';
   if (!moments.length) {
     empty.hidden = false;
@@ -222,6 +235,7 @@ function renderTimeline(moments) {
       }
     });
   });
+  $$('.moment-video', list).forEach((video) => feedVideoObserver.observe(video));
 }
 
 function submitComment(e) {
