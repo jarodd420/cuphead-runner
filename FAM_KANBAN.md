@@ -16,6 +16,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from Meg) Remove all moment types except photo, video, and text (comment)
 
+- [ ] (from jared rodriguez) double the size of the top right icon
+
 ## In progress
 
 - *(Nothing)*
