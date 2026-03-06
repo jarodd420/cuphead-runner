@@ -1189,8 +1189,32 @@ function init() {
     setOverlayOpen(true);
   }
 
-  $('#btn-fab-media')?.addEventListener('click', () => openAddMomentOverlay('media'));
-  $('#btn-fab-message')?.addEventListener('click', () => openAddMomentOverlay('message'));
+  const btnFabPlus = $('#btn-fab-plus');
+  const fabPicker = $('#fab-picker');
+  btnFabPlus?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (fabPicker) {
+      fabPicker.hidden = !fabPicker.hidden;
+      btnFabPlus?.setAttribute('aria-expanded', fabPicker.hidden ? 'false' : 'true');
+    }
+  });
+  $('#fab-pick-media')?.addEventListener('click', () => {
+    if (fabPicker) fabPicker.hidden = true;
+    btnFabPlus?.setAttribute('aria-expanded', 'false');
+    openAddMomentOverlay('media');
+  });
+  $('#fab-pick-message')?.addEventListener('click', () => {
+    if (fabPicker) fabPicker.hidden = true;
+    btnFabPlus?.setAttribute('aria-expanded', 'false');
+    openAddMomentOverlay('message');
+  });
+  fabPicker?.addEventListener('click', (e) => e.stopPropagation());
+  document.addEventListener('click', () => {
+    if (fabPicker && !fabPicker.hidden) {
+      fabPicker.hidden = true;
+      btnFabPlus?.setAttribute('aria-expanded', 'false');
+    }
+  });
 
   const photoFileInput = $('#moment-photo-file');
   photoFileInput?.addEventListener('change', (e) => {

@@ -1508,13 +1508,14 @@ body {
 }
 
 
-/* ----- FAB row: media + message (bottom-left) ----- */
+/* ----- FAB row: single plus, then pick photo/video or text (bottom-left) ----- */
 .fab-row {
   position: fixed;
   left: 20px;
   bottom: calc(24px + var(--safe-bottom));
   display: flex;
-  flex-direction: row;
+  flex-direction: column-reverse;
+  align-items: flex-start;
   gap: 10px;
   z-index: 10;
 }
@@ -1536,21 +1537,56 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-.fab-media {
+.fab-plus {
   background: var(--path-red);
-  box-shadow: 0 4px 14px rgba(196, 30, 58, 0.4);
-}
-.fab-media:hover {
-  background: var(--path-red-dark);
-  box-shadow: 0 6px 18px rgba(196, 30, 58, 0.45);
-}
-.fab-message {
-  background: var(--accent);
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 0.9;
   box-shadow: 0 4px 14px rgba(13, 148, 136, 0.4);
 }
-.fab-message:hover {
-  filter: brightness(1.1);
+.fab-plus:hover {
+  background: var(--path-red-dark);
   box-shadow: 0 6px 18px rgba(13, 148, 136, 0.45);
+}
+
+.fab-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg-card);
+  padding: 8px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-overlay);
+  border: 1px solid var(--border);
+}
+.fab-picker[hidden] {
+  display: none;
+}
+.fab-picker-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  color: var(--text);
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.fab-picker-option:hover {
+  background: var(--border);
+}
+.fab-picker-option:active {
+  transform: scale(0.98);
+}
+.fab-picker-option:focus-visible {
+  outline: 2px solid var(--path-red);
+  outline-offset: 2px;
 }
 
 .fab-add:active {

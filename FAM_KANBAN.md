@@ -8,8 +8,6 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
-- [ ] (from Meg) Posting a photo should be a plus icon on the bottom left of the main page and then user can pick to post a photo, video, or only text.
-
 - [ ] (from Meg) When you tap on a photo to make it larger the download button should download the photo directly to the user’s photo library on their phone.
 
 ## In progress
@@ -23,6 +21,7 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from Meg) Posting a photo should be a plus icon on the bottom left of the main page and then user can pick to post a photo, video, or only text.
 - [x] (from Meg) Remove all moment types except photo, video, and text (comment)
 - [x] (from jared rodriguez / jrod assistant) Top right icon: full height of header bar, preserve aspect ratio
 - [x] (from jared rodriguez) the download button seems to have stopped working

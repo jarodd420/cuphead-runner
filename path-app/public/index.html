@@ -57,7 +57,7 @@
           </div>
         </div>
         <span class="header-title">FamApp</span>
-        <button type="button" class="icon-btn header-icon header-icon-fam" id="btn-fams" title="Fams" aria-label="Your fams"><img src="/images/fam_icon.png" alt="" /></button>
+        <button type="button" class="icon-btn header-icon header-icon-fam" id="btn-fams" title="Fams" aria-label="Your fams"><img src="/images/fam_icon_cropped.png" alt="" /></button>
       </header>
 
       <section class="profile-banner" id="profile-banner">
@@ -76,8 +76,11 @@
         <div class="timeline-loading" id="timeline-loading">Loading…</div>
         <div class="timeline-empty" id="timeline-empty" hidden><span class="timeline-empty-icon" aria-hidden="true">✨</span>No moments yet.<br />Tap 📷 or 💬 to share.</div>
         <div class="fab-row" aria-label="Add moment">
-          <button type="button" class="fab-add fab-media" id="btn-fab-media" title="Camera" aria-label="Camera — take or pick photo or video (video max 60s)">📷</button>
-          <button type="button" class="fab-add fab-message" id="btn-fab-message" title="Comment" aria-label="Post a comment">💬</button>
+          <button type="button" class="fab-add fab-plus" id="btn-fab-plus" title="Add moment" aria-label="Add moment — photo, video, or text" aria-expanded="false" aria-haspopup="true">+</button>
+          <div class="fab-picker" id="fab-picker" hidden role="menu" aria-label="Choose moment type">
+            <button type="button" class="fab-picker-option" id="fab-pick-media" role="menuitem" title="Photo or video">📷 Photo or video</button>
+            <button type="button" class="fab-picker-option" id="fab-pick-message" role="menuitem" title="Text only">💬 Text only</button>
+          </div>
         </div>
       </main>
 
