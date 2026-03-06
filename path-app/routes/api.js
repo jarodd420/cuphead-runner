@@ -53,13 +53,19 @@ router.use(requireAuth);
 
 router.post('/upload', upload.single('file'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-  const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  const allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/quicktime', 'video/mp4'];
   if (!allowed.includes(req.file.mimetype)) return res.status(400).json({ error: 'Invalid file type' });
-  const ext = (req.file.mimetype === 'image/jpeg' ? 'jpg' : req.file.mimetype === 'image/png' ? 'png' : req.file.mimetype === 'image/gif' ? 'gif' : 'webp');
+  const mime = req.file.mimetype;
+  let ext = 'jpg';
+  if (mime === 'image/png') ext = 'png';
+  else if (mime === 'image/gif') ext = 'gif';
+  else if (mime === 'image/webp') ext = 'webp';
+  else if (mime === 'video/quicktime') ext = 'mov';
+  else if (mime === 'video/mp4') ext = 'mp4';
   const path = `${req.session.userId}/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
   try {
     const url = await uploadToSupabase(req.file.buffer, req.file.mimetype, path);
-    if (!url) return res.status(503).json({ error: 'Image storage not configured (set SUPABASE_URL and SUPABASE_SERVICE_KEY)' });
+    if (!url) return res.status(503).json({ error: 'Storage not configured (set SUPABASE_URL and SUPABASE_SERVICE_KEY)' });
     res.json({ url });
   } catch (e) {
     console.error('[upload] Supabase storage error:', e.message);
