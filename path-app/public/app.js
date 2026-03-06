@@ -1002,18 +1002,13 @@ function init() {
     if (headerMenu) headerMenu.hidden = true;
     openProfileEditor();
   });
-  function openFeedbackOverlay() {
+  $('#btn-feedback')?.addEventListener('click', () => {
     if (headerMenu) headerMenu.hidden = true;
-    const profileOverlay = $('#profile-overlay');
-    if (profileOverlay) profileOverlay.hidden = true;
     const overlay = $('#feedback-overlay');
     const ta = $('#feedback-message');
     if (overlay) overlay.hidden = false;
     if (ta) { ta.value = ''; ta.focus(); }
     setOverlayOpen(true);
-  }
-  $('#btn-feedback-from-profile')?.addEventListener('click', () => {
-    openFeedbackOverlay();
   });
   $('#btn-cancel-feedback')?.addEventListener('click', () => {
     const overlay = $('#feedback-overlay');
