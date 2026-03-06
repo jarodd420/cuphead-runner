@@ -23,7 +23,7 @@ function requireAuth(req, res, next) {
 }
 
 // OpenClaw → Kanban feedback endpoint (no user session, shared secret header)
-router.post('/openclaw-feedback', async (req, res) => {
+async function openclawFeedbackHandler(req, res) {
   const shared = (process.env.OPENCLAW_FEEDBACK_TOKEN || '').trim();
   if (!shared) return res.status(503).json({ error: 'OpenClaw feedback is not configured.' });
 
@@ -36,12 +36,9 @@ router.post('/openclaw-feedback', async (req, res) => {
 
   const fromName = (req.body && req.body.fromName) ? String(req.body.fromName).trim() : 'OpenClaw (UX tester)';
 
-  // Slack is optional here; failures are logged inside sendFeedbackToSlack
   try {
     await sendFeedbackToSlack({ name: fromName, email: '' }, message);
-  } catch (_) {
-    // ignore
-  }
+  } catch (_) {}
 
   if (looksLikeRealFeedback(message)) {
     await appendFeedbackToKanban(message, fromName || undefined);
@@ -49,7 +46,9 @@ router.post('/openclaw-feedback', async (req, res) => {
 
   console.log('[openclaw-feedback] received from', fromName, '| length', message.length);
   res.json({ ok: true, message: 'Thanks! Your feedback has been sent.' });
-});
+}
+router.post('/openclaw-feedback', openclawFeedbackHandler);
+router.post('/recommendations', openclawFeedbackHandler);
 
 router.use(requireAuth);
 

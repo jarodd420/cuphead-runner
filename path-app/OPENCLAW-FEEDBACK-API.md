@@ -4,7 +4,7 @@ Use this to post evaluation recommendations **directly to the Fam kanban** (and 
 
 ## Endpoint
 
-- **URL:** `https://fam-production.up.railway.app/api/openclaw-feedback`
+- **URL:** `https://fam-production.up.railway.app/api/openclaw-feedback` (alias: `/api/recommendations` works too)
 - **Method:** `POST`
 - **Headers:**
   - `Content-Type: application/json`
@@ -44,3 +44,7 @@ After you evaluate the Fam app (e.g. by navigating and using it in the browser),
 4. Repeat with your second recommendation in `"message"`.
 
 If you don’t have the token, say so and the user will provide it or add it to your config.
+
+### Post directly — do not read from a file
+
+Use the token the user gave you (in chat or in your environment). Do **not** read from a file (e.g. feedback_token.txt). Make two HTTP POST requests right away with that token in the `X-OpenClaw-Token` header.
