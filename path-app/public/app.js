@@ -16,16 +16,21 @@ let addMomentMode = 'media';
 // Current user profile (avatar_url, cover_url, name, bio)
 let currentUser = null;
 
-// Pause feed videos when they scroll out of view
+// Feed videos: autoplay muted when in view, pause when scrolled away (Bluesky-style)
 const feedVideoObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
       const video = entry.target;
       if (!(video instanceof HTMLVideoElement)) return;
-      if (!entry.isIntersecting) video.pause();
+      if (entry.isIntersecting) {
+        video.muted = true;
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
     });
   },
-  { root: null, rootMargin: '0px', threshold: 0 }
+  { root: null, rootMargin: '0px', threshold: 0.25 }
 );
 
 function $(sel, el = document) { return el.querySelector(sel); }
@@ -109,7 +114,7 @@ function renderTimeline(moments) {
     const bodyHtml = m.body ? `<div class="moment-body">${escapeHtml(m.body)}</div>` : '';
     const imageHtml = m.image_url
       ? (m.type === 'video'
-        ? `<div class="moment-image-wrap moment-video-wrap" title="Video"><video class="moment-image moment-video" src="${escapeHtml(m.image_url)}" controls loop playsinline preload="metadata" /></div>`
+        ? `<div class="moment-image-wrap moment-video-wrap" title="Tap to expand" role="button" tabindex="0"><video class="moment-image moment-video" src="${escapeHtml(m.image_url)}" loop playsinline preload="auto" muted /></div>`
         : `<div class="moment-image-wrap" role="button" tabindex="0" title="Tap to view or download"><img class="moment-image" src="${escapeHtml(m.image_url)}" alt="" loading="lazy" onerror="this.onerror=null;this.style.background='var(--bg-input)';this.style.minHeight='80px';this.alt='Image unavailable (check bucket is public)';" /></div>`)
       : '';
     const commentCount = (m.comments || []).length;
@@ -195,14 +200,21 @@ function renderTimeline(moments) {
   $$('.moment-image-wrap').forEach(wrap => {
     wrap.addEventListener('click', (e) => {
       e.preventDefault();
+      const video = wrap.querySelector('.moment-video');
       const img = wrap.querySelector('.moment-image');
-      if (img && img.src) openImageLightbox(img.src);
+      if (video && video.src) {
+        openVideoLightbox(video.src);
+      } else if (img && img.src) {
+        openImageLightbox(img.src);
+      }
     });
     wrap.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
+        const video = wrap.querySelector('.moment-video');
         const img = wrap.querySelector('.moment-image');
-        if (img && img.src) openImageLightbox(img.src);
+        if (video && video.src) openVideoLightbox(video.src);
+        else if (img && img.src) openImageLightbox(img.src);
       }
     });
   });
@@ -710,6 +722,39 @@ function closeImageLightbox() {
   setOverlayOpen(false);
 }
 
+function formatVideoTime(seconds) {
+  if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+function openVideoLightbox(url) {
+  const overlay = $('#video-lightbox-overlay');
+  const video = $('#video-lightbox-video');
+  const timeEl = $('#video-lightbox-time');
+  if (!overlay || !video) return;
+  video.src = url;
+  video.muted = false;
+  video.currentTime = 0;
+  if (timeEl) timeEl.textContent = '0:00 / 0:00';
+  overlay.hidden = false;
+  setOverlayOpen(true);
+  video.play().catch(() => {});
+}
+
+function closeVideoLightbox() {
+  const overlay = $('#video-lightbox-overlay');
+  const video = $('#video-lightbox-video');
+  if (video) {
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+  }
+  if (overlay) overlay.hidden = true;
+  setOverlayOpen(false);
+}
+
 function openContactCard(user) {
   const overlay = $('#contact-card-overlay');
   const coverEl = $('#contact-card-cover');
@@ -892,6 +937,30 @@ function init() {
   $('#image-lightbox-close')?.addEventListener('click', closeImageLightbox);
   $('#image-lightbox-img')?.addEventListener('click', (e) => { e.stopPropagation(); closeImageLightbox(); });
 
+  $('#video-lightbox-backdrop')?.addEventListener('click', closeVideoLightbox);
+  $('#video-lightbox-close')?.addEventListener('click', closeVideoLightbox);
+  const videoLightboxVideo = $('#video-lightbox-video');
+  const videoLightboxTimeEl = $('#video-lightbox-time');
+  if (videoLightboxVideo && videoLightboxTimeEl) {
+    videoLightboxVideo.addEventListener('timeupdate', () => {
+      const current = videoLightboxVideo.currentTime;
+      const duration = videoLightboxVideo.duration;
+      videoLightboxTimeEl.textContent = `${formatVideoTime(current)} / ${formatVideoTime(duration)}`;
+    });
+    videoLightboxVideo.addEventListener('loadedmetadata', () => {
+      const duration = videoLightboxVideo.duration;
+      videoLightboxTimeEl.textContent = `0:00 / ${formatVideoTime(duration)}`;
+    });
+  }
+  $('#video-lightbox-back')?.addEventListener('click', () => {
+    const v = $('#video-lightbox-video');
+    if (v) v.currentTime = Math.max(0, v.currentTime - 10);
+  });
+  $('#video-lightbox-forward')?.addEventListener('click', () => {
+    const v = $('#video-lightbox-video');
+    if (v) v.currentTime = Math.min(v.duration || 0, v.currentTime + 10);
+  });
+
   const lightboxImgWrap = $('#image-lightbox-img-wrap');
   if (lightboxImgWrap) {
     let pinchStartDist = 0, pinchStartScale = 1;
@@ -971,6 +1040,11 @@ function init() {
 
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
+    const videoLightbox = $('#video-lightbox-overlay');
+    if (videoLightbox && !videoLightbox.hidden) {
+      closeVideoLightbox();
+      return;
+    }
     const contactCard = $('#contact-card-overlay');
     if (contactCard && !contactCard.hidden) {
       closeContactCard();

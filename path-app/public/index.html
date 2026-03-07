@@ -163,6 +163,19 @@
         </div>
       </div>
 
+      <div class="video-lightbox-overlay" id="video-lightbox-overlay" hidden>
+        <div class="video-lightbox-backdrop" id="video-lightbox-backdrop"></div>
+        <div class="video-lightbox-content">
+          <button type="button" class="video-lightbox-close" id="video-lightbox-close" aria-label="Close">×</button>
+          <video id="video-lightbox-video" class="video-lightbox-video" controls playsinline></video>
+          <div class="video-lightbox-skip">
+            <button type="button" class="video-lightbox-skip-btn" id="video-lightbox-back" aria-label="Rewind 10 seconds">−10</button>
+            <span class="video-lightbox-time" id="video-lightbox-time">0:00 / 0:00</span>
+            <button type="button" class="video-lightbox-skip-btn" id="video-lightbox-forward" aria-label="Forward 10 seconds">+10</button>
+          </div>
+        </div>
+      </div>
+
       <div class="contact-card-overlay" id="contact-card-overlay" hidden>
         <div class="contact-card-backdrop" id="contact-card-backdrop"></div>
         <div class="contact-card" id="contact-card">

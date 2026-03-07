@@ -12,8 +12,6 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from Meg) When you tap on a photo to make it larger the download button should download the photo directly to the user’s photo library on their phone.
 
-- [ ] (from jared rodriguez) videos in the feed should behave exactly like they do in the bluesky social app
-
 ## In progress
 
 - *(Nothing)*
@@ -25,6 +23,7 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from jared rodriguez) videos in the feed should behave exactly like they do in the bluesky social app (Bluesky-style: autoplay muted in view, pause when scrolled away; single click opens fullscreen-style player with close, 10s skip, time, native controls)
 - [x] (from Meg) Posting a photo should be a plus icon on the bottom left of the main page and then user can pick to post a photo, video, or only text.
 - [x] (from Meg) Remove all moment types except photo, video, and text (comment)
 - [x] (from jared rodriguez / jrod assistant) Top right icon: full height of header bar, preserve aspect ratio
