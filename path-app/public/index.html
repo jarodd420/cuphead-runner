@@ -125,11 +125,11 @@
         <div class="feedback-card">
           <h2>Suggest an update</h2>
           <p class="feedback-hint">Share an idea or report something that could be better. Your message goes to the team.</p>
-          <form id="form-feedback">
-            <textarea id="feedback-message" name="message" placeholder="Your suggestion or feedback..." rows="4" maxlength="2000"></textarea>
+          <form id="form-feedback" data-testid="form-feedback">
+            <textarea id="feedback-message" name="message" placeholder="Your suggestion or feedback..." rows="4" maxlength="2000" aria-label="Feedback text area" data-testid="feedback-message"></textarea>
             <div class="form-actions">
               <button type="button" class="btn-cancel" id="btn-cancel-feedback">Cancel</button>
-              <button type="submit" class="btn-post">Send</button>
+              <button type="submit" class="btn-post" aria-label="Send feedback button" data-testid="feedback-send">Send</button>
             </div>
           </form>
         </div>

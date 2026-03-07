@@ -1021,6 +1021,14 @@ function init() {
       setOverlayOpen(false);
     }
   });
+  const formFeedback = $('#form-feedback');
+  const btnFeedbackSend = formFeedback?.querySelector('button[type="submit"]');
+  if (btnFeedbackSend && formFeedback) {
+    btnFeedbackSend.addEventListener('click', (e) => {
+      e.preventDefault();
+      formFeedback.requestSubmit();
+    });
+  }
   $('#form-feedback')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const ta = $('#feedback-message');
