@@ -14,6 +14,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) video fills screen
 
+- [ ] (from jared rodriguez) rebrand back to famapp
+
 ## In progress
 
 - *(Nothing)*
