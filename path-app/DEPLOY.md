@@ -25,7 +25,7 @@ The repo includes a **Blueprint** so you can go from localhost to a live URL in 
 
 4. **Apply** (or **Create resources**). Render will:
    - Create a **PostgreSQL** database (`fam-db`).
-   - Create a **Web Service** for the Fam app (root directory: `path-app`).
+   - Create a **Web Service** for the OurMoments app (root directory: `path-app`).
    - Run **schema** on first deploy (`npm run schema`), so tables and session store are created automatically.
    - Set `DATABASE_URL`, `SESSION_SECRET`, `NODE_ENV`, and `USE_HTTPS` for you.
 

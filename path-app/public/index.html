@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <meta name="theme-color" content="#7eb8d4" />
-  <meta name="description" content="FamApp — Share moments with your close circle." />
-  <title>FamApp</title>
+  <meta name="description" content="OurMoments — Share moments with your close circle." />
+  <title>OurMoments</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Great+Vibes&display=swap" rel="stylesheet" />
@@ -15,7 +15,7 @@
   <div id="root" data-screen="login">
     <div id="screen-login" class="screen">
       <div class="login-card">
-        <h1 class="logo">FamApp</h1>
+        <h1 class="logo">OurMoments</h1>
         <p class="tagline">Share moments with your close circle.</p>
         <form id="form-login" class="auth-form">
           <input type="email" name="email" placeholder="Email" required autocomplete="email" />
@@ -28,7 +28,7 @@
 
     <div id="screen-signup" class="screen">
       <div class="login-card">
-        <h1 class="logo">FamApp</h1>
+        <h1 class="logo">OurMoments</h1>
         <p class="tagline">Create your account.</p>
         <form id="form-signup" class="auth-form">
           <input type="text" name="name" placeholder="Name" required autocomplete="name" maxlength="100" />
@@ -56,7 +56,7 @@
             <button type="button" id="btn-logout">Sign out</button>
           </div>
         </div>
-        <span class="header-title">FamApp</span>
+        <span class="header-title">OurMoments</span>
         <button type="button" class="icon-btn header-icon header-icon-fam" id="btn-fams" title="Fams" aria-label="Your fams"><img src="/images/fam_icon_cropped.png" alt="" /></button>
       </header>
 
@@ -152,11 +152,11 @@
 
       <div class="image-lightbox-overlay" id="image-lightbox-overlay" hidden>
         <div class="image-lightbox-backdrop" id="image-lightbox-backdrop"></div>
-        <button type="button" class="image-lightbox-close" id="image-lightbox-close" aria-label="Close">×</button>
         <div class="image-lightbox-content">
           <div class="image-lightbox-img-wrap" id="image-lightbox-img-wrap">
             <img id="image-lightbox-img" alt="Moment photo" title="Tap to close" />
           </div>
+          <button type="button" class="image-lightbox-close" id="image-lightbox-close" aria-label="Close">×</button>
           <div class="image-lightbox-actions">
             <button type="button" class="image-lightbox-btn image-lightbox-btn-share" id="image-lightbox-share"><span class="image-lightbox-btn-icon" aria-hidden="true">↗</span> Share</button>
           </div>

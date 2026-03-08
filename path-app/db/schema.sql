@@ -1,4 +1,4 @@
--- Fam app: scalable schema for PostgreSQL
+-- OurMoments app: scalable schema for PostgreSQL
 -- Run this once on your Postgres instance (e.g. Supabase SQL editor, or psql)
 
 CREATE TABLE IF NOT EXISTS users (

@@ -1,6 +1,6 @@
-# OpenClaw → FamApp feedback API
+# OpenClaw → OurMoments feedback API
 
-Use this to post evaluation recommendations **directly to the Fam kanban** (and optional Slack). **No login to the Fam app is required.**
+Use this to post evaluation recommendations **directly to the OurMoments kanban** (and optional Slack). **No login to the OurMoments app is required.**
 
 ## Endpoint
 
@@ -36,7 +36,7 @@ curl -X POST "https://fam-production.up.railway.app/api/openclaw-feedback" \
 
 ## For OpenClaw (instruction you can give the agent)
 
-After you evaluate the Fam app (e.g. by navigating and using it in the browser), post your **two recommendations** by calling this API **twice** (once per recommendation). You do **not** need to log in to the Fam app to use the API.
+After you evaluate the OurMoments app (e.g. by navigating and using it in the browser), post your **two recommendations** by calling this API **twice** (once per recommendation). You do **not** need to log in to the OurMoments app to use the API.
 
 1. Make an HTTP POST to `https://fam-production.up.railway.app/api/openclaw-feedback`.
 2. Set header `Content-Type: application/json` and header `X-OpenClaw-Token` to the shared secret (you must have this secret in your environment or instructions).

@@ -1,6 +1,6 @@
-# Path (Fam) UX testing
+# Path (OurMoments) UX testing
 
-Use this when testing the Path / Fam app in the browser.
+Use this when testing the Path / OurMoments app in the browser.
 
 ## Site and credentials
 

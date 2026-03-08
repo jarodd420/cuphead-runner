@@ -1,11 +1,11 @@
 ---
 name: ux_path_fam
-description: Path (Fam) app UX testing — site URLs, test account, and flows to try.
+description: Path (OurMoments) app UX testing — site URLs, test account, and flows to try.
 ---
 
-# Path (Fam) UX testing
+# Path (OurMoments) UX testing
 
-Use this when testing the Path / Fam app in the browser.
+Use this when testing the Path / OurMoments app in the browser.
 
 ## Site and credentials
 

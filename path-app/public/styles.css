@@ -2,7 +2,7 @@
   --path-red: #0d9488;
   --path-red-dark: #0f766e;
   --path-red-focus: rgba(13, 148, 136, 0.35);
-  /* Header palette (FamApp icon vibe: warm beach / family) */
+  /* Header palette (OurMoments icon vibe: warm beach / family) */
   --header-bg-start: #7eb8d4;
   --header-bg-end: #c9a86c;
   --header-text: #2c2c2c;
@@ -796,7 +796,7 @@ body {
 
 .auth-switch a:hover { text-decoration: underline; }
 
-/* ----- App header (FamApp: warm bar to match family icon) ----- */
+/* ----- App header (OurMoments: warm bar to match family icon) ----- */
 .app-header {
   position: sticky;
   top: 0;
@@ -851,7 +851,7 @@ body {
   background: var(--header-icon-bg-hover);
 }
 
-/* FamApp icon (top right): full height of header bar, preserve aspect ratio */
+/* OurMoments icon (top right): full height of header bar, preserve aspect ratio */
 .header-icon-fam {
   width: auto;
   height: 56px;
@@ -1167,8 +1167,8 @@ body {
 
 .image-lightbox-close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: -52px;
+  right: 0;
   z-index: 2;
   width: 44px;
   height: 44px;
