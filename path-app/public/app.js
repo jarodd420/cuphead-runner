@@ -688,8 +688,7 @@ function openImageLightbox(imageUrl) {
   const overlay = $('#image-lightbox-overlay');
   const imgEl = $('#image-lightbox-img');
   const imgWrap = $('#image-lightbox-img-wrap');
-  const saveLink = $('#image-lightbox-save');
-  if (!overlay || !imgEl || !saveLink) return;
+  if (!overlay || !imgEl) return;
   // Revoke any previous blob URL so we don't leak
   if (overlay.dataset.downloadBlobUrl) {
     URL.revokeObjectURL(overlay.dataset.downloadBlobUrl);
@@ -707,7 +706,7 @@ function openImageLightbox(imageUrl) {
   }
   overlay.hidden = false;
   setOverlayOpen(true);
-  // Fetch as blob so Save (download) is honored and Share can attach file
+  // Fetch as blob so Share can attach file (and user can choose Save Image)
   fetch(imageUrl, { mode: 'cors' }).then(r => {
     if (!r.ok) return;
     return r.blob();
@@ -945,39 +944,6 @@ function init() {
   $('#image-lightbox-backdrop')?.addEventListener('click', closeImageLightbox);
   $('#image-lightbox-close')?.addEventListener('click', closeImageLightbox);
   $('#image-lightbox-img')?.addEventListener('click', (e) => { e.stopPropagation(); closeImageLightbox(); });
-  $('#image-lightbox-save')?.addEventListener('click', () => {
-    const overlay = $('#image-lightbox-overlay');
-    const imageUrl = overlay?.dataset?.imageUrl;
-    const filename = overlay?.dataset?.downloadFilename || 'moment-photo.jpg';
-    if (!imageUrl) return;
-    function getBlob() {
-      const blobUrl = overlay?.dataset?.downloadBlobUrl;
-      if (blobUrl) return fetch(blobUrl).then(r => r.blob());
-      return fetch(imageUrl, { mode: 'cors' }).then(r => r.blob());
-    }
-    function toFile(blob) {
-      const ext = (filename.match(/\.(jpe?g|png|gif|webp)(\?|$)/i) || [null, 'jpg'])[1];
-      return new File([blob], filename, { type: blob.type || 'image/jpeg' });
-    }
-    getBlob().then(blob => {
-      if (typeof navigator.share === 'function') {
-        const file = toFile(blob);
-        showToast("Choose 'Save Image' to add to your photo library");
-        return navigator.share({ files: [file], title: 'Moment photo' })
-          .then(() => {
-            showToast('Saved to Photos!');
-          })
-          .catch(() => {});
-      }
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast('Saved to device');
-    }).catch(() => showError('Could not save image'));
-  });
   $('#image-lightbox-share')?.addEventListener('click', () => {
     const overlay = $('#image-lightbox-overlay');
     const imageUrl = overlay?.dataset?.imageUrl;
@@ -988,10 +954,13 @@ function init() {
         fetch(blobUrl).then(r => r.blob()).then(blob => {
           const ext = (imageUrl.match(/\.(jpe?g|png|gif|webp)(\?|$)/i) || [null, 'jpg'])[1];
           const file = new File([blob], 'moment-photo.' + ext, { type: blob.type || 'image/jpeg' });
-          return navigator.share({ files: [file] });
-        }).catch(() => navigator.share({ url: imageUrl }).catch(() => {})).catch(() => {});
+          return navigator.share({ files: [file], title: 'Moment photo' })
+            .then(() => showToast('Saved to Photos!'));
+        }).catch(() => navigator.share({ url: imageUrl, title: 'Moment photo' })
+          .then(() => showToast('Saved to Photos!'))).catch(() => {});
       } else {
-        navigator.share({ url: imageUrl, title: 'Moment photo' }).catch(() => {});
+        navigator.share({ url: imageUrl, title: 'Moment photo' })
+          .then(() => showToast('Saved to Photos!')).catch(() => {});
       }
     } else {
       navigator.clipboard?.writeText(imageUrl).then(() => {
