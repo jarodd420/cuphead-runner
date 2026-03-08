@@ -16,6 +16,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) rebrand back to famapp
 
+- [ ] (from jared rodriguez) videos are great but when expanded have a share button similar to pictures. also have the x close button just above the top right corner of the video again similar to pictures
+
 ## In progress
 
 - *(Nothing)*
