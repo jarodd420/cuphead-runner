@@ -10,6 +10,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from OpenClaw) Repeated profile setup: users are prompted to set up their profile twice during initial setup. Simplify onboarding by combining or removing redundant steps.
 
+- [ ] (from jared rodriguez) when you are in expanded video mode and the video is playing the pause button is olin the way of the video and the video is darker than the preview
+
 ## In progress
 
 - *(Nothing)*
