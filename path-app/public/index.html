@@ -153,12 +153,13 @@
       <div class="image-lightbox-overlay" id="image-lightbox-overlay" hidden>
         <div class="image-lightbox-backdrop" id="image-lightbox-backdrop"></div>
         <div class="image-lightbox-content">
+          <button type="button" class="image-lightbox-close" id="image-lightbox-close" aria-label="Close">×</button>
           <div class="image-lightbox-img-wrap" id="image-lightbox-img-wrap">
             <img id="image-lightbox-img" alt="Moment photo" title="Tap to close" />
           </div>
           <div class="image-lightbox-actions">
-            <a id="image-lightbox-download" class="btn-post" href="#" download target="_blank" rel="noopener">Download</a>
-            <button type="button" class="btn-cancel" id="image-lightbox-close">Close</button>
+            <a id="image-lightbox-save" class="image-lightbox-btn image-lightbox-btn-save" href="#" download target="_blank" rel="noopener"><span class="image-lightbox-btn-icon" aria-hidden="true">💾</span> Save</a>
+            <button type="button" class="image-lightbox-btn image-lightbox-btn-share" id="image-lightbox-share"><span class="image-lightbox-btn-icon" aria-hidden="true">↗</span> Share</button>
           </div>
         </div>
       </div>

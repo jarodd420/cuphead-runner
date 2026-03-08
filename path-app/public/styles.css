@@ -1130,7 +1130,7 @@ body {
   background: #000;
 }
 
-/* Image lightbox: tap to view full size + download (above contact card when opened from it) */
+/* Image lightbox: Bluesky-style — fullscreen black overlay, X top-right, Save + Share at bottom */
 .image-lightbox-overlay {
   position: fixed;
   inset: 0;
@@ -1139,7 +1139,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: rgba(0, 0, 0, 0.85);
+  background: #000;
   animation: overlay-fade-in var(--transition-overlay);
 }
 
@@ -1155,12 +1155,37 @@ body {
 
 .image-lightbox-content {
   position: relative;
+  width: 100%;
   max-width: 100%;
   max-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
+  gap: 20px;
+}
+
+.image-lightbox-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .image-lightbox-img-wrap {
@@ -1178,7 +1203,7 @@ body {
 .image-lightbox-img-wrap img {
   display: block;
   max-width: 100%;
-  max-height: calc(100vh - 120px);
+  max-height: calc(100vh - 160px);
   width: auto;
   height: auto;
   object-fit: contain;
@@ -1188,9 +1213,46 @@ body {
 
 .image-lightbox-actions {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 16px;
   justify-content: center;
+  flex-wrap: wrap;
+  padding-bottom: 8px;
+}
+
+.image-lightbox-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  color: #000;
+  background: #fff;
+  font-family: inherit;
+}
+
+.image-lightbox-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.image-lightbox-btn-icon {
+  font-size: 18px;
+}
+
+.image-lightbox-btn-save {
+  background: #fff;
+  color: #000;
+}
+
+.image-lightbox-btn-share {
+  background: rgba(255, 255, 255, 0.9);
+  color: #000;
 }
 
 /* Video lightbox: fullscreen-style overlay with close, 10s skip, time (Bluesky-style) */
