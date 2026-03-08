@@ -10,25 +10,20 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from OpenClaw) Repeated profile setup: users are prompted to set up their profile twice during initial setup. Simplify onboarding by combining or removing redundant steps.
 
-- [ ] (from Meg) When you tap on a photo to make it larger the download button should download the photo directly to the user’s photo library on their phone.
-
-- [ ] (from jared rodriguez) video fills screen
-
-- [ ] (from jared rodriguez) rebrand back to famapp
-
-- [ ] (from jared rodriguez) videos are great but when expanded have a share button similar to pictures. also have the x close button just above the top right corner of the video again similar to pictures
-
 ## In progress
 
 - *(Nothing)*
 
 ## Won't do
 
+- (from jared rodriguez) rebrand back to famapp — product is OurMoments
 - (from jared rodriguez) Select multiple photos from library at once for upload — dropped per product decision
 - *(Nonsensical, spam, or off-topic — move here when working the list)*
 
 ## Done
 
+- [x] (from jared rodriguez) video fills screen (expanded video uses object-fit: cover, no distortion)
+- [x] (from jared rodriguez) videos when expanded: Share button and close X in top-right (like image lightbox)
 - [x] (from jared rodriguez) videos in the feed should behave exactly like they do in the bluesky social app (Bluesky-style: autoplay muted in view, pause when scrolled away; single click opens fullscreen-style player with close, 10s skip, time, native controls)
 - [x] (from Meg) Posting a photo should be a plus icon on the bottom left of the main page and then user can pick to post a photo, video, or only text.
 - [x] (from Meg) Remove all moment types except photo, video, and text (comment)
@@ -47,7 +42,7 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 - [x] (from jared rodriguez) In lightbox view, tap the picture again to close (same as cancel)
 - [x] (from jared rodriguez) Remove moment type icon from the feed
 - [x] (from Meg) Tap on own profile picture to edit it
-- [x] (from Meg) Tap someone else’s profile picture → contact card (avatar, cover, name, bio)
+- [x] (from Meg) Tap someone else's profile picture → contact card (avatar, cover, name, bio)
 - [x] (from jared rodriguez) Pinch to zoom in/out when viewing a picture in the lightbox
 - [x] (from Meg) Crop and center profile photo — center square crop before upload
 - [x] (from Meg) Grey dot on profile picture — removed list-style/pseudo-elements; avatar uses object-fit cover

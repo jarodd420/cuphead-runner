@@ -742,6 +742,7 @@ function openVideoLightbox(url) {
   const video = $('#video-lightbox-video');
   const timeEl = $('#video-lightbox-time');
   if (!overlay || !video) return;
+  overlay.dataset.videoUrl = url;
   video.src = url;
   video.muted = false;
   video.currentTime = 0;
@@ -759,7 +760,10 @@ function closeVideoLightbox() {
     video.removeAttribute('src');
     video.load();
   }
-  if (overlay) overlay.hidden = true;
+  if (overlay) {
+    delete overlay.dataset.videoUrl;
+    overlay.hidden = true;
+  }
   setOverlayOpen(false);
 }
 
@@ -991,6 +995,16 @@ function init() {
   $('#video-lightbox-forward')?.addEventListener('click', () => {
     const v = $('#video-lightbox-video');
     if (v) v.currentTime = Math.min(v.duration || 0, v.currentTime + 10);
+  });
+  $('#video-lightbox-share')?.addEventListener('click', () => {
+    const overlay = $('#video-lightbox-overlay');
+    const url = overlay?.dataset?.videoUrl;
+    if (!url) return;
+    if (typeof navigator.share === 'function') {
+      navigator.share({ url, title: 'Moment video' }).then(() => showToast('Saved to Photos!')).catch(() => {});
+    } else {
+      navigator.clipboard?.writeText(url).then(() => showToast('Link copied — paste to share')).catch(() => {});
+    }
   });
 
   const lightboxImgWrap = $('#image-lightbox-img-wrap');
