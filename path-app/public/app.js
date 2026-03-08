@@ -73,7 +73,7 @@ function showToast(msg) {
   t.setAttribute('role', 'status');
   t.textContent = msg;
   document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2500);
+  setTimeout(() => t.remove(), 3500);
 }
 
 async function api(path, options = {}) {
@@ -962,8 +962,11 @@ function init() {
     getBlob().then(blob => {
       if (typeof navigator.share === 'function') {
         const file = toFile(blob);
+        showToast("Choose 'Save Image' to add to your photo library");
         return navigator.share({ files: [file], title: 'Moment photo' })
-          .then(() => showToast('Saved!'))
+          .then(() => {
+            showToast('Saved to Photos!');
+          })
           .catch(() => {});
       }
       const url = URL.createObjectURL(blob);
@@ -991,7 +994,9 @@ function init() {
         navigator.share({ url: imageUrl, title: 'Moment photo' }).catch(() => {});
       }
     } else {
-      navigator.clipboard?.writeText(imageUrl).then(() => {}).catch(() => {});
+      navigator.clipboard?.writeText(imageUrl).then(() => {
+        showToast('Link copied — paste to share');
+      }).catch(() => {});
     }
   });
 
