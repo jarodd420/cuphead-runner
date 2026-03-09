@@ -10,14 +10,6 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from OpenClaw) Repeated profile setup: users are prompted to set up their profile twice during initial setup. Simplify onboarding by combining or removing redundant steps.
 
-- [ ] (from jared rodriguez) when you are in expanded video mode and the video is playing the pause button is olin the way of the video and the video is darker than the preview
-
-- [ ] (from jared rodriguez) the plus sign on the bottom left should immediately take you to the 'photo or video' upload section.
-
-- [ ] (from jared rodriguez) for pictures only when you click the 'share' button the share options open as expected but then if you click of the window the share opens a second time for some reason
-
-- [ ] (from jared rodriguez) add smiley face emoji and the party popper emoji
-
 ## In progress
 
 - *(Nothing)*
@@ -30,6 +22,10 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from jared rodriguez) expanded video: custom play/pause (no native controls overlay), video not darker
+- [x] (from jared rodriguez) plus sign goes straight to photo or video upload; "Post text only" link in overlay
+- [x] (from jared rodriguez) image Share: guard against double-open when clicking off
+- [x] (from jared rodriguez) add smiley 😊 and party popper 🎉 to reaction emojis
 - [x] (from jared rodriguez) video fills screen (expanded video uses object-fit: cover, no distortion)
 - [x] (from jared rodriguez) videos when expanded: Share button and close X in top-right (like image lightbox)
 - [x] (from jared rodriguez) videos in the feed should behave exactly like they do in the bluesky social app (Bluesky-style: autoplay muted in view, pause when scrolled away; single click opens fullscreen-style player with close, 10s skip, time, native controls)

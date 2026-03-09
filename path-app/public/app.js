@@ -133,7 +133,7 @@ function renderTimeline(moments) {
       const cTime = new Date(c.created_at).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
       return `<div class="moment-comment"><span class="moment-comment-name">${escapeHtml(c.user_name || 'Someone')}</span> ${escapeHtml(c.body)}<span class="moment-comment-time">${cTime}</span></div>`;
     }).join('');
-    const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
+    const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🙏', '😊', '🎉'];
     const reactionSummary = (m.reactions && Object.keys(m.reactions).length) ? Object.entries(m.reactions).map(([emoji, count]) => count ? `${emoji} ${count}` : '').filter(Boolean).join('  ') : '';
     const myReactionEmoji = m.my_reaction || '';
     const reactIconHtml = myReactionEmoji ? myReactionEmoji : '<span class="moment-react-icon" aria-hidden="true">🙂</span>';
@@ -741,12 +741,14 @@ function openVideoLightbox(url) {
   const overlay = $('#video-lightbox-overlay');
   const video = $('#video-lightbox-video');
   const timeEl = $('#video-lightbox-time');
+  const playPauseBtn = $('#video-lightbox-play-pause');
   if (!overlay || !video) return;
   overlay.dataset.videoUrl = url;
   video.src = url;
   video.muted = false;
   video.currentTime = 0;
   if (timeEl) timeEl.textContent = '0:00 / 0:00';
+  if (playPauseBtn) playPauseBtn.textContent = '▶';
   overlay.hidden = false;
   setOverlayOpen(true);
   video.play().catch(() => {});
@@ -948,28 +950,27 @@ function init() {
   $('#image-lightbox-backdrop')?.addEventListener('click', closeImageLightbox);
   $('#image-lightbox-close')?.addEventListener('click', closeImageLightbox);
   $('#image-lightbox-img')?.addEventListener('click', (e) => { e.stopPropagation(); closeImageLightbox(); });
+  let imageLightboxShareInProgress = false;
   $('#image-lightbox-share')?.addEventListener('click', () => {
+    if (imageLightboxShareInProgress) return;
     const overlay = $('#image-lightbox-overlay');
     const imageUrl = overlay?.dataset?.imageUrl;
     if (!imageUrl) return;
     const blobUrl = overlay?.dataset?.downloadBlobUrl;
+    imageLightboxShareInProgress = true;
+    function done() { imageLightboxShareInProgress = false; }
     if (typeof navigator.share === 'function') {
       if (blobUrl) {
         fetch(blobUrl).then(r => r.blob()).then(blob => {
           const ext = (imageUrl.match(/\.(jpe?g|png|gif|webp)(\?|$)/i) || [null, 'jpg'])[1];
           const file = new File([blob], 'moment-photo.' + ext, { type: blob.type || 'image/jpeg' });
-          return navigator.share({ files: [file], title: 'Moment photo' })
-            .then(() => showToast('Saved to Photos!'));
-        }).catch(() => navigator.share({ url: imageUrl, title: 'Moment photo' })
-          .then(() => showToast('Saved to Photos!'))).catch(() => {});
+          return navigator.share({ files: [file], title: 'Moment photo' }).then(() => showToast('Saved to Photos!')).finally(done);
+        }).catch(() => navigator.share({ url: imageUrl, title: 'Moment photo' }).then(() => showToast('Saved to Photos!')).finally(done)).catch(() => {}).finally(done);
       } else {
-        navigator.share({ url: imageUrl, title: 'Moment photo' })
-          .then(() => showToast('Saved to Photos!')).catch(() => {});
+        navigator.share({ url: imageUrl, title: 'Moment photo' }).then(() => showToast('Saved to Photos!')).catch(() => {}).finally(done);
       }
     } else {
-      navigator.clipboard?.writeText(imageUrl).then(() => {
-        showToast('Link copied — paste to share');
-      }).catch(() => {});
+      navigator.clipboard?.writeText(imageUrl).then(() => showToast('Link copied — paste to share')).catch(() => {}).finally(done);
     }
   });
 
@@ -988,6 +989,14 @@ function init() {
       videoLightboxTimeEl.textContent = `0:00 / ${formatVideoTime(duration)}`;
     });
   }
+  const videoLightboxPlayPauseBtn = $('#video-lightbox-play-pause');
+  videoLightboxVideo?.addEventListener('play', () => { if (videoLightboxPlayPauseBtn) videoLightboxPlayPauseBtn.textContent = '❚❚'; });
+  videoLightboxVideo?.addEventListener('pause', () => { if (videoLightboxPlayPauseBtn) videoLightboxPlayPauseBtn.textContent = '▶'; });
+  $('#video-lightbox-play-pause')?.addEventListener('click', () => {
+    const v = $('#video-lightbox-video');
+    if (!v) return;
+    if (v.paused) v.play(); else v.pause();
+  });
   $('#video-lightbox-back')?.addEventListener('click', () => {
     const v = $('#video-lightbox-video');
     if (v) v.currentTime = Math.max(0, v.currentTime - 10);
@@ -1335,10 +1344,9 @@ function init() {
   const fabPicker = $('#fab-picker');
   btnFabPlus?.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (fabPicker) {
-      fabPicker.hidden = !fabPicker.hidden;
-      btnFabPlus?.setAttribute('aria-expanded', fabPicker.hidden ? 'false' : 'true');
-    }
+    openAddMomentOverlay('media');
+    if (fabPicker) fabPicker.hidden = true;
+    btnFabPlus?.setAttribute('aria-expanded', 'false');
   });
   $('#fab-pick-media')?.addEventListener('click', () => {
     if (fabPicker) fabPicker.hidden = true;
@@ -1350,6 +1358,7 @@ function init() {
     btnFabPlus?.setAttribute('aria-expanded', 'false');
     openAddMomentOverlay('message');
   });
+  $('#btn-moment-text-only')?.addEventListener('click', () => openAddMomentOverlay('message'));
   fabPicker?.addEventListener('click', (e) => e.stopPropagation());
   document.addEventListener('click', () => {
     if (fabPicker && !fabPicker.hidden) {

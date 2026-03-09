@@ -167,10 +167,11 @@
         <div class="video-lightbox-backdrop" id="video-lightbox-backdrop"></div>
         <div class="video-lightbox-content">
           <div class="video-lightbox-video-wrap">
-            <video id="video-lightbox-video" class="video-lightbox-video" controls playsinline></video>
+            <video id="video-lightbox-video" class="video-lightbox-video" playsinline></video>
             <button type="button" class="video-lightbox-close" id="video-lightbox-close" aria-label="Close">×</button>
           </div>
           <div class="video-lightbox-skip">
+            <button type="button" class="video-lightbox-skip-btn" id="video-lightbox-play-pause" aria-label="Play or pause">▶</button>
             <button type="button" class="video-lightbox-skip-btn" id="video-lightbox-back" aria-label="Rewind 10 seconds">−10</button>
             <span class="video-lightbox-time" id="video-lightbox-time">0:00 / 0:00</span>
             <button type="button" class="video-lightbox-skip-btn" id="video-lightbox-forward" aria-label="Forward 10 seconds">+10</button>
@@ -207,6 +208,7 @@
                 <video class="moment-photo-preview moment-preview-video" id="moment-video-preview" alt="Preview" controls hidden></video>
                 <button type="button" class="btn-remove-photo" id="btn-remove-moment-photo" title="Remove">×</button>
               </div>
+              <p class="moment-text-only-link-wrap"><button type="button" class="link-btn" id="btn-moment-text-only">Post text only</button></p>
             </div>
             <textarea name="body" id="moment-body-input" placeholder="Add a comment (optional)..." rows="3"></textarea>
             <div class="form-actions">
