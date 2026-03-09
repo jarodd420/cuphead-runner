@@ -14,6 +14,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) the plus sign on the bottom left should immediately take you to the 'photo or video' upload section.
 
+- [ ] (from jared rodriguez) for pictures only when you click the 'share' button the share options open as expected but then if you click of the window the share opens a second time for some reason
+
 ## In progress
 
 - *(Nothing)*
