@@ -12,6 +12,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from jared rodriguez) when you are in expanded video mode and the video is playing the pause button is olin the way of the video and the video is darker than the preview
 
+- [ ] (from jared rodriguez) the plus sign on the bottom left should immediately take you to the 'photo or video' upload section.
+
 ## In progress
 
 - *(Nothing)*
