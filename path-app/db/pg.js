@@ -62,6 +62,33 @@ function getDb() {
       await client.query(`UPDATE users SET ${updates.join(', ')} WHERE id = $${i}`, values);
       return this.getUserById(id);
     },
+    async createPasswordResetToken(userId) {
+      const crypto = require('crypto');
+      const token = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+      await client.query(
+        'INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)',
+        [Number(userId), token, expiresAt]
+      );
+      return { token, expires_at: expiresAt };
+    },
+    async getPasswordResetToken(token) {
+      const r = await client.query(
+        'SELECT id, user_id, token, expires_at FROM password_reset_tokens WHERE token = $1',
+        [(token || '').trim()]
+      );
+      const row = r.rows[0];
+      if (!row || new Date(row.expires_at) < new Date()) return null;
+      return { id: Number(row.id), user_id: Number(row.user_id), token: row.token, expires_at: row.expires_at };
+    },
+    async deletePasswordResetToken(token) {
+      await client.query('DELETE FROM password_reset_tokens WHERE token = $1', [(token || '').trim()]);
+    },
+    async updateUserPassword(userId, newPassword) {
+      const hash = bcrypt.hashSync(newPassword, 10);
+      await client.query('UPDATE users SET password_hash = $1 WHERE id = $2', [hash, Number(userId)]);
+      return this.getUserById(userId);
+    },
     async getFriendIds(userId) {
       const uid = Number(userId);
       const r = await client.query(

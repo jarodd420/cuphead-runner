@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { getDb } = require('../appDb');
+const { sendPasswordResetEmail } = require('../lib/email');
 
 const router = express.Router();
 
@@ -117,6 +118,45 @@ router.get('/me', async (req, res) => {
   const user = await db.getUserById(req.session.userId);
   const profile = user ? profileFromUser(user) : req.session.user;
   res.json({ user: profile });
+});
+
+// Forgot password: send reset link to email. Always return 200 to avoid email enumeration.
+router.post('/forgot-password', async (req, res) => {
+  const email = (req.body?.email || '').toString().trim().toLowerCase();
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+  const db = getDb();
+  const user = await db.getUserByEmail(email);
+  if (user) {
+    const { token } = await db.createPasswordResetToken(user.id);
+    const baseUrl = (process.env.INVITE_BASE_URL || process.env.BASE_URL || '').trim() || (req.protocol + '://' + req.get('host'));
+    const resetUrl = `${baseUrl.replace(/\/$/, '')}/?screen=reset&token=${encodeURIComponent(token)}`;
+    await sendPasswordResetEmail(user.email, resetUrl);
+  }
+  res.json({ message: 'If an account exists with that email, you will receive a password reset link.' });
+});
+
+// Reset password: token + new password. Reuse signup password rules.
+router.post('/reset-password', async (req, res) => {
+  const { token, password, password_confirm } = req.body || {};
+  const tokenStr = (token || '').toString().trim();
+  const passwordStr = (password || '').toString();
+  if (!tokenStr) {
+    return res.status(400).json({ error: 'Reset token is required' });
+  }
+  const validated = validateSignup({ ...req.body, password: passwordStr, password_confirm, email: 'a@a.com', name: 'x', accept_terms: true });
+  if (validated.error) {
+    return res.status(400).json({ error: validated.error });
+  }
+  const db = getDb();
+  const row = await db.getPasswordResetToken(tokenStr);
+  if (!row) {
+    return res.status(400).json({ error: 'Invalid or expired reset link. Please request a new one.' });
+  }
+  await db.updateUserPassword(row.user_id, passwordStr);
+  await db.deletePasswordResetToken(tokenStr);
+  res.json({ message: 'Password updated. You can sign in with your new password.' });
 });
 
 module.exports = router;

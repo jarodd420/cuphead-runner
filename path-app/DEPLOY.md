@@ -25,7 +25,7 @@ The repo includes a **Blueprint** so you can go from localhost to a live URL in 
 
 4. **Apply** (or **Create resources**). Render will:
    - Create a **PostgreSQL** database (`fam-db`).
-   - Create a **Web Service** for the OurMoments app (root directory: `path-app`).
+   - Create a **Web Service** for the FamApp app (root directory: `path-app`).
    - Run **schema** on first deploy (`npm run schema`), so tables and session store are created automatically.
    - Set `DATABASE_URL`, `SESSION_SECRET`, `NODE_ENV`, and `USE_HTTPS` for you.
 
@@ -156,7 +156,7 @@ Logged-in users can send update suggestions from the app (menu → **Suggest an 
 | `SUPABASE_STORAGE_BUCKET` | Optional | Bucket name (default: `uploads`). Set to your existing bucket, e.g. `fam`, if you already created one. |
 | `RESEND_API_KEY` | For invite emails | Resend API key; if unset, invites are saved but no email sent |
 | `RESEND_FROM` | Optional | Sender for invite emails (default: `Fam <onboarding@resend.dev>`) |
-| `INVITE_BASE_URL` | Optional | App base URL for signup links (default: from request) |
+| `INVITE_BASE_URL` | Optional | App base URL for signup and password-reset links (default: from request) |
 | `SLACK_FEEDBACK_WEBHOOK_URL` | For feedback | Incoming Webhook URL for feedback/suggestions (e.g. #bots-channel) |
 | `GITHUB_TOKEN` | For kanban | GitHub token (repo scope) so feedback is appended to FAM_KANBAN.md |
 | `GITHUB_REPO` | For kanban | Repo as owner/name (e.g. myuser/cuphead-runner) |

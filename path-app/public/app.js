@@ -927,8 +927,19 @@ function init() {
 
   linkSignup?.addEventListener('click', (e) => { e.preventDefault(); showScreen('signup'); });
   linkLogin?.addEventListener('click', (e) => { e.preventDefault(); showScreen('login'); });
+  $('#link-forgot')?.addEventListener('click', (e) => { e.preventDefault(); showScreen('forgot'); });
+  $('#link-forgot-back')?.addEventListener('click', (e) => { e.preventDefault(); showScreen('login'); });
+  $('#link-reset-back')?.addEventListener('click', (e) => { e.preventDefault(); showScreen('login'); });
   $('#link-terms')?.addEventListener('click', (e) => { e.preventDefault(); });
   $('#link-privacy')?.addEventListener('click', (e) => { e.preventDefault(); });
+
+  // If URL has ?screen=reset&token=..., show reset screen and set token (e.g. from email link)
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('screen') === 'reset' && params.get('token')) {
+    const tokenInput = $('#reset-token-input');
+    if (tokenInput) tokenInput.value = params.get('token');
+    showScreen('reset');
+  }
 
   btnMenu?.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -1264,6 +1275,50 @@ function init() {
       showError(err.message || 'Login failed');
       if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalText; }
     }
+  });
+
+  const formForgot = $('#form-forgot');
+  formForgot?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const email = form.querySelector('input[name="email"]')?.value?.trim();
+    if (!email) { showError('Please enter your email'); return; }
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+    try {
+      await api('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) });
+      showToast('If an account exists with that email, you’ll receive a reset link.');
+      showScreen('login');
+    } catch (err) {
+      showError(err.message || 'Something went wrong');
+    }
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send reset link'; }
+  });
+
+  const formReset = $('#form-reset');
+  formReset?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const token = form.querySelector('input[name="token"]')?.value?.trim();
+    const password = form.querySelector('input[name="password"]')?.value || '';
+    const passwordConfirm = form.querySelector('input[name="password_confirm"]')?.value || '';
+    if (!token) { showError('Reset link is invalid or expired.'); return; }
+    if (password !== passwordConfirm) { showError('Passwords do not match'); return; }
+    if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/\d/.test(password)) {
+      showError('Password must be at least 8 characters and include a letter and a number');
+      return;
+    }
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Updating…'; }
+    try {
+      await api('/auth/reset-password', { method: 'POST', body: JSON.stringify({ token, password, password_confirm: passwordConfirm }) });
+      showToast('Password updated. You can sign in with your new password.');
+      showScreen('login');
+      window.history.replaceState({}, document.title, window.location.pathname || '/');
+    } catch (err) {
+      showError(err.message || 'Could not reset password');
+    }
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Update password'; }
   });
 
   formSignup?.addEventListener('submit', async (e) => {

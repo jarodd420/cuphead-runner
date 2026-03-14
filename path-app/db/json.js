@@ -10,6 +10,7 @@ const FAM_MEMBERS_FILE = path.join(DATA_DIR, 'fam_members.json');
 const FAM_INVITES_FILE = path.join(DATA_DIR, 'fam_invites.json');
 const COMMENTS_FILE = path.join(DATA_DIR, 'comments.json');
 const REACTIONS_FILE = path.join(DATA_DIR, 'reactions.json');
+const PASSWORD_RESET_TOKENS_FILE = path.join(DATA_DIR, 'password_reset_tokens.json');
 
 function ensureDir() {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -38,6 +39,7 @@ let famMembers = [];
 let famInvites = [];
 let comments = [];
 let reactions = [];
+let passwordResetTokens = [];
 
 function load() {
   users = readJson(USERS_FILE, []);
@@ -48,6 +50,7 @@ function load() {
   famInvites = readJson(FAM_INVITES_FILE, []);
   comments = readJson(COMMENTS_FILE, []);
   reactions = readJson(REACTIONS_FILE, []);
+  passwordResetTokens = readJson(PASSWORD_RESET_TOKENS_FILE, []);
 }
 
 function save() {
@@ -59,6 +62,7 @@ function save() {
   writeJson(FAM_INVITES_FILE, famInvites);
   writeJson(COMMENTS_FILE, comments);
   writeJson(REACTIONS_FILE, reactions);
+  writeJson(PASSWORD_RESET_TOKENS_FILE, passwordResetTokens);
 }
 
 function initDb() {
@@ -168,6 +172,33 @@ function getDb() {
       const idSet = new Set((famIds || []).map(fid => uid(fid)));
       famInvites = famInvites.filter(inv => (inv.email || '').toLowerCase() !== e || !idSet.has(uid(inv.fam_id)));
       save();
+    },
+    async createPasswordResetToken(userId) {
+      const crypto = require('crypto');
+      const token = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+      const id = passwordResetTokens.length ? Math.max(...passwordResetTokens.map(t => t.id)) + 1 : 1;
+      passwordResetTokens.push({ id, user_id: uid(userId), token, expires_at: expiresAt.toISOString(), created_at: new Date().toISOString() });
+      save();
+      return { token, expires_at: expiresAt };
+    },
+    async getPasswordResetToken(token) {
+      const t = (token || '').trim();
+      const row = passwordResetTokens.find(r => r.token === t);
+      if (!row || new Date(row.expires_at) < new Date()) return null;
+      return { id: row.id, user_id: uid(row.user_id), token: row.token, expires_at: row.expires_at };
+    },
+    async deletePasswordResetToken(token) {
+      passwordResetTokens = passwordResetTokens.filter(r => r.token !== (token || '').trim());
+      save();
+    },
+    async updateUserPassword(userId, newPassword) {
+      const bcrypt = require('bcryptjs');
+      const user = users.find(u => eq(u.id, userId));
+      if (!user) return null;
+      user.password_hash = bcrypt.hashSync(newPassword, 10);
+      save();
+      return this.getUserById(userId);
     },
     async getMomentsForUserIds(friendIds, limit = 100) {
       const idSet = new Set([...friendIds].map(uid));

@@ -44,4 +44,35 @@ function escapeHtml(s) {
     .replace(/"/g, '&quot;');
 }
 
-module.exports = { sendInviteEmail };
+/**
+ * Send password reset email with a link to set a new password.
+ * @param {string} to - Recipient email
+ * @param {string} resetUrl - Full URL to the reset-password page (including token)
+ * @returns {Promise<boolean>} - true if sent, false if skipped or failed
+ */
+async function sendPasswordResetEmail(to, resetUrl) {
+  const apiKey = (process.env.RESEND_API_KEY || '').trim();
+  if (!apiKey || !to || !resetUrl) return false;
+  try {
+    const { Resend } = require('resend');
+    const resend = new Resend(apiKey);
+    const subject = 'Reset your FamApp password';
+    const html = `
+      <p>You asked to reset your FamApp password.</p>
+      <p>Click the link below to choose a new password (link expires in 1 hour):</p>
+      <p><a href="${escapeHtml(resetUrl)}">${escapeHtml(resetUrl)}</a></p>
+      <p>If you didn't request this, you can ignore this email. Your password will not change.</p>
+    `.trim();
+    const { error } = await resend.emails.send({ from, to: [to], subject, html });
+    if (error) {
+      console.error('[email] Resend password-reset error:', error.message);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error('[email] Password reset send failed:', e.message);
+    return false;
+  }
+}
+
+module.exports = { sendInviteEmail, sendPasswordResetEmail };

@@ -1,4 +1,4 @@
--- OurMoments app: scalable schema for PostgreSQL
+-- FamApp app: scalable schema for PostgreSQL
 -- Run this once on your Postgres instance (e.g. Supabase SQL editor, or psql)
 
 CREATE TABLE IF NOT EXISTS users (
@@ -82,3 +82,14 @@ CREATE TABLE IF NOT EXISTS session (
   expire TIMESTAMP(6) NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_session_expire ON session(expire);
+
+-- Password reset tokens (for forgot-password flow). Token is single-use, short-lived.
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token VARCHAR(64) UNIQUE NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token ON password_reset_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_expires_at ON password_reset_tokens(expires_at);

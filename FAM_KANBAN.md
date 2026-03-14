@@ -16,7 +16,7 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Won't do
 
-- (from jared rodriguez) rebrand back to famapp — product is OurMoments
+- (from jared rodriguez) rebrand back to famapp — product is FamApp
 - (from jared rodriguez) Select multiple photos from library at once for upload — dropped per product decision
 - *(Nonsensical, spam, or off-topic — move here when working the list)*
 

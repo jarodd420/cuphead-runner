@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <meta name="theme-color" content="#7eb8d4" />
-  <meta name="description" content="OurMoments — Share moments with your close circle." />
-  <title>OurMoments</title>
+  <meta name="description" content="FamApp — Share moments with your close circle." />
+  <title>FamApp</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Great+Vibes&display=swap" rel="stylesheet" />
@@ -15,7 +15,7 @@
   <div id="root" data-screen="login">
     <div id="screen-login" class="screen">
       <div class="login-card">
-        <h1 class="logo">OurMoments</h1>
+        <h1 class="logo">FamApp</h1>
         <p class="tagline">Share moments with your close circle.</p>
         <form id="form-login" class="auth-form">
           <input type="email" name="email" placeholder="Email" required autocomplete="email" />
@@ -23,12 +23,40 @@
           <button type="submit">Sign in</button>
         </form>
         <p class="auth-switch">Don’t have an account? <a href="#" id="link-signup">Sign up</a></p>
+        <p class="auth-switch"><a href="#" id="link-forgot">Forgot password?</a></p>
+      </div>
+    </div>
+
+    <div id="screen-forgot" class="screen">
+      <div class="login-card">
+        <h1 class="logo">FamApp</h1>
+        <p class="tagline">Reset your password.</p>
+        <form id="form-forgot" class="auth-form">
+          <input type="email" name="email" placeholder="Email" required autocomplete="email" />
+          <button type="submit">Send reset link</button>
+        </form>
+        <p class="auth-switch"><a href="#" id="link-forgot-back">Back to sign in</a></p>
+      </div>
+    </div>
+
+    <div id="screen-reset" class="screen">
+      <div class="login-card">
+        <h1 class="logo">FamApp</h1>
+        <p class="tagline">Choose a new password.</p>
+        <form id="form-reset" class="auth-form">
+          <input type="hidden" name="token" id="reset-token-input" />
+          <p class="auth-password-hint">Password must be at least 8 characters and include both a letter and a number.</p>
+          <input type="password" name="password" placeholder="New password" required autocomplete="new-password" minlength="8" />
+          <input type="password" name="password_confirm" placeholder="Confirm new password" required autocomplete="new-password" minlength="8" />
+          <button type="submit">Update password</button>
+        </form>
+        <p class="auth-switch"><a href="#" id="link-reset-back">Back to sign in</a></p>
       </div>
     </div>
 
     <div id="screen-signup" class="screen">
       <div class="login-card">
-        <h1 class="logo">OurMoments</h1>
+        <h1 class="logo">FamApp</h1>
         <p class="tagline">Create your account.</p>
         <form id="form-signup" class="auth-form">
           <input type="text" name="name" placeholder="Name" required autocomplete="name" maxlength="100" />
@@ -56,7 +84,7 @@
             <button type="button" id="btn-logout">Sign out</button>
           </div>
         </div>
-        <span class="header-title">OurMoments</span>
+        <span class="header-title">FamApp</span>
         <button type="button" class="icon-btn header-icon header-icon-fam" id="btn-fams" title="Fams" aria-label="Your fams"><img src="/images/fam_icon_cropped.png" alt="" /></button>
       </header>
 

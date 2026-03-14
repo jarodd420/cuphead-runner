@@ -1,28 +1,44 @@
 ---
 name: ux_path_fam
-description: Path (OurMoments) app UX testing — site URLs, test account, and flows to try.
+description: FamApp UX testing — URLs, test account, behavior, and test flows.
 ---
 
-# Path (OurMoments) UX testing
+# FamApp testing
 
-Use this when testing the Path / OurMoments app in the browser.
+Use this skill when testing the FamApp (Path) app in the browser.
 
-## Site and credentials
+## URLs
 
-- **Production:** https://fam-production.up.railway.app/
-- **Local:** http://localhost:3000 (when Path app is running on the Mac)
+| Environment | URL |
+|-------------|-----|
+| Production  | https://fam-production.up.railway.app/ |
+| Local       | http://localhost:3000 |
 
-**Test account (use for automated testing):**
-- Email: `user1@path.local`
-- Password: `path123`
+## Test account
 
-Use this account unless the user gives different credentials in the message.
+Use for automated checks unless the user provides other credentials.
 
-## Flows to try
+- **Email:** `user1@path.local`
+- **Password:** `path123`
 
-1. Open the site and sign in with the test account.
-2. Scroll the timeline, open a contact card (tap a user avatar), tap avatar again for full-screen image, close back to contact card.
-3. Add a moment (tap +, pick type, optional text).
-4. Optionally: update profile (profile photo, cover, bio) if asked.
+Additional seeded users: `user2@path.local` … `user100@path.local` (same password).
 
-Note any bugs, freezes, confusing UX, or 429/errors. Prefer snapshot then act (click/type) using refs. Keep findings brief; write a short report to the workspace if useful.
+## Behavior
+
+- **Act first.** When asked to do a web check or test, do it immediately. Do not ask "Shall we proceed?" or list steps and wait for confirmation.
+- **Summarize.** After using the browser, report in a short summary (e.g. "Login page loads; title is FamApp"). Do not paste raw HTML, concatenated scraped text, or long snippets.
+- **Use refs.** Prefer `browser_snapshot` then act (click, type) using element refs. Note bugs, freezes, confusing UX, or HTTP errors briefly.
+
+## Test flows
+
+1. **Basic web check** — Open the site; confirm login page loads and branding/title look correct.
+2. **Login** — Sign in with the test account; confirm redirect to timeline.
+3. **Timeline** — Scroll; open a contact card (tap avatar), open full-screen image, close back.
+4. **Add moment** — Tap + (FAB), pick photo or video, optional text; submit.
+5. **Profile** — Open profile; optionally update photo, cover, or bio if asked.
+6. **Fams** — Open fams list; view/create fams; invite by email if testing that flow.
+
+## Reporting
+
+- Keep findings brief. If useful, write a short report to the workspace.
+- To send recommendations to the kanban: POST to `https://fam-production.up.railway.app/api/openclaw-feedback` with `X-OpenClaw-Token` and JSON body (see OPENCLAW-FEEDBACK-API.md). No app login required for that.
