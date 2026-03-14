@@ -81,6 +81,8 @@ body {
 }
 #root[data-screen="login"] #screen-signup,
 #root[data-screen="login"] #screen-app,
+#root[data-screen="login"] #screen-forgot,
+#root[data-screen="login"] #screen-reset,
 #root[data-screen="login"] .add-moment-overlay,
 #root[data-screen="login"] .profile-overlay {
   display: none !important;
@@ -96,8 +98,42 @@ body {
 }
 #root[data-screen="signup"] #screen-login,
 #root[data-screen="signup"] #screen-app,
+#root[data-screen="signup"] #screen-forgot,
+#root[data-screen="signup"] #screen-reset,
 #root[data-screen="signup"] .add-moment-overlay,
 #root[data-screen="signup"] .profile-overlay {
+  display: none !important;
+}
+
+#root[data-screen="forgot"] #screen-forgot,
+#root[data-screen="reset"] #screen-reset {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-image: linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.28) 100%), url('/images/family_beach.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+#root[data-screen="forgot"] #screen-login,
+#root[data-screen="forgot"] #screen-signup,
+#root[data-screen="forgot"] #screen-app,
+#root[data-screen="forgot"] #screen-reset,
+#root[data-screen="forgot"] .add-moment-overlay,
+#root[data-screen="forgot"] .profile-overlay,
+#root[data-screen="forgot"] .fams-overlay,
+#root[data-screen="forgot"] .feedback-overlay,
+#root[data-screen="reset"] #screen-login,
+#root[data-screen="reset"] #screen-signup,
+#root[data-screen="reset"] #screen-app,
+#root[data-screen="reset"] #screen-forgot,
+#root[data-screen="reset"] .add-moment-overlay,
+#root[data-screen="reset"] .profile-overlay,
+#root[data-screen="reset"] .fams-overlay,
+#root[data-screen="reset"] .feedback-overlay {
   display: none !important;
 }
 
@@ -107,7 +143,9 @@ body {
   min-height: 100dvh;
 }
 #root[data-screen="app"] #screen-login,
-#root[data-screen="app"] #screen-signup {
+#root[data-screen="app"] #screen-signup,
+#root[data-screen="app"] #screen-forgot,
+#root[data-screen="app"] #screen-reset {
   display: none !important;
 }
 #root[data-screen="app"] .add-moment-overlay[hidden],
