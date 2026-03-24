@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Comment</key>
+  <string>OpenClaw Gateway (v2026.2.13)</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOME</key>
+    <string>/Users/jared</string>
+    <key>MISTRAL_API_KEY</key>
+    <string>YOUR_MISTRAL_API_KEY</string>
+    <key>OPENCLAW_GATEWAY_PORT</key>
+    <string>18789</string>
+    <key>OPENCLAW_GATEWAY_TOKEN</key>
+    <string>YOUR_GATEWAY_TOKEN</string>
+    <key>OPENCLAW_LAUNCHD_LABEL</key>
+    <string>ai.openclaw.gateway</string>
+    <key>OPENCLAW_SERVICE_KIND</key>
+    <string>gateway</string>
+    <key>OPENCLAW_SERVICE_MARKER</key>
+    <string>openclaw</string>
+    <key>OPENCLAW_SERVICE_VERSION</key>
+    <string>2026.2.13</string>
+    <key>OPENCLAW_SYSTEMD_UNIT</key>
+    <string>openclaw-gateway.service</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+  </dict>
+  <key>KeepAlive</key>
+  <true/>
+  <key>Label</key>
+  <string>ai.openclaw.gateway</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/node</string>
+    <string>/usr/local/lib/node_modules/openclaw/dist/index.js</string>
+    <string>gateway</string>
+    <string>--port</string>
+    <string>18789</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardErrorPath</key>
+  <string>/Users/jared/.openclaw/logs/gateway.err.log</string>
+  <key>StandardOutPath</key>
+  <string>/Users/jared/.openclaw/logs/gateway.log</string>
+</dict>
+</plist>

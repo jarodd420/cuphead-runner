@@ -17,10 +17,10 @@
       <div class="login-card">
         <h1 class="logo">FamApp</h1>
         <p class="tagline">Share moments with your close circle.</p>
-        <form id="form-login" class="auth-form">
-          <input type="email" name="email" placeholder="Email" required autocomplete="email" />
-          <input type="password" name="password" placeholder="Password" required autocomplete="current-password" />
-          <button type="submit">Sign in</button>
+        <form id="form-login" class="auth-form" data-testid="form-login">
+          <input id="login-email" type="email" name="email" placeholder="Email" required autocomplete="email" aria-label="Email" data-testid="login-email" />
+          <input id="login-password" type="password" name="password" placeholder="Password" required autocomplete="current-password" aria-label="Password" data-testid="login-password" />
+          <button type="submit" data-testid="login-submit">Sign in</button>
         </form>
         <p class="auth-switch">Don’t have an account? <a href="#" id="link-signup">Sign up</a></p>
         <p class="auth-switch"><a href="#" id="link-forgot">Forgot password?</a></p>
@@ -31,9 +31,9 @@
       <div class="login-card">
         <h1 class="logo">FamApp</h1>
         <p class="tagline">Reset your password.</p>
-        <form id="form-forgot" class="auth-form">
-          <input type="email" name="email" placeholder="Email" required autocomplete="email" />
-          <button type="submit">Send reset link</button>
+        <form id="form-forgot" class="auth-form" data-testid="form-forgot">
+          <input id="forgot-email" type="email" name="email" placeholder="Email" required autocomplete="email" aria-label="Email" data-testid="forgot-email" />
+          <button type="submit" data-testid="forgot-submit">Send reset link</button>
         </form>
         <p class="auth-switch"><a href="#" id="link-forgot-back">Back to sign in</a></p>
       </div>
@@ -43,12 +43,12 @@
       <div class="login-card">
         <h1 class="logo">FamApp</h1>
         <p class="tagline">Choose a new password.</p>
-        <form id="form-reset" class="auth-form">
+        <form id="form-reset" class="auth-form" data-testid="form-reset">
           <input type="hidden" name="token" id="reset-token-input" />
           <p class="auth-password-hint">Password must be at least 8 characters and include both a letter and a number.</p>
-          <input type="password" name="password" placeholder="New password" required autocomplete="new-password" minlength="8" />
-          <input type="password" name="password_confirm" placeholder="Confirm new password" required autocomplete="new-password" minlength="8" />
-          <button type="submit">Update password</button>
+          <input id="reset-password" type="password" name="password" placeholder="New password" required autocomplete="new-password" minlength="8" aria-label="New password" data-testid="reset-password" />
+          <input id="reset-password-confirm" type="password" name="password_confirm" placeholder="Confirm new password" required autocomplete="new-password" minlength="8" aria-label="Confirm new password" data-testid="reset-password-confirm" />
+          <button type="submit" data-testid="reset-submit">Update password</button>
         </form>
         <p class="auth-switch"><a href="#" id="link-reset-back">Back to sign in</a></p>
       </div>
@@ -58,17 +58,17 @@
       <div class="login-card">
         <h1 class="logo">FamApp</h1>
         <p class="tagline">Create your account.</p>
-        <form id="form-signup" class="auth-form">
-          <input type="text" name="name" placeholder="Name" required autocomplete="name" maxlength="100" />
-          <input type="email" name="email" placeholder="Email" required autocomplete="email" />
+        <form id="form-signup" class="auth-form" data-testid="form-signup">
+          <input id="signup-name" type="text" name="name" placeholder="Name" required autocomplete="name" maxlength="100" aria-label="Name" data-testid="signup-name" />
+          <input id="signup-email" type="email" name="email" placeholder="Email" required autocomplete="email" aria-label="Email" data-testid="signup-email" />
           <p class="auth-password-hint">Password must be at least 8 characters and include both a letter and a number.</p>
-          <input type="password" name="password" placeholder="Password" required autocomplete="new-password" minlength="8" />
-          <input type="password" name="password_confirm" placeholder="Confirm password" required autocomplete="new-password" minlength="8" />
+          <input id="signup-password" type="password" name="password" placeholder="Password" required autocomplete="new-password" minlength="8" aria-label="Password" data-testid="signup-password" />
+          <input id="signup-password-confirm" type="password" name="password_confirm" placeholder="Confirm password" required autocomplete="new-password" minlength="8" aria-label="Confirm password" data-testid="signup-password-confirm" />
           <label class="auth-terms">
             <input type="checkbox" name="accept_terms" required />
             <span>I agree to the <a href="#" id="link-terms">Terms of Service</a> and <a href="#" id="link-privacy">Privacy Policy</a></span>
           </label>
-          <button type="submit">Create account</button>
+          <button type="submit" data-testid="signup-submit">Create account</button>
         </form>
         <p class="auth-switch">Already have an account? <a href="#" id="link-login">Sign in</a></p>
       </div>

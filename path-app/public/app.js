@@ -125,7 +125,7 @@ function renderTimeline(moments) {
     const bodyHtml = m.body ? `<div class="moment-body">${escapeHtml(m.body)}</div>` : '';
     const imageHtml = m.image_url
       ? (m.type === 'video'
-        ? `<div class="moment-image-wrap moment-video-wrap" title="Tap to expand" role="button" tabindex="0"><video class="moment-image moment-video" src="${escapeHtml(m.image_url)}" loop playsinline preload="auto" muted /></div>`
+        ? `<div class="moment-image-wrap moment-video-wrap" title="Tap to expand" role="button" tabindex="0"><video class="moment-image moment-video" src="${escapeHtml(m.image_url)}" loop playsinline preload="none" muted /></div>`
         : `<div class="moment-image-wrap" role="button" tabindex="0" title="Tap to view or download"><img class="moment-image" src="${escapeHtml(m.image_url)}" alt="" loading="lazy" onerror="this.onerror=null;this.style.background='var(--bg-input)';this.style.minHeight='80px';this.alt='Image unavailable (check bucket is public)';" /></div>`)
       : '';
     const commentCount = (m.comments || []).length;
@@ -1144,6 +1144,7 @@ function init() {
   });
   $('#btn-feedback')?.addEventListener('click', () => {
     if (headerMenu) headerMenu.hidden = true;
+    btnMenu?.setAttribute('aria-expanded', 'false');
     const overlay = $('#feedback-overlay');
     const ta = $('#feedback-message');
     if (overlay) overlay.hidden = false;
@@ -1185,9 +1186,7 @@ function init() {
       $('#feedback-overlay').hidden = true;
       setOverlayOpen(false);
       if (ta) ta.value = '';
-      showError(data.message || 'Thanks! Your feedback has been sent.'); // reuse toast for success
-      const t = document.querySelector('.error-toast');
-      if (t) { t.classList.add('success-toast'); t.classList.remove('error-toast'); }
+      showToast(data.message || 'Thanks — your suggestion was sent.');
     } catch (err) {
       showError(err.message || 'Could not send feedback.');
     } finally {

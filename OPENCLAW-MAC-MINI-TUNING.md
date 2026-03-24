@@ -77,6 +77,8 @@ Use a 1B model name if you pulled one with `ollama pull`.
 
 Some OpenClaw configs let you cap how many prior turns are sent. If your version supports it, limiting history (e.g. last 5–10 exchanges) keeps prompts smaller and responses faster. Check the docs for your version for keys like `maxTurns` or `historyLimit`.
 
+**Agent does only one step per message:** If the UX tester does one browser action (e.g. loads the page) then replies instead of continuing (login, scroll, etc.), (1) SOUL and the skill now tell it to do a multi-step flow before summarizing. (2) If your OpenClaw version supports it, check for a **step/tool limit** in config (e.g. `agents.defaults.maxToolCalls` or `maxTurns`) and increase it so the agent can make multiple tool calls in one turn; see OpenClaw docs or `openclaw.json` schema.
+
 ---
 
 ## 5. Ollama provider (correct and minimal)

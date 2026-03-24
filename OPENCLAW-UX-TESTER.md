@@ -142,6 +142,26 @@ OpenClaw loads skills from **directories** that contain a file named **`SKILL.md
    openclaw gateway
    ```
 
+### Where SOUL.md is loaded (UX tester personality)
+
+OpenClaw loads **SOUL.md** (and other bootstrap files) **only from the workspace directory**, not from agent-specific folders. If the agent ignores your SOUL rules (e.g. still asks "Would you like me to…?" or "let me know when…"), the file is likely in the wrong place.
+
+1. **Check the workspace path** on the Mac mini:
+   ```bash
+   openclaw config get workspace
+   ```
+   Default is `~/.openclaw/workspace`. If you overrode it in `openclaw.json` (e.g. under `agent.workspace`), SOUL must be in that path.
+
+2. **Put SOUL.md in the workspace root** (not in a skill subfolder or agent dir):
+   ```bash
+   cp /path/to/cuphead-runner/openclaw-skill-ux-path/SOUL.md ~/.openclaw/workspace/SOUL.md
+   ```
+   So the file is literally `~/.openclaw/workspace/SOUL.md` (or `<workspace>/SOUL.md` if you use a custom workspace).
+
+3. **Restart the gateway** after adding or updating SOUL.md.
+
+   If your config has a top-level `workspace` or `agent.workspace` path, ensure SOUL.md is in that directory.
+
 4. **Optional: skills allowlist**  
    If your config has `agents.list[].skillsAllowlist` (or similar), add the skill name so this agent gets it. The skill’s frontmatter has `name: ux_path_fam`, so you might need something like `"skillsAllowlist": ["ux_path_fam"]` for the UX agent. If you don’t use an allowlist, all skills in the loaded dirs are usually included.
 
@@ -158,7 +178,24 @@ If it doesn’t mention the right URL/account, check: skill is in `~/.openclaw/w
 
 ---
 
-## 5. Run a test from the OpenClaw UI
+## 5. Browser automation: use snapshot refs (not invented commands)
+
+FamApp sign-in and other screens expose stable hooks for automation:
+
+- **Forms:** `data-testid` on login/signup/forgot/reset (e.g. `login-email`, `login-password`, `login-submit`, `signup-email`, …) plus `id` and `name` where applicable.
+- **Flow:** Always take a **`browser_snapshot`** (or equivalent) after navigation, then **click or type using the element refs** from that snapshot. Do not assume CSS selectors or made-up tool names unless your OpenClaw version documents them.
+
+Example intent (wording depends on your OpenClaw browser tool API):
+
+1. Navigate to the Fam app URL.
+2. Snapshot the page; find the ref for the email field (`data-testid="login-email"` appears in the accessibility tree).
+3. Fill email and password using those refs, then activate the sign-in control ref.
+
+If typing fails, re-snapshot after each navigation and use the **current** refs.
+
+---
+
+## 6. Run a test from the OpenClaw UI
 
 1. Start the Path app (so the base URL is reachable).
 2. In OpenClaw, start a **new chat** with the agent that has the browser tool and the UX tester prompt.
@@ -170,7 +207,7 @@ The agent will use the `browser` tool (navigate, snapshot, act for click/type, o
 
 ---
 
-## 6. Optional: viewport and mobile testing
+## 7. Optional: viewport and mobile testing
 
 To mimic mobile (where Path is tuned), set a mobile viewport in `openclaw.json` if your version supports it (e.g. `browser.viewport`). If that key is unrecognized, skip it. Use `headless: false` while debugging so you can watch the browser on the Mac mini.
 
