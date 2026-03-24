@@ -10,6 +10,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from OpenClaw) Repeated profile setup: users are prompted to set up their profile twice during initial setup. Simplify onboarding by combining or removing redundant steps.
 
+- [ ] (from jrod assistant) Suggestions for FamApp (from QA / automation perspective):  1) Sign-in fields: Ensure email/password inputs use stable, accessible names so automation tools can target them via snapshot refs consistently after navigation.  2) Feedback UX: Consider a short confirmation toast after “Send” on Suggest an update so users know the message was received.  3) Performance: On busy feeds with many moments, consider virtualizing the list or lazy-loading off-screen cards to keep the main thread responsive.  4) Hamburger menu: When opening “Suggest an update”, consider closing the menu automatically so the modal feels focused (minor polish).  5) OpenClaw / CDP testers: Document that third-party helpers work best with ref-based typing (e.g. openclaw browser type <ref> "...") rather than invented commands
+
 ## In progress
 
 - *(Nothing)*
