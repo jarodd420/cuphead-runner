@@ -935,9 +935,10 @@ function init() {
 
   // If URL has ?screen=reset&token=..., show reset screen and set token (e.g. from email link)
   const params = new URLSearchParams(window.location.search);
-  if (params.get('screen') === 'reset' && params.get('token')) {
+  const passwordResetFromUrl = params.get('screen') === 'reset' && Boolean(params.get('token')?.trim());
+  if (passwordResetFromUrl) {
     const tokenInput = $('#reset-token-input');
-    if (tokenInput) tokenInput.value = params.get('token');
+    if (tokenInput) tokenInput.value = params.get('token').trim();
     showScreen('reset');
   }
 
@@ -1601,6 +1602,10 @@ function init() {
 
   (async () => {
     const user = await checkAuth();
+    // Do not override the password-reset screen (email links open while logged out; checkAuth used to send users to login and broke reset)
+    if (passwordResetFromUrl) {
+      return;
+    }
     if (user) {
       currentUser = user;
       showScreen('app');

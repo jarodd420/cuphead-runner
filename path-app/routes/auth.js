@@ -126,15 +126,20 @@ router.post('/forgot-password', async (req, res) => {
   if (!email) {
     return res.status(400).json({ error: 'Email is required' });
   }
-  const db = getDb();
-  const user = await db.getUserByEmail(email);
-  if (user) {
-    const { token } = await db.createPasswordResetToken(user.id);
-    const baseUrl = (process.env.INVITE_BASE_URL || process.env.BASE_URL || '').trim() || (req.protocol + '://' + req.get('host'));
-    const resetUrl = `${baseUrl.replace(/\/$/, '')}/?screen=reset&token=${encodeURIComponent(token)}`;
-    await sendPasswordResetEmail(user.email, resetUrl);
+  try {
+    const db = getDb();
+    const user = await db.getUserByEmail(email);
+    if (user) {
+      const { token } = await db.createPasswordResetToken(user.id);
+      const baseUrl = (process.env.INVITE_BASE_URL || process.env.BASE_URL || '').trim() || (req.protocol + '://' + req.get('host'));
+      const resetUrl = `${baseUrl.replace(/\/$/, '')}/?screen=reset&token=${encodeURIComponent(token)}`;
+      await sendPasswordResetEmail(user.email, resetUrl);
+    }
+    res.json({ message: 'If an account exists with that email, you will receive a password reset link.' });
+  } catch (err) {
+    console.error('[auth] forgot-password:', err.message || err);
+    res.status(500).json({ error: 'Could not process password reset. Try again later or contact support.' });
   }
-  res.json({ message: 'If an account exists with that email, you will receive a password reset link.' });
 });
 
 // Reset password: token + new password. Reuse signup password rules.
