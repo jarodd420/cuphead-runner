@@ -10,6 +10,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from J · QA (Phil)) QA feedback (Mar 2026):  1) Text-only post flow: labels like "Post a comment" / "Write a comment" feel like replying on someone else's post, not creating a new moment. Consider copy such as "New text moment" / "What's on your mind?"  2) Your fams: when empty or loading, add a clearer empty state (short explanation + one primary CTA to invite someone) instead of only "Loading…".  3) Feed + reactions: many separate reaction buttons; for accessibility consider a single "React" control with a picker, strong labels, and list virtualization for long feeds.  4) Inactive screens/modals still expose a lot of content to screen readers. Hide non-visible views with aria-hidden/inert or mount one screen at a time.  5) Login/marketing: teal links on busy hero art can be low contrast; consider a frosted 
 
+- [ ] (from J · QA (Phil)) QA feedback Mar 2026  1) Text-only post flow: labels like Post a comment / Write a comment feel like replying on someone else's post, not creating a new moment. Consider copy such as New text moment or What is on your mind.  2) Your fams: when empty or loading, add a clearer empty state (short explanation plus one primary CTA to invite) instead of only Loading.  3) Feed reactions: many separate emoji buttons; for accessibility consider one React control with a picker, stronger labels, and list virtualization for long feeds.  4) Inactive screens still expose a lot of content to screen readers. Hide non-visible views with aria-hidden or inert, or mount one screen at a time.  5) Sign-in hero: teal links on busy illustration can be low contrast; consider a frosted panel or stronger link styles
+
 ## In progress
 
 - *(Nothing)*
