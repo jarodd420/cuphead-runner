@@ -16,6 +16,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from J · QA (Phil)) YOUR FAMS UX (3/4) Loading/empty: Replace bare Loading with skeleton shimmer cards (3) + short Pulling your fams. Empty: primary Start a fam; secondary expandable How invites work (2 bullets). Polish: title/subtitle hierarchy; friendlier field copy e.g. What should we call this group? Mobile: light haptic on successful create where supported.
 
+- [ ] (from J · QA (Phil)) YOUR FAMS UX (4/4) Trust: Skip cheesy competitive gamification (leaderboards). Prefer warm prompts and family-safe tone; minimal metrics unless users opt in. Goal: modern, interactive, fun without noisy game vibes. Thanks - excited to see this section match the polish of the rest of FamApp.
+
 ## In progress
 
 - *(Nothing)*
