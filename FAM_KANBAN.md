@@ -10,6 +10,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from J · QA (Phil)) Remaining Mar 2026 QA: (3) Feed reactions — consider one “React” control with picker, stronger labels, list virtualization for long feeds. (4) Screen readers — hide inactive screens/modals with `aria-hidden` / `inert` or mount one screen at a time.
 
+- [ ] (from J · QA (Phil)) YOUR FAMS UX (1/4) Visual: Each fam as a card with soft cover tint or gradient, member avatars stacked (show 3-4 + +N), clear Open affordance. Warm empty-state illustration + line like: Your table is set - who is coming? Subtle staggered entrance when panel opens; light hover lift on cards (desktop). Keep motion under ~300ms.
+
 ## In progress
 
 - *(Nothing)*
