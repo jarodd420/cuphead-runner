@@ -14,6 +14,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from J · QA (Phil)) YOUR FAMS UX (2/4) Interaction: Invite flow as mini steps: pick fam, preview invite text, send; optional one-tap suggested invite line. Fam cards: privacy-safe chips e.g. Last moment 2d ago or Quiet week - nudge? First fam created: one-time confetti or celebratory toast. If ordering matters: drag-to-reorder fams.
 
+- [ ] (from J · QA (Phil)) YOUR FAMS UX (3/4) Loading/empty: Replace bare Loading with skeleton shimmer cards (3) + short Pulling your fams. Empty: primary Start a fam; secondary expandable How invites work (2 bullets). Polish: title/subtitle hierarchy; friendlier field copy e.g. What should we call this group? Mobile: light haptic on successful create where supported.
+
 ## In progress
 
 - *(Nothing)*
