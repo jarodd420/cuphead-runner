@@ -104,10 +104,10 @@
         <div class="timeline-loading" id="timeline-loading">Loading…</div>
         <div class="timeline-empty" id="timeline-empty" hidden><span class="timeline-empty-icon" aria-hidden="true">✨</span>No moments yet.<br />Tap 📷 or 💬 to share.</div>
         <div class="fab-row" aria-label="Add moment">
-          <button type="button" class="fab-add fab-plus" id="btn-fab-plus" title="Add moment" aria-label="Add moment — photo, video, or text" aria-expanded="false" aria-haspopup="true">+</button>
+          <button type="button" class="fab-add fab-plus" id="btn-fab-plus" title="Add moment" aria-label="Add moment — photo, video, or new text moment" aria-expanded="false" aria-haspopup="true">+</button>
           <div class="fab-picker" id="fab-picker" hidden role="menu" aria-label="Choose moment type">
             <button type="button" class="fab-picker-option" id="fab-pick-media" role="menuitem" title="Photo or video">📷 Photo or video</button>
-            <button type="button" class="fab-picker-option" id="fab-pick-message" role="menuitem" title="Text only">💬 Text only</button>
+            <button type="button" class="fab-picker-option" id="fab-pick-message" role="menuitem" title="New text moment">💬 New text moment</button>
           </div>
         </div>
       </main>
@@ -236,9 +236,9 @@
                 <video class="moment-photo-preview moment-preview-video" id="moment-video-preview" alt="Preview" controls hidden></video>
                 <button type="button" class="btn-remove-photo" id="btn-remove-moment-photo" title="Remove">×</button>
               </div>
-              <p class="moment-text-only-link-wrap"><button type="button" class="link-btn" id="btn-moment-text-only">Post text only</button></p>
+              <p class="moment-text-only-link-wrap"><button type="button" class="link-btn" id="btn-moment-text-only">New text moment instead</button></p>
             </div>
-            <textarea name="body" id="moment-body-input" placeholder="Add a comment (optional)..." rows="3"></textarea>
+            <textarea name="body" id="moment-body-input" placeholder="Add a caption (optional)…" rows="3"></textarea>
             <div class="form-actions">
               <button type="button" class="btn-cancel" id="btn-cancel-moment">Cancel</button>
               <button type="submit" class="btn-post">Post</button>

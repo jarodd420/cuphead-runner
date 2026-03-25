@@ -8,9 +8,7 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] *(Add items below from Slack feedback or manually)*
 
-- [ ] (from J · QA (Phil)) QA feedback (Mar 2026):  1) Text-only post flow: labels like "Post a comment" / "Write a comment" feel like replying on someone else's post, not creating a new moment. Consider copy such as "New text moment" / "What's on your mind?"  2) Your fams: when empty or loading, add a clearer empty state (short explanation + one primary CTA to invite someone) instead of only "Loading…".  3) Feed + reactions: many separate reaction buttons; for accessibility consider a single "React" control with a picker, strong labels, and list virtualization for long feeds.  4) Inactive screens/modals still expose a lot of content to screen readers. Hide non-visible views with aria-hidden/inert or mount one screen at a time.  5) Login/marketing: teal links on busy hero art can be low contrast; consider a frosted 
-
-- [ ] (from J · QA (Phil)) QA feedback Mar 2026  1) Text-only post flow: labels like Post a comment / Write a comment feel like replying on someone else's post, not creating a new moment. Consider copy such as New text moment or What is on your mind.  2) Your fams: when empty or loading, add a clearer empty state (short explanation plus one primary CTA to invite) instead of only Loading.  3) Feed reactions: many separate emoji buttons; for accessibility consider one React control with a picker, stronger labels, and list virtualization for long feeds.  4) Inactive screens still expose a lot of content to screen readers. Hide non-visible views with aria-hidden or inert, or mount one screen at a time.  5) Sign-in hero: teal links on busy illustration can be low contrast; consider a frosted panel or stronger link styles
+- [ ] (from J · QA (Phil)) Remaining Mar 2026 QA: (3) Feed reactions — consider one “React” control with picker, stronger labels, list virtualization for long feeds. (4) Screen readers — hide inactive screens/modals with `aria-hidden` / `inert` or mount one screen at a time.
 
 ## In progress
 
@@ -24,6 +22,7 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 ## Done
 
+- [x] (from J · QA (Phil), prioritized Mar 2026) Text-only flow: “New text moment” title, “What’s on your mind?” placeholder, FAB “New text moment”, media caption placeholder “Add a caption (optional)”. Your fams: loading state with explanation + `aria-busy`; empty state with copy + “Start a fam” CTA; error state with “Try again”. Sign-in / forgot / reset: frosted `login-card` on hero + stronger underlined auth links (#115e59).
 - [x] (from jrod assistant / QA backlog) Auth: stable `id`, `data-testid`, `aria-label` on login/signup/forgot/reset; feedback success uses `showToast`; timeline `content-visibility` + video `preload="none"` for lighter feeds; feedback button closes menu + `aria-expanded`; OpenClaw UX doc §5 snapshot refs + skill note on testids
 - [x] (from jared rodriguez) expanded video: custom play/pause (no native controls overlay), video not darker
 - [x] (from jared rodriguez) plus sign goes straight to photo or video upload; "Post text only" link in overlay

@@ -440,6 +440,36 @@ body {
   color: var(--text-muted);
   font-size: 0.95rem;
 }
+
+.fams-loading-state,
+.fams-empty-state {
+  padding: 20px 12px;
+  text-align: center;
+}
+.fams-loading-title,
+.fams-empty-title {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.fams-loading-copy,
+.fams-empty-copy {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+.fams-empty-state--error .fams-empty-title {
+  color: var(--text);
+}
+.fams-empty-cta {
+  width: 100%;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
 .fam-item {
   padding: 14px 0;
   border-bottom: 1px solid var(--border);
@@ -723,6 +753,35 @@ body {
 .login-card {
   width: 100%;
   max-width: 360px;
+}
+
+/* Frosted panel on hero backgrounds (login / forgot / reset) for contrast + readability */
+#screen-login .login-card,
+#screen-forgot .login-card,
+#screen-reset .login-card {
+  padding: 28px 24px;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+}
+
+#screen-login .auth-switch a,
+#screen-forgot .auth-switch a,
+#screen-reset .auth-switch a {
+  color: #115e59;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 2px;
+}
+
+#screen-login .auth-switch a:hover,
+#screen-forgot .auth-switch a:hover,
+#screen-reset .auth-switch a:hover {
+  color: #0f766e;
 }
 
 .logo {

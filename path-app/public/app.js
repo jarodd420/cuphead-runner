@@ -1383,14 +1383,14 @@ function init() {
     const overlayTitle = $('#add-moment-title');
     if (mode === 'message') {
       selectedMomentType = 'text';
-      if (overlayTitle) overlayTitle.textContent = 'Post a comment';
+      if (overlayTitle) overlayTitle.textContent = 'New text moment';
     } else {
       selectedMomentType = 'photo';
       if (overlayTitle) overlayTitle.textContent = 'Photo or video';
     }
     updateMomentPhotoUI();
     const bodyInput = $('#moment-body-input');
-    if (bodyInput) bodyInput.placeholder = mode === 'message' ? 'Write a comment...' : 'Add a comment (optional)...';
+    if (bodyInput) bodyInput.placeholder = mode === 'message' ? 'What’s on your mind?' : 'Add a caption (optional)…';
     addMomentOverlay.hidden = false;
     setOverlayOpen(true);
   }
@@ -1448,13 +1448,33 @@ function init() {
   const btnSubmitCreateFam = $('#btn-submit-create-fam');
   const btnCancelCreateFam = $('#btn-cancel-create-fam');
 
+  function openFamsCreateForm() {
+    if (famsCreateForm) famsCreateForm.hidden = false;
+    if (famNameInput) {
+      famNameInput.value = '';
+      famNameInput.focus();
+    }
+  }
+
   async function loadFamsList() {
     if (!famsList) return;
-    famsList.innerHTML = '<p class="fams-loading">Loading…</p>';
+    famsList.setAttribute('aria-busy', 'true');
+    famsList.innerHTML = `
+      <div class="fams-loading-state" role="status" aria-live="polite">
+        <p class="fams-loading-title">Loading your fams</p>
+        <p class="fams-loading-copy">Fetching who you share moments with…</p>
+      </div>`;
     try {
       const { fams: famsData } = await api('/api/fams');
+      famsList.removeAttribute('aria-busy');
       if (!famsData || !famsData.length) {
-        famsList.innerHTML = '<p class="fams-empty">You have no fams yet. Start one and invite people by email.</p>';
+        famsList.innerHTML = `
+          <div class="fams-empty-state">
+            <p class="fams-empty-title">No fams yet</p>
+            <p class="fams-empty-copy">Create a fam, then invite people by email. You’ll only see moments from people in your fams.</p>
+            <button type="button" class="btn-post fams-empty-cta" id="btn-fams-empty-start">Start a fam</button>
+          </div>`;
+        $('#btn-fams-empty-start')?.addEventListener('click', () => openFamsCreateForm());
         return;
       }
       famsList.innerHTML = famsData.map(f => {
@@ -1507,7 +1527,14 @@ function init() {
         });
       });
     } catch (e) {
-      famsList.innerHTML = '<p class="fams-empty">Could not load fams.</p>';
+      famsList.removeAttribute('aria-busy');
+      famsList.innerHTML = `
+        <div class="fams-empty-state fams-empty-state--error">
+          <p class="fams-empty-title">Couldn’t load fams</p>
+          <p class="fams-empty-copy">Check your connection and try opening this again.</p>
+          <button type="button" class="btn-post fams-empty-cta" id="btn-fams-retry">Try again</button>
+        </div>`;
+      $('#btn-fams-retry')?.addEventListener('click', () => loadFamsList());
     }
   }
 
@@ -1527,8 +1554,10 @@ function init() {
     if (e.target === famsOverlay) { famsOverlay.hidden = true; setOverlayOpen(false); }
   });
   btnCreateFam?.addEventListener('click', () => {
-    if (famsCreateForm) famsCreateForm.hidden = !famsCreateForm.hidden;
-    if (famNameInput) { famNameInput.value = ''; famNameInput.focus(); }
+    if (!famsCreateForm) return;
+    const willShow = famsCreateForm.hidden;
+    famsCreateForm.hidden = !willShow;
+    if (willShow) openFamsCreateForm();
   });
   btnCancelCreateFam?.addEventListener('click', () => {
     if (famsCreateForm) famsCreateForm.hidden = true;
@@ -1560,7 +1589,7 @@ function init() {
         return;
       }
     } else if (!momentPhotoDataUrl && !body) {
-      showError('Add a photo/video or a comment');
+      showError('Add a photo/video or a caption');
       return;
     }
     const submitBtn = form.querySelector('button[type="submit"]');
