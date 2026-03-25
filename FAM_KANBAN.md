@@ -12,6 +12,8 @@ Tasks from Slack feedback (#bots-channel) and Cursor. Cursor: read this file whe
 
 - [ ] (from J · QA (Phil)) YOUR FAMS UX (1/4) Visual: Each fam as a card with soft cover tint or gradient, member avatars stacked (show 3-4 + +N), clear Open affordance. Warm empty-state illustration + line like: Your table is set - who is coming? Subtle staggered entrance when panel opens; light hover lift on cards (desktop). Keep motion under ~300ms.
 
+- [ ] (from J · QA (Phil)) YOUR FAMS UX (2/4) Interaction: Invite flow as mini steps: pick fam, preview invite text, send; optional one-tap suggested invite line. Fam cards: privacy-safe chips e.g. Last moment 2d ago or Quiet week - nudge? First fam created: one-time confetti or celebratory toast. If ordering matters: drag-to-reorder fams.
+
 ## In progress
 
 - *(Nothing)*
